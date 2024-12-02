@@ -1,0 +1,61 @@
+
+/* 三角形 */
+.common-arrow {
+  border-right: 3rpx solid #9DA9B9;
+  border-top: 3rpx solid #9DA9B9;
+  height: 18rpx;
+  width: 18rpx;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  /*不加这两个属性三角会比上一个略丑, 大家可以试一下*/
+  border-left: 2rpx solid transparent;
+  border-bottom: 2rpx solid transparent;
+}
+/* 向上的三角形 */
+.arrow-top {
+  width: 0;
+  height: 0;
+  border-right: 20rpx solid transparent;
+  border-left: 20rpx solid transparent;
+  border-bottom: 20rpx solid #ffffff;
+  border-radius: 10rpx;
+}
+/* 超过1行文本...显示 */
+.textEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+/* 超过两行文本...显示 */
+.text2Ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+/* 超过san行文本...显示 */
+.text3Ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* ::v-deep uni-toast .uni-sample-toast .uni-simple-toast__text{ */
+uni-toast .uni-sample-toast .uni-simple-toast__text{
+  line-height: 1.2;
+  text-align: left;
+}
+uni-toast .uni-toast{
+  width: 9em;
+}
+.uni-toast__content {
+  line-height: 1.3;
+}

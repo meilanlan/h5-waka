@@ -26,7 +26,9 @@
       </view>
       <view :class="['switch-box', isShowSwitch===true?'show':'hide']">
         <view class="switch-list" v-for="(item, index) in cmdData.main_list" :key="item.cmd_id">
-          <text space="nbsp" decode="true">{{item.cmd_name}}</text> <uni-even-switch v-model="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch>
+          <text space="nbsp" decode="true">{{item.cmd_name}}</text>
+          <!-- <uni-even-switch v-model="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch> -->
+          <uni-even-switch :value="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch>
         </view>
       </view>
     </view>
@@ -45,7 +47,7 @@
       </view>
       <view :class="['switch-box', isShowPlay===true?'show':'hide']">
         <view class="switch-list" v-for="(item, index) in cmdData.joy_list" :key="item.cmd_id">
-          <text space="nbsp" decode="true">{{item.cmd_name}}</text> <uni-even-switch v-model="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforePlayChange"></uni-even-switch>
+          <text space="nbsp" decode="true">{{item.cmd_name}}</text> <uni-even-switch :value="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforePlayChange"></uni-even-switch>
         </view>
       </view>
     </view>
@@ -341,7 +343,7 @@
       </view>
       <view class="btn" @click="saveWord(item)">保存</view>
       <view class="draw-btn" @click="addWord" v-show="index+1 === newGroupWord.list.length">
-        <image src="../../../static/image/add.png" mode=""></image> 点击添加更多自定义词库
+        <image src="../../../static/image/add-2.png" mode=""></image> 点击添加更多自定义词库
       </view>
     </view>
     
@@ -373,7 +375,7 @@
           </view>
         </view>
         <view :class="['draw-btn', emptyFlag===false&&'gray']" @click="addNoble">
-          <image src="../../../static/image/add.png" mode=""></image> 点击添加贵族头衔
+          <image src="../../../static/image/add-2.png" mode=""></image> 点击添加贵族头衔
         </view>
       </view>
     </view>
@@ -411,7 +413,7 @@
           </view>
         </view>
         <view :class="['draw-btn', giftFlag===false&&'gray']" @click="addGift">
-          <image src="../../../static/image/add.png" mode=""></image> 继续添加更多礼物名称
+          <image src="../../../static/image/add-2.png" mode=""></image> 继续添加更多礼物名称
         </view>
       </view>
     </view>
@@ -513,7 +515,11 @@
           groupResData} from'@/service/robotAccount/index.js'
   export default {
     props: {
-      robot_id: {
+      robotInfo: {
+        type: Object,
+        default: ()=>{}
+      },
+      group_id: {
         type: String,
         default: () => {}
       },
@@ -773,6 +779,7 @@
       giftInfo:{
         immediate: true,
         handler(value) {
+          console.log(value,'value',this.newGiftInfo.coin_gift_list)
           let arr = [...value.coin_gift_list, ...this.newGiftInfo.coin_gift_list]
           let newArr = []
           let obj = {}
@@ -1057,9 +1064,9 @@
           rate.push(item.rate)
         })
         let params = {
-            data_type: 17,
+            type: 17,
             business_rate: rate.join(','),
-            robot_id: this.robot_id
+            group_id: this.robotInfo.group_id
         }
         this.setConfig(params, true, false)
       },
@@ -1083,7 +1090,7 @@
         }
         uni.showLoading()
         
-        groupWordDelData({title: item.title, robot_id: this.robot_id}, res => {
+        groupWordDelData({title: item.title, group_id: this.group_id}, res => {
           if (res.code === 0) {
             uni.showToast({
               title: res.msg,
@@ -1126,10 +1133,10 @@
           return false
         }
         let params = {
-          data_type: 11,
+          type: 11,
           title: item.title,
           content: item.content,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         // this.setConfig(params)
         this.setConfig(params, true, false)
@@ -1215,24 +1222,24 @@
       saveLoot() {
         uni.showLoading()
         let param = {
-          data_type: 7,
+          type: 7,
           success_ratio: this.lootInfo.success_ratio,
           obtain_min: this.lootInfo.obtain_min,
           obtain_max: this.lootInfo.obtain_max,
           lose_min: this.lootInfo.lose_min,
           lose_max: this.lootInfo.lose_max,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
       saveForce() {
         uni.showLoading()
         let param = {
-          data_type: 16,
+          type: 16,
           force_rate: this.force.force_rate,
           force_coin_min: this.force.force_coin_min,
           force_coin_max: this.force.force_coin_max,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
@@ -1244,7 +1251,7 @@
             });
             return false
         }
-        this.setConfig({data_type: 13,coin_rate: this.coinRate.coin_rate, robot_id: this.robot_id}, true, false)
+        this.setConfig({type: 13,coin_rate: this.coinRate.coin_rate, group_id: this.robotInfo.group_id}, true, false)
       },
       watchMinNumber() {
         this.signInfo.obtain_min<0 && (this.signInfo.obtain_min=1)
@@ -1286,10 +1293,10 @@
         // }
         uni.showLoading()
         let param = {
-          data_type: 6,
+          type: 6,
           obtain_min: this.signInfo.obtain_min,
           obtain_max: this.signInfo.obtain_max,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         // this.setConfig(param)
         this.setConfig(param, true, false)
@@ -1304,9 +1311,9 @@
           return false
         }
         let param = {
-          data_type: 15,
+          type: 15,
           req_marriage_charm: this.propose.req_marriage_charm,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
@@ -1320,9 +1327,9 @@
           return false
         }
         let param = {
-          data_type: 20,
+          type: 20,
           coin: this.preLife.coin,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
@@ -1336,19 +1343,19 @@
           return false
         }
         let param = {
-          data_type: 21,
+          type: 21,
           coin: this.happlyInfo.coin,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
       saveLoveing() {
         uni.showLoading()
         let param = {
-          data_type: 14,
+          type: 14,
           love_min: this.loveing.love_min,
           love_max: this.loveing.love_max,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         this.setConfig(param, true, false)
       },
@@ -1362,7 +1369,7 @@
         }
         uni.showLoading()
         // this.setConfig({data_type: 5,text: this.sendGift.data})
-        this.setConfig({data_type: 5,text: this.sendGift.data,robot_id: this.robot_id}, true, false)
+        this.setConfig({type: 5,text: this.sendGift.data,group_id: this.robotInfo.group_id}, true, false)
       },
       saveBg() {
         uni.showLoading()
@@ -1377,7 +1384,7 @@
         }
         path = path?path.replace("https", "http"):path
         // this.setConfig({data_type: 8,group_top_bg: path}, 'updateGroupInfo')
-        this.setConfig({data_type: 8,group_top_bg: path, robot_id: this.robot_id}, true, true)
+        this.setConfig({data_type: 8,group_top_bg: path, group_id: this.group_id}, true, true)
       },
       saveAd() {
         uni.showLoading()
@@ -1392,7 +1399,7 @@
         this.groupTopAd.group_top_ad = this.groupTopAd.group_top_ad?this.groupTopAd.group_top_ad.replace("https", "http"):this.groupTopAd.group_top_ad
         this.groupTopAd.group_top_ad_jump_url = this.groupTopAd.group_top_ad_jump_url?this.groupTopAd.group_top_ad_jump_url.replace("https", "http"):this.groupTopAd.group_top_ad_jump_url
         // this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url}, 'updateGroupInfo')
-        this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url,robot_id: this.robot_id}, true, true)
+        this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url,group_id: this.group_id}, true, true)
       },
       saveTimerMsg() {
         if (!this.timerMsg.data) {
@@ -1404,9 +1411,9 @@
         }
         uni.showLoading()
         let param = {
-          data_type: 4,
+          type: 4,
           text: this.timerMsg.data,
-          robot_id: this.robot_id
+          group_id: this.robotInfo.group_id
         }
         // this.setConfig(param)
         this.setConfig(param, true, false)
@@ -1441,9 +1448,10 @@
       beforeListChange(e,extraData) {
         uni.showLoading()
         let params = {
-          robot_id: this.robot_id,
+          group_id: this.robotInfo.group_id,
           cmd_id: this.cmdData.main_list[extraData].cmd_id,
-          cmd_is_open: e===true?1:0
+          cmd_open: e===true?1:0,
+          cmd_type: "",
         }
         return new Promise((resolve, reject) => {
           groupSetCmdData(params, res => {
@@ -1474,9 +1482,9 @@
       beforePlayChange(e,extraData) {
         uni.showLoading()
         let params = {
-          robot_id: this.robot_id,
+          group_id: this.robotInfo.group_id,
           cmd_id: this.cmdData.joy_list[extraData].cmd_id,
-          cmd_is_open: e===true?1:0,
+          cmd_open: e===true?1:0,
           cmd_type: 'joy'
         }
         return new Promise((resolve, reject) => {

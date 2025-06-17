@@ -100,10 +100,19 @@ const groupDetailData = (data, success, fail) => {
   })
 }
 // 群空间
+// const groupUserData = (data, success, fail) => {
+//   ajax({
+//     noAuth: true,
+//     url: groupUserApi,
+//     data: data,
+//     success: success,
+//     fail: fail
+//   })
+// }
 const groupUserData = (data, success, fail) => {
   ajax({
     noAuth: true,
-    url: groupUserApi,
+    url: '/h5/space/data_list',
     data: data,
     success: success,
     fail: fail
@@ -180,7 +189,7 @@ const groupSummaryData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSummaryApi,
+    url: '/h5/space/group_summary',
     data: data,
     success: success,
     fail: fail
@@ -192,7 +201,7 @@ const groupClearData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupClearApi,
+    url: '/h5/space/user_list_clean',
     data: data,
     success: success,
     fail: fail
@@ -204,7 +213,7 @@ const groupCmdData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupCmdApi,
+    url: '/h5/space/cmd_config_get',
     data: data,
     success: success,
     fail: fail
@@ -216,7 +225,7 @@ const groupSetCmdData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSetCmdApi,
+    url: '/h5/space/cmd_config_set',
     data: data,
     success: success,
     fail: fail
@@ -228,7 +237,7 @@ const groupConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupConfigApi,
+    url: '/h5/space/group_config_get',
     data: data,
     success: success,
     fail: fail
@@ -240,7 +249,7 @@ const groupSetConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSetConfigApi,
+    url: '/h5/space/group_config_set',
     data: data,
     success: success,
     fail: fail
@@ -276,7 +285,7 @@ const groupUserDataData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupUserDataApi,
+    url: '/h5/space/user_list',
     data: data,
     success: success,
     fail: fail
@@ -589,6 +598,108 @@ const addYuanBaoData = (data, success, fail) => {
   })
 }
 
+// 顶部群信息的接口
+const groupInfoApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group_info',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 我的主页
+const userProfileApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/user_profile',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 机器人助手
+const spaceRobotApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/robot',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 群收益
+const groupIncomeApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/income',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 能量助力
+const groupGrowApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/group/grow',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 支付宝支付
+const alipayOrder = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/alipay/order',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+// 我的订单
+const billListApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/bill/list',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+// 个人的分享
+const shareUserApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/share/user',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//社群的分享
+const shareGroupApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/share/group',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
 
 
 export {
@@ -638,5 +749,14 @@ export {
   giftEditData,
   giftDelData,
   exchangeData,
-  addYuanBaoData
+  addYuanBaoData,
+  groupInfoApi,
+  userProfileApi,
+  spaceRobotApi,
+  groupIncomeApi,
+  groupGrowApi,
+  alipayOrder,
+  billListApi,
+  shareUserApi,
+  shareGroupApi
 }

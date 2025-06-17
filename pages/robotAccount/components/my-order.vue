@@ -1,19 +1,21 @@
 <template>
   <view class="wrapper">
-    <view class="box">
+    <view class="box" v-for="(item, index) in props.order_list" :key="index">
       <view class="left">
-        <view class="icon"></view>
+        <view class="icon">
+          <image :src="item.robot_cover"></image>
+        </view>
         <view class="info">
           <view class="name">
-            小嗨娱乐版
+            {{item.robot_name}}
           </view>
           <view class="time">
-            2024-10-10 16:22 ¥228.00
+            {{item.order_desc}}
           </view>
         </view>
       </view>
-      <view class="right right-2" @click="toJoin">
-        待使用
+      <view :class="['right','right-'+item.order_status]" @click="toJoin">
+        {{item.order_status===1?'已使用':'待使用'}}
       </view>
     </view>
     
@@ -43,6 +45,10 @@
   import {ref} from 'vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   
+  const props = defineProps({
+    order_list: Array
+  })
+  
   const joinPopup = ref(null)
   
   function sureJoin() {
@@ -60,6 +66,7 @@
     margin-top: 32rpx;
     font-family: 'MiSans';
     .box {
+      margin-bottom: 24rpx;
       padding: 24rpx;
       width: 100%;
       height: 128rpx;
@@ -80,6 +87,13 @@
           height: 80rpx;
           background: #D4F1FF;
           border-radius: 16rpx;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          image {
+            width: 44rpx;
+            height: 44rpx;
+          }
         }
         .name {
           font-weight: 400;

@@ -3,13 +3,21 @@
     <view class="header">
       <view class="left">能量助力</view>
       <view class="right">
-        余额:0 <image src="../../../static/image/home-1.png"></image>
+        余额:{{haveEnergy}} <image src="../../../static/image/home-1.png"></image>
       </view>
     </view>
     <view class="energy-list">
-      <view :class="['energy-list-box', checkEnergyNum===item&&'active']" v-for="item in energyList" :key="'n'+item" @click="checkEnergy(item)">
-        <image src="../../../static/image/home-1.png"></image>
-        {{item}}
+      <view :class="['energy-list-box', checkEnergyNum===index&&'active']" v-for="(item,index) in props.energy.list" :key="'n'+item.id" @click="checkEnergy(item,index)">
+        <view class="">
+          <view class="box">
+            <image src="../../../static/image/home-1.png"></image>
+            {{item.energy}}
+          </view>
+          <view class="box-exp" v-if="checkEnergyNum===index && item.title">
+            <view class="box-exp-1">{{item.title}}</view>
+            <view class="">{{item.desc}}</view>
+          </view>
+        </view>
       </view>
     </view>
     <view class="energy-inpt">
@@ -23,7 +31,7 @@
     <!-- 嗨币充值 -->
     <uni-popup ref="payPopup" type="bottom">
       <view class="common-popup">
-        <pay-x></pay-x>
+        <pay-x :haib="props.haib"></pay-x>
       </view>
     </uni-popup>
     
@@ -31,19 +39,30 @@
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive,inject} from 'vue'
   import {onReady} from '@dcloudio/uni-app'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import payX from '../../../components/pay-x/pay-x.vue';
+  import {groupGrowApi} from '@/service/robotAccount/index.js'
   
+  
+  const props = defineProps({
+    energy: Object,
+    haib: Object
+  })
+  const emit = defineEmits(['updateEnergy'])
   const energyList = [1,5,10,50,100,200]
   const checkEnergyNum = ref(-1)
   const num = ref('')
   const payPopup = ref(null)
-  
-  function checkEnergy(item){
-    checkEnergyNum.value = item
-    num.value = item
+  const haveEnergy = ref(0)
+  haveEnergy.value = props.energy.banlance
+  const parentInfo = reactive({data:{}})
+  parentInfo.data = inject('parentGroupInfo')
+  const energyLock = ref(false)
+  function checkEnergy(item,index){
+    checkEnergyNum.value = index
+    num.value = item.energy
   }
   
   function watchNum(){
@@ -59,10 +78,95 @@
   }
   
   function helpPay(){
-    if (num.value||checkEnergyNum.value!=-1) {
-      console.log(payPopup.value,'payPopupi')
-      payPopup.value.open()
+    if (energyLock.value === false) {
+      energyLock.value === true
+      uni.showLoading({mask: true})
+      groupGrowApi({group_id: parentInfo.data.group_id,amount: num.value}, res => {
+        if (res.code === 0) {
+          if(res.action?.id === 1011) {
+            payPopup.value.open()
+            uni.showToast({
+              title: 'HI币余额不足',
+              icon: 'error'
+            });
+          } else if(res.data) {
+            haveEnergy.value = res.data.rgiths?.energy
+            emit('updateEnergy',haveEnergy.value)
+            uni.hideLoading()
+            window.client.JSAction({
+                id: 1013 ,
+                param: JSON.stringify(res.action)
+            });
+            uni.showToast({
+              title: '能量助力成功',
+              icon: 'none'
+            });
+          } else {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
+          }
+          energyLock.value === false
+        } else {
+          energyLock.value === false
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          uni.hideLoading()
+        }
+      })
     }
+    
+    // if (num.value||checkEnergyNum.value!=-1) {
+    //   console.log(payPopup.value,'payPopupi')
+    //   let energy = haveEnergy.value - num.value
+    //   console.log(energy, 'energy o')
+    //   if (energy>0) {
+    //     // 直接用能量助力
+    //     uni.showLoading()
+    //     groupGrowApi({group_id: parentInfo.data.group_id,amount: num.value}, res => {
+    //       if (res.code === 0) {
+    //         uni.showToast({
+    //           title: '能量助力成功',
+    //           icon: 'none'
+    //         });
+    //         haveEnergy.value = energy
+    //         uni.hideLoading()
+    //       } else if (res.code === -20001) {
+    //         // this.$emit('updateAdminToken')
+    //         uni.hideLoading()
+    //       } else if (res.code != -10002){
+    //         uni.showToast({
+    //           title: res.msg,
+    //           icon: 'none'
+    //         });
+    //         uni.hideLoading()
+    //       } else {
+    //         uni.hideLoading()
+    //       }
+    //     })
+        
+    //   } else {
+    //     // payPopup.value.open()
+    //     // uni.showToast({
+    //     //   title: 'HI币余额不足',
+    //     //   icon: 'error'
+    //     // });
+    //     console.log(props.haib.banlance, 'props.haib.banlance is')
+    //     if (props.haib.banlance<=0) {
+          
+    //       payPopup.value.open()
+    //       uni.showToast({
+    //         title: 'HI币余额不足',
+    //         icon: 'error'
+    //       });
+    //     } else {
+          
+    //     }
+    //   }
+    // }
     
   }
   
@@ -118,6 +222,22 @@
         font-size: 36rpx;
         color: #000000;
         line-height: 44rpx;
+        .box {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .box-exp {
+          text-align: center;
+          font-size: 24rpx;
+          color: rgba(0, 0, 0, 0.4);
+          line-height: 1;
+          font-weight: 400;
+          .box-exp-1 {
+            margin: 16rpx 0;
+            color: #22C0FF;
+          }
+        }
         image {
           margin-right: 8rpx;
           width: 48rpx;

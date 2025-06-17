@@ -1,34 +1,55 @@
 <template>
+  <view class="wrapper">
     <view class="tab-list">
-      <view :class="['box', 'box-'+item, curTab===item?'active':'gray', ]" v-for="item in 2" :key="'tab-'+item" @click="switchTab(item)">
-        <image v-show="item === 1" src="../../../static/image/vip.png"></image>
-        <image v-show="item === 2" src="../../../static/image/svip.png"></image>
-        {{item===1?'咓咔VIP':'咓咔SVIP'}}
+      <view :class="['box', 'box-'+(index+1), curTab===index?'active':'gray', ]" v-for="(item,index) in props.vip.tab_list" :key="'tab-'+index" @click="switchTab(item,index)">
+        <image :src="item.icon"></image>
+        {{item.title}}
       </view>
     </view>
     <view class="detail">
       <view class="top">
         <text class="text1"></text>开通会员<text class="text2"></text>
       </view>
-      <view class="text3">订阅VIP会员每月获赠50点能量值</view>
+      <view class="text3">{{curVipInfo.desc}}</view>
       <scroll-view class="vip-scroll" scroll-x="true">
         <view class="vip-detail-list">
-          <view :class="['vip-box',curVipIndex === index&&'active']" v-for="(item, index) in vipList" :key="'vip-'+item.id" @click="switchVip(item,index)">
-            <view class="month">{{item.month}}</view>
+          <view :class="['vip-box',curVipIndex === index&&'active']" v-for="(item, index) in curVipInfo.list" :key="'vip-'+item.id" @click="switchVip(item,index)">
+            <view class="month">{{item.title}}</view>
             <view class="price">¥{{item.price}}</view>
-            <view class="text4">每月仅需¥18/月</view>
-            <view class="text5">节省40%</view>
-            <view class="text6">最受欢迎</view>
+            <view class="text4">{{item.desc}}</view>
+            <view class="text5">{{item.discount}}</view>
+            <view class="text6">{{item.tag}}</view>
           </view>
         </view>
       </scroll-view>
-      
     </view>
+    
+    <view class="tableList">
+      <uni-table ref="tableList" emptyText="暂无数据">
+        <uni-tr>
+          <uni-th :width="tableWidth" align="center">特权</uni-th>
+          <uni-th :width="tableWidth2" align="center" v-if="curTab===0">非会员</uni-th>
+          <uni-th :width="tableWidth2" align="center">
+            <image class="vip" src="../../../static/image/icon_vip.png" mode="heightFix"></image>
+          </uni-th>
+          <uni-th :width="tableWidth2" align="center" v-if="curTab===1">
+            <image class="vip" src="../../../static/image/icon_svip.png" mode="heightFix"></image>
+          </uni-th>
+        </uni-tr>
+        <uni-tr v-for="(item,i) in props.vip.rights_desc" :key="i">
+          <uni-td :width="i===0?tableWidth:tableWidth2" align="center">{{item.title}}</uni-td>
+          <uni-td :width="i===0?tableWidth:tableWidth2" align="center" v-if="curTab===0">{{item.novip}}</uni-td>
+          <uni-td :width="i===0?tableWidth:tableWidth2" align="center">{{item.vip}}</uni-td>
+          <uni-td :width="i===0?tableWidth:tableWidth2" align="center" v-if="curTab===1">{{item.svip}}</uni-td>
+        </uni-tr>
+      </uni-table>
+    </view>
+    
     <view class="foot-wrapper">
       <view class="mask"></view>
       <view class="wrapper-box">
-        <view class="foot-wrapper-btn">
-          确定协议并支付19.5元
+        <view class="foot-wrapper-btn" @click="openPayPopup">
+          确定协议并支付{{curVipInfo.list[curVipIndex].price}}元
         </view>
         <view class="sure" @click="agaree=!agaree">
           <!-- <radio-group @change="radioChange">
@@ -36,40 +57,129 @@
                 <radio value="1" :checked="agaree === '1'" color="#22c0ff" />
             </label>
           </radio-group> -->
-          <view :class="['check-box', agaree === false&&'active']"></view>
-          开通前确认 <text>《咓咔超级社群会员服务协议》</text>
+          <view :class="['check-box', agaree === false&&'active']" ></view>
+            开通前确认 <text @click.stop="openAgreement(1)">《咓咔超级社群会员服务协议》</text>
         </view>
       </view>
+      
+      
+      <!-- 立即支付 -->
+      <uni-popup ref="payPopup" type="bottom">
+        <view class="common-popup fixed-height">
+          <view class="methods">
+            <radio-group @change="radioPayChange">
+                <label class="uni-list-cell uni-list-cell-pd">
+                    <view class="left">
+                      <image src="../../../static/image/zfb.png"></image>支付宝
+                    </view>
+                    <radio value="1" :checked="curPay === '1'" color="#22c0ff" />
+                </label>
+                <label class="uni-list-cell uni-list-cell-pd visibility-none">
+                    <view class="left">
+                      <image src="../../../static/image/wx.png"></image>微信
+                    </view>
+                    <radio value="2" :checked="curPay === '2'" color="#22c0ff" />
+                </label>
+              </radio-group>
+          </view>
+          <view class="now-pay active" @click="toPay">
+            立即支付
+          </view>
+        </view>
+      </uni-popup>
+      
+      <!-- 咓咔超级社群会员服务协议 -->
+      <uni-popup ref="agreementPopup" type="center">
+        <view class="common-popup agreement-popup">
+          <image @click="openAgreement(2)" class="close" src="/static/image/close.png"></image>
+          <vip-agreement-x-vue></vip-agreement-x-vue>
+        </view>
+      </uni-popup>
+      
     </view>
+  </view>
+    
 </template>
 
 <script setup>
-  import {ref} from 'vue'
-  
-  const curTab = ref(1)
+  import {ref,reactive,inject} from 'vue'
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import uniTable from '@/components/uni-table/components/uni-table/uni-table.vue'
+  import uniTd from '@/components/uni-table/components/uni-td/uni-td.vue'
+  import uniTh from '@/components/uni-table/components/uni-th/uni-th.vue'
+  import uniTr from '@/components/uni-table/components/uni-tr/uni-tr.vue'
+  import vipAgreementXVue from './vip-agreement-x.vue'
+  import {alipayOrder} from '@/service/robotAccount/index.js'
+  const props = defineProps({
+    vip: Object
+  })
+  const parentInfo = reactive({data:{}})
+  parentInfo.data = inject('parentGroupInfo')
+  const payPopup = ref(null)
+  const curPay = ref('1')
+  const curTab = ref(0)
   const curVipIndex = ref(0)
   const agaree = ref(false)
-  const vipList = ref([
-    {d:1, month: '1个月', price: 30, only: '', save: ''},
-    {d:2, month: '3个月', price: 19.5, only: '', save: ''},
-    {d:3, month: '连续包月', price: 216.5, only: 18, save: '35%'},
-    {d:4, month: '1年', price: 300, only: 20, save: '40%'},
-  ])
+  const vipList = ref([])
+  const curVipInfo = ref()
+  const tableWidth = ref(uni.upx2px(200))
+  const tableWidth2 = ref(uni.upx2px(100))
+  const agreementPopup = ref(null)
+  const payLock = ref(false)
   
+  curVipInfo.value = props.vip.tab_list[curTab.value].data
   function radioChange() {
     agaree.value = agaree.value === '1'?'':'1'
-    console.log( agaree.value, 'uiuiu')
   }
-  
   function switchVip(item, index){
     curVipIndex.value = index
+    console.log(curVipInfo.value.list[index])
+    
   }
-  function switchTab(item){
-    curTab.value = item
+  function switchTab(item,index){
+    curVipIndex.value = 0
+    curTab.value = index
+    curVipInfo.value = item.data
+  }
+  function toPay(){
+    if (payLock.value === false) {
+      payLock.value = true
+      uni.showLoading({mask: true})
+      let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
+      alipayOrder({prod_id: curVipInfo.value.list[curVipIndex.value].id,return_url:returnUrl}, res => {
+        if (res.code === 0) {
+          payPopup.value.close()
+          // location.href = res.data.request_params+'&redirect_url=' + encodeURIComponent(window.location.origin+`/#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
+          location.href = res.data.request_params
+          payLock.value = false
+          uni.hideLoading()
+        } else {
+          payLock.value = false
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          uni.hideLoading()
+        }
+      })
+    }
+  }
+  function openPayPopup(){
+    payPopup.value.open()
+  }
+  function radioPayChange(){
+    
+  }
+  function openAgreement(type){
+    type === 1 && agreementPopup.value.open()
+    type === 2 && agreementPopup.value.close()
   }
 </script>
 
 <style lang="scss" scoped>
+  .wrapper {
+    padding-bottom: 300rpx;
+  }
   .tab-list {
     margin-top: 32rpx;
     background: #F0F3F8;
@@ -123,7 +233,6 @@
   }
   .detail {
     margin-top: 32rpx;
-    padding-bottom: 300rpx;
     font-family: 'MiSans';
     .top {
       text-align: center;
@@ -247,6 +356,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
+    z-index: 99;
     .mask {
       width: 100%;
       height: 64rpx;
@@ -291,6 +401,100 @@
             background: url('../../../static/image/choose.png') no-repeat;
             background-size: 32rpx 32rpx;
           }
+        }
+      }
+    }
+  }
+  .common-popup {
+    &.fixed-height {
+      height: 400rpx;
+    }
+    &.agreement-popup {
+      width: 96vw;
+      border-radius: 30rpx;
+      position: relative;
+      .close {
+        width: 48rpx;
+        height: 48rpx;
+        position: absolute;
+        right: 28rpx;
+        top: 58rpx;
+        z-index: 10;
+      }
+    }
+  }
+  .methods {
+    margin-top: 20rpx;
+    .uni-list-cell {
+      margin-bottom: 40rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      image {
+        margin-right: 16rpx;
+        width: 56rpx;
+        height: 56rpx;
+      }
+      .left {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .now-pay {
+    width: 686rpx;
+    height: 96rpx;
+    border-radius: 16rpx;
+    text-align: center;
+    line-height: 96rpx;
+    font-family: 'MiSans';
+    font-weight: 600;
+    font-size: 32rpx;
+    color: #FFFFFF;
+    background: rgba(34, 192, 255, .1);
+    &.active {
+      background: #22C0FF;
+    }
+  }
+  
+  .tableList {
+    margin: 32rpx 0;
+    border: 1px solid #dee2e5;
+    border-radius: 16rpx;
+    overflow: hidden;
+    // border-top: none;
+    // border-bottom: none;
+    .vip {
+      width: auto;
+      height: 32rpx;
+    }
+    :deep .uni-table-th {
+      font-size: 24rpx;
+      line-height: 1.2;
+      font-weight: 400;
+      color: #606178;
+      background-color: #f0f4f9;
+      // border-right: none;
+      border-right: 1px #dee2e5 solid;
+      &:last-of-type {
+        border-right: none;
+      }
+    }
+    :deep .uni-table-tr {
+      .uni-table-td {
+        font-size: 24rpx;
+        // color: #0E1B2E;
+        border-right: 1px #dee2e5 solid;
+        border-color: #dee2e5;
+        &:last-of-type {
+          border-right: none;
+          color: #FFA332;
+          background-color: rgba(255, 163, 50, 0.1);
+        }
+      }
+      &:last-of-type {
+        .uni-table-td {
+          border-bottom: none;
         }
       }
     }

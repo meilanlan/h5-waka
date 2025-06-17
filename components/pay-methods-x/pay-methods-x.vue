@@ -12,21 +12,6 @@
 
 <style lang="scss" scoped>
   .wrapper {
-    .wrapper-header {
-      position: relative;
-      width: 100%;
-      height: 96rpx;
-      background: #FFFFFF;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      text-align: center;
-      line-height: 96rpx;
-      .close {
-        width: 48rpx;
-        height: 48rpx;
-        position: absolute;
-        top: 24rpx;
-        right: 24rpx;
-      }
-    }
+    
   }
 </style>

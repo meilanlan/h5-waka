@@ -1,89 +1,228 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "主页"
-			}
-		},
-    {
-      "path" : "pages/robotAccount/robotDetail",
-      "style" : {
-        "navigationBarTitleText": "群主页",
-        // "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
+    "pages": [
+        //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "主页"
+            }
+        },
+        {
+            "path": "pages/robotAccount/robotDetail",
+            "style": {
+                "navigationBarTitleText": "群主页",
+                // "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/myBill",
+            "style": {
+                "navigationBarTitleText": "我的账单",
+                // "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/profitDetail",
+            "style": {
+                "navigationBarTitleText": "收益明细",
+                // "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/settlement",
+            "style": {
+                "navigationBarTitleText": "嗨币结算",
+                // "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/wathdrawal",
+            "style": {
+                "navigationBarTitleText": "嗨豆结算",
+                // "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/taskGiftRecord",
+            "style": {
+                "navigationBarTitleText": "任务礼物记录",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotAccount/groupAccount",
+            "style": {
+                "navigationBarTitleText": "groupAccount",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/userTerms",
+            "style": {
+                "navigationBarTitleText": "用户条款",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/privacyAgreement",
+            "style": {
+                "navigationBarTitleText": "咓咔社群隐私政策",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/wehi",
+            "style": {
+                "navigationBarTitleText": "wehi社区守则",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/commonProblem",
+            "style": {
+                "navigationBarTitleText": "常见问题",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/shareh5/wakaGroup",
+            "style": {
+                "navigationBarTitleText": "咓咔社群",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/shareh5/wakaGroupH5",
+            "style": {
+                "navigationBarTitleText": "咓咔社群",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/shareh5/sharePerson",
+            "style": {
+                "navigationBarTitleText": "咓咔社群",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/admin/leaderSync",
+            "style": {
+                "navigationBarTitleText": "数据同步",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/admin/login",
+            "style": {
+                "navigationBarTitleText": "登录",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/vip/vipCenter",
+            "style": {
+                "navigationBarTitleText": "会员中心",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/wallet",
+            "style": {
+                "navigationBarTitleText": "钱包",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/income/income",
+            "style": {
+                "navigationBarTitleText": "我的收益",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/robotShop/robotShop",
+            "style": {
+                "navigationBarTitleText": "机器人助手",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/luckyCanvas/luckyCanvas",
+            "style": {
+                "navigationBarTitleText": "新人福利",
+                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
         }
-      }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "waka",
+        "navigationBarBackgroundColor": "#F4F5F7",
+        "backgroundColor": "#F4F5F7"
     },
-    {
-      "path" : "pages/robotAccount/myBill",
-      "style" : {
-        "navigationBarTitleText": "我的账单",
-        // "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    },
-    {
-      "path" : "pages/robotAccount/profitDetail",
-      "style" : {
-        "navigationBarTitleText": "收益明细",
-        // "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    },
-    {
-      "path" : "pages/robotAccount/settlement",
-      "style" : {
-        "navigationBarTitleText": "嗨币结算",
-        // "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    },
-    {
-      "path" : "pages/robotAccount/wathdrawal",
-      "style" : {
-        "navigationBarTitleText": "嗨豆结算",
-        // "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    },
-    {
-      "path" : "pages/robotAccount/taskGiftRecord",
-      "style" :                                                                                    
-      {
-        "navigationBarTitleText": "任务礼物记录",
-        "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    },
-    {
-      "path" : "pages/robotAccount/groupAccount",
-      "style" :                                                                                    
-      {
-        "navigationBarTitleText": "groupAccount",
-        "enablePullDownRefresh": false,
-        "h5": {
-          "titleNView": false
-        }
-      }
-    }
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "waka",
-		"navigationBarBackgroundColor": "#F4F5F7",
-		"backgroundColor": "#F4F5F7"
-	},
-	"uniIdRouter": {}
+    "uniIdRouter": {}
 }

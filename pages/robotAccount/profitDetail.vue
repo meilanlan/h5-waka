@@ -236,17 +236,5 @@
       }
     }
   }
-  .no-data {
-    margin-top: 328rpx;
-    text-align: center;
-    font-size: 28rpx;
-    color: #606163;
-    font-weight: 400;
-    image {
-      margin-bottom: 14rpx;
-      width: 366rpx;
-      height: 366rpx;
-    }
-    
-  }
+  
 </style>

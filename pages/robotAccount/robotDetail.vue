@@ -1,6 +1,6 @@
 <template>
   <view class="content need_scroll_top_view">
-    <image class="bg" :src="robotInfo.data.bg_img_url||'@/static/image/bg_wxq.jpg'" @error="imgError"></image>
+    <image class="bg" :src="robotInfo.data.bg_img_url||'../../static/image/bg_wxq.jpg'" @error="imgError"></image>
     <view class="top navBar">
       <view class="common-header">
         <image class="back" src="@/static/image/btn_back_white.png" @click="backPage"></image>
@@ -17,21 +17,21 @@
               <view class="">
                 <view class="name textEllipsis">
                   <text>{{robotInfo.data.group_name}}</text>
-                  <image class="cv" src="@/static/image/grade.png" mode="aspectFit"></image>
+                  <image v-show="robotInfo.data.ic_list.length" class="cv" :src="robotInfo.data.ic_list[0]" mode="aspectFit"></image>
                 </view>
               </view>
               <view class="ing">
                 <div class="ing-box">
-                  <image class="ing-icon" src="@/static/image/group.png"></image>{{robotInfo.data.member_count}}人
+                  <image class="ing-icon" src="@/static/image/group.png"></image>{{robotInfo.data.group_user_count}}人
                 </div>
                 ID:{{robotInfo.data.group_id}}
               </view>
               <!-- <view class="time">{{robotInfo.data.service_time}}</view> -->
-              <view class="medal">
+              <!-- <view class="medal">
                 群勋章:
                 <image src="@/static/image/grade.png"></image>
                 <image src="@/static/image/grade.png"></image>
-              </view>
+              </view> -->
             </view>
           </view>
         </view>
@@ -45,19 +45,20 @@
       </view>
       <!-- tab切换的组件 -->
       <tab-x :tabId="groupInfo.tabId" @switchTab="switchTab"></tab-x>
-      <!-- 群空间 -->
-      <group-space-x v-if="groupInfo.tabId === 1"></group-space-x>
-      <!-- 群指令 -->
-      <instruction-x v-else-if="groupInfo.tabId === 2"></instruction-x>
-      <!-- 我的主页 -->
-      <my-home-x v-else-if="groupInfo.tabId === 3"></my-home-x>
-      <!-- 机器人 -->
-      <robot-x v-else-if="groupInfo.tabId === 4"></robot-x>
-      <!-- 群收益 -->
-      <group-profit-x v-else-if="groupInfo.tabId === 5"></group-profit-x>
-      <!-- 群设置 -->
-      <group-set-x v-else-if="groupInfo.tabId === 6 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></group-set-x>
-      
+      <template v-if="flagLock">
+          <!-- 群空间 -->
+          <group-space-x v-if="groupInfo.tabId === 1"></group-space-x>
+          <!-- 群指令 -->
+          <instruction-x v-else-if="groupInfo.tabId === 2"></instruction-x>
+          <!-- 我的主页 -->
+          <my-home-x v-else-if="groupInfo.tabId === 3" :robotInfo="robotInfo.data"></my-home-x>
+          <!-- 机器人 -->
+          <robot-x v-else-if="groupInfo.tabId === 4"></robot-x>
+          <!-- 群收益 -->
+          <group-profit-x v-else-if="groupInfo.tabId === 5"></group-profit-x>
+          <!-- 群设置 -->
+          <group-set-x v-else-if="groupInfo.tabId === 6 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></group-set-x>
+      </template>
       
     </view>
   
@@ -68,7 +69,7 @@
   import {defineComponent, ref, reactive, provide, nextTick} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   // import {scrollToTargetPosition} from '@/mixin/index.mixin.js'
-  import {groupDetailData} from '@/service/robotAccount/index.js'
+  import {groupDetailData,groupInfoApi} from '@/service/robotAccount/index.js'
   import TabX from './components/tab-x.vue'
   import groupSpaceX from './components/group-space-x.vue'
   import instructionX from './components/instruction-x.vue'
@@ -103,6 +104,7 @@
   })
   const adminConfigInfo=ref(null)
   const adminToken = ref('')
+  const flagLock = ref(false)
   
   function openPage() {
     if (robotInfo.data.ad_jump_url) {
@@ -111,11 +113,18 @@
   }
   
   function initPageData(){
-    
+    // this.lineLeft = this.tabId === 1? '8%' : this.tabId === 2 ? '26%' : '44%'
+    if(groupInfo.tabId === 1) {
+      // this.menuIndex=0
+      // groupUserInfo()
+    } else {
+      // this.setMenuIndex = 0
+      // if(groupInfo.tabId === 3 && (this.adminToken || (this.origin===1&&this.userToken))) this.getGroupSummaryInfo()
+    }
   }
   
   async function getGroupInfo() { //获取群主页的信息
-    await groupDetailData({group_id: groupInfo.group_id}, res => {
+    await groupInfoApi({group_id: groupInfo.group_id}, res => {
       if (~~res.code === 0) {
         robotInfo.data = res.data
         provide('parentRobotInfo',robotInfo.data )
@@ -132,6 +141,23 @@
         groupInfo.loading = false
       }
     })
+    // await groupDetailData({group_id: groupInfo.group_id}, res => {
+    //   if (~~res.code === 0) {
+    //     robotInfo.data = res.data
+    //     provide('parentRobotInfo',robotInfo.data )
+    //     groupInfo.loading = false
+    //     uni.hideLoading()
+    //   }else {
+    //     if (res.code != -10002){
+    //       uni.showToast({
+    //         title: res.msg,
+    //         icon: 'none'
+    //       });
+    //     }
+    //     uni.hideLoading()
+    //     groupInfo.loading = false
+    //   }
+    // })
   }
   function back () {
     uni.navigateBack();
@@ -145,25 +171,33 @@
   
   onLoad(option=>{
     uni.showLoading()
-    groupInfo.robot_id = option.robot_id
+    
+    // groupInfo.robot_id = option.robot_id
     groupInfo.group_id = option.group_id
+    provide('parentGroupInfo', {group_id:groupInfo.group_id})
     groupInfo.tabId = option.pid*1 || 1
     groupInfo.origin = option.origin*1 || 1
-    provide('parentGroupInfo', {robot_id: groupInfo.robot_id,group_id:groupInfo.group_id})
-    if (option.key && option.kid) {
-      uni.setStorageSync('user-id',option.kid)
-      uni.setStorageSync('user-token',option.key)
-    }
-    adminConfigInfo.value = uni.getStorageSync('ADMIN_CONFIG') || {}
-    if (!adminConfigInfo.value[option.group_id] && this.origin === 2) {
-      adminToken.value = ''
-      adminConfigInfo.value[option.group_id] = {"group_id": groupInfo.group_id,"admin_token": '',"robot_id": option.robot_id}
-      uni.setStorageSync('ADMIN_CONFIG', adminConfigInfo.value)
-    } else {
-      adminConfigInfo.value[groupInfo.group_id]&&(adminToken.value = adminConfigInfo.value[groupInfo.group_id]['admin_token'])
-    }
-    initPageData()
-    getGroupInfo()
+    // if (option.key && option.kid) {
+    //   uni.setStorageSync('user-id',option.kid)
+    //   uni.setStorageSync('user-token',option.key)
+    // }
+    // adminConfigInfo.value = uni.getStorageSync('ADMIN_CONFIG') || {}
+    // if (!adminConfigInfo.value[option.group_id] && option.origin === 2) {
+    //   adminToken.value = ''
+    //   adminConfigInfo.value[option.group_id] = {"group_id": groupInfo.group_id,"admin_token": '',"robot_id": option.robot_id}
+    //   uni.setStorageSync('ADMIN_CONFIG', adminConfigInfo.value)
+    // } else {
+    //   adminConfigInfo.value[groupInfo.group_id]&&(adminToken.value = adminConfigInfo.value[groupInfo.group_id]['admin_token'])
+    // }
+    nextTick(()=>{
+        window.client.getUserinfo((res) => {
+            console.log(res, "resresres");
+            flagLock.value = true
+            // initPageData()
+            getGroupInfo()
+        });
+    })
+    
     // this.groupUserInfo()
   })
   
@@ -185,6 +219,7 @@
     position: relative;
     .bg {
       width: 100%;
+      height: 460rpx;
       position: absolute;
       top: 0;
       left: 0;
@@ -214,6 +249,7 @@
               // width: 400rpx;
             }
             .ing {
+              margin-top: 20rpx;
               // font-size: 24rpx;
             }
             .time {

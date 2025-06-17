@@ -1,7 +1,8 @@
 let ApiUrl = '';
 if (process.env.M_NODE_ENV === 'test') {
   // 测试环境
-  ApiUrl = 'https://apitest.glxnetwork.com';
+  // ApiUrl = 'https://apitest.glxnetwork.com';
+  ApiUrl = 'http://110.40.170.35:9898';
 } else if (process.env.M_NODE_ENV === 'production_sh1'){
   // 生产环境-sh
   ApiUrl = 'https://api.glxnetwork.com';

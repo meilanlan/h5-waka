@@ -71,15 +71,16 @@
     "vueVersion" : "3",
     "h5" : {
         "router" : {
-            "mode" : "history",
-            "base" : "/"
+            "base" : "./"
         },
+        "publicPath" : "./", // 应用的基础路径，用于指定资源加载的根目录
         "devServer" : {
             "port" : 8888,
             "disableHostCheck" : true,
             "proxy" : {
                 "/api" : {
-                    "target" : "https://apitest.glxnetwork.com",
+                    // "target" : "https://apitest.glxnetwork.com",
+                    "target" : "http://110.40.170.35:9898",
                     // "target" : "http://110.40.170.35:8085",
                     "changeOrigin" : true,
                     "secure" : false,

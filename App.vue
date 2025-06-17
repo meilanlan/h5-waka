@@ -36,9 +36,11 @@
   
   // 导航栏
   .common-header {
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top);
     // padding: 0 40rpx 0 32rpx;
     width: 100%;
-    height: 88rpx;
+    min-height: 120rpx;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,6 +62,9 @@
       font-family: "PingFang SC-Medium";
       font-weight: 500;
       color: #000000;
+    }
+    &.safeTop {
+      padding-top: 88rpx;
     }
   }
   
@@ -248,4 +253,67 @@
     border-top-right-radius: 30rpx;
   }
   
+  .no-data {
+    margin-top: 328rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: #606163;
+    font-weight: 400;
+    image {
+      margin-bottom: 14rpx;
+      width: 366rpx;
+      height: 366rpx;
+    }
+    
+  }
+  .visibility-none {
+    visibility: hidden
+  }
+  // 二次确认弹窗
+  .clearSurePopup {
+    width: 630rpx;
+    // height: 436px;
+    border-radius: 30rpx;
+    background-color: #ffffff;
+    padding: 100rpx 30rpx 50rpx;
+    .clearText {
+      text-align: center;
+      font-size: 32rpx;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .btn-box {
+      margin-top: 60rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .btn {
+        width: 260rpx;
+        height: 88rpx;
+        line-height: 88rpx;
+        text-align: center;
+        border-radius: 20rpx;
+        font-size: 32rpx;
+        cursor: pointer;
+        background: #E5EAF1;
+        &.btn-sure {
+          color: #ffffff;
+          background: #1675FE;
+        }
+      }
+    }
+  }
+  // 数据为空
+  .common-empty {
+    margin-top: 76rpx;
+    text-align: center;
+    font-size: 32rpx;
+    color: #606178;
+    image {
+      display: block;
+      margin: 0 auto 42rpx;
+      width: 200rpx;
+      height: 200rpx;
+    }
+  }
 </style>

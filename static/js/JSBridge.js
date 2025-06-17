@@ -19,7 +19,7 @@ var u = navigator.userAgent,
     urlUid = methods.getParam("HTTP_USER_UID") || 0,
     urlToken =
         methods.getParam("HTTP_USER_TOKEN") ||
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDc2MTY1NzksImlhdCI6MTcwNDkzODE3OSwicGxhdCI6NCwidXNlcklkIjoxMDAwMDB9.wWSabU9yk2CI1LB2gQ15_EwHjl_UHLFPmKAirIeH0aM",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzIzNTY2MjksImlhdCI6MTczMTQ5MjYyOSwicGxhdCI6MSwidXNlcklkIjoxMDAwMDAwN30.GVcQHy6Eiyg4AXXuc1V2f-3cyspIvCJ3vRdWz52u7rU",
     urlAnchor = methods.getParam("anchor_pfid") || 0,
     urlLiveId = methods.getParam("live_id") || 0,
     data4app,

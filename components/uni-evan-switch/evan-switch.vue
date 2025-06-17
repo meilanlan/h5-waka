@@ -60,6 +60,7 @@
 			value: {
 				immediate: true,
 				handler(value) {
+          console.log(value, 'value')
 					this.currentValue = value
 				}
 			}
@@ -75,7 +76,7 @@
 					if (this.beforeChange && typeof this.beforeChange === 'function') {
 						let context = this
 						for (let i = 0; i < this.contextLevel; i++) {
-							context = context.$options.parent
+							context = context?.$options?.parent
 						}
 						const result = this.beforeChange(this.currentValue === this.activeValue ? this.inactiveValue : this.activeValue,
 							this.extraData, context)

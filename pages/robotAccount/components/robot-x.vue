@@ -5,25 +5,76 @@
         {{item===1?'机器人助手':'我的订单'}}
       </view>
     </view>
-    <!-- 机器人助手 -->
-    <robot-assistant-x v-if="curTab === 1"></robot-assistant-x>
-    <!-- 我的订单 -->
-    <my-order v-else></my-order>
+    <template v-if="flagLock===true">
+      <!-- 机器人助手 -->
+      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list'></robot-assistant-x>
+      <!-- 我的订单 -->
+      <my-order :order_list="spaceRobotData.data.order_list" v-else></my-order>
+    </template>
+    
     
   </view>
   
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive, inject} from 'vue'
   import robotAssistantX from './robot-assistant-x.vue';
   import myOrder from './my-order.vue';
-  
+  import {spaceRobotApi} from '@/service/robotAccount/index.js'
   
   const curTab = ref(1)
+  const loading = ref(false)
+  const flagLock = ref(false)
+  const parentInfo = reactive(({data:{}}))
+  parentInfo.data = inject('parentGroupInfo')
+  const spaceRobotData = reactive(({data:{
+    robot_list: [],
+    order_list: []
+  }}))
   
   function switchTab(item){
     curTab.value = item
+  }
+  console.log(parentInfo.data, 'parentInfo.data is')
+  getSpaceRobot()
+  function getSpaceRobot(){
+    uni.showLoading()
+    spaceRobotApi({group_id: parentInfo.data.group_id}, res => {
+      if (res.code === 0) {
+        spaceRobotData.data = res.data
+        flagLock.value = true
+        // dataSummary.data = res.data || {}
+        uni.hideLoading()
+      } else if (res.code === -20001) {
+        // uni.showToast({
+        //   title: '登录失效，请重新登录',
+        //   icon: 'none'
+        // });
+        clearAdminToken()
+        uni.hideLoading()
+      } else {
+        if (res.code != -10002){
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          uni.hideLoading()
+        } else {
+          uni.hideLoading()
+          if (JSON.stringify(dataSummary.data)== "{}") {
+            uni.showLoading({
+              title: "小嗨正在努力加载中...",
+              icon: 'none'
+            })
+            setTimeout(()=>{
+              getGroupSummaryInfo()
+            },3000)
+          }
+          
+        }
+      }
+    })
   }
 </script>
 
@@ -76,4 +127,5 @@
       
     }
   }
+  
 </style>

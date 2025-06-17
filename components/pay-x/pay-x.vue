@@ -2,16 +2,16 @@
   <view class="header">
       <view class="left">嗨币充值</view>
       <view class="right">
-        余额:0 <image src="../../static/image/home-4.png"></image>
+        余额:{{props.haib.banlance}} <image src="../../static/image/home-4.png"></image>
       </view>
     </view>
     <view class="hi-list">
-      <view :class="['hi-box', curPrice===item.price&&'active']" v-for="(item,index) in hiList" :key="'hi'+index" @click="switchHi(item,index)">
+      <view :class="['hi-box', curIndex===index&&'active']" v-for="(item,index) in props.haib.list" :key="'hi'+index" @click="switchHi(item,index)">
         <view class="box">
           <image src="../../static/image/home-4.png" mode=""></image>
-          <text>{{item.hi}}</text>
+          <text>{{item.haib}}</text>
         </view>
-        <view class="price">¥{{item.price}}</view>
+        <view class="price">¥{{item.cash}}</view>
       </view>
     </view>
     <view class="methods">
@@ -22,7 +22,7 @@
               </view>
               <radio value="1" :checked="curPay === '1'" color="#22c0ff" />
           </label>
-          <label class="uni-list-cell uni-list-cell-pd">
+          <label class="uni-list-cell uni-list-cell-pd visibility-none">
               <view class="left">
                 <image src="../../static/image/wx.png"></image>微信
               </view>
@@ -30,34 +30,84 @@
           </label>
         </radio-group>
     </view>
-    <view :class="['now-pay', curPrice!=-1&&'active']">
-      立即充值<text v-if="curPrice!=-1">{{curPrice}}元</text>
+    <view :class="['now-pay', curIndex!=-1&&'active']" @click="toPay">
+      立即充值<text v-if="curIndex!=-1">{{props.haib.list[curIndex].cash}}元</text>
     </view>
-    <view class="exp">
+    <view class="exp"  @click="openAgreement(1)">
       点击支付即代表同意 <text>《嗨币用户协议》</text>
     </view>
+    
+    <!-- 嗨币用户协议 -->
+    <uni-popup ref="agreementPopup" type="center">
+      <view class="common-popup">
+        <image @click="openAgreement(2)" class="close" src="/static/image/close.png"></image>
+       <user-agreement-x-vue></user-agreement-x-vue>
+      </view>
+    </uni-popup>
   
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive,inject} from 'vue'
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import userAgreementXVue from '../../pages/robotAccount/components/user-agreement-x.vue'
+  import {alipayOrder} from '@/service/robotAccount/index.js'
   
-  const hiList = ref([
-    {id:1,price: 1,hi: 10},
-    {id:2,price: 6,hi: 60},
-    {id:3,price: 30,hi: 300},
-    {id:4,price: 98,hi: 980},
-    {id:5,price: 298,hi: 2980},
-    {id:6,price: 588,hi: 5880},
-  ])
+  const props = defineProps({
+    haib: Object
+  })
+  const parentInfo = reactive({data:{}})
+  parentInfo.data = inject('parentGroupInfo')
+  console.log(encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`),'url')
+  const agreementPopup = ref(null)
+  
+  // const hiList = ref([
+  //   {id:1,price: 1,hi: 10},
+  //   {id:2,price: 6,hi: 60},
+  //   {id:3,price: 30,hi: 300},
+  //   {id:4,price: 98,hi: 980},
+  //   {id:5,price: 298,hi: 2980},
+  //   {id:6,price: 588,hi: 5880},
+  // ])
   const curPay = ref('1')
   const curPrice = ref(-1)
+  const curIndex = ref(-1)
+  const payLock = ref(false)
   
   function switchHi(item, index) {
-    curPrice.value = item.price
+    curIndex.value = index
+    console.log(props.haib.list[index], 'jkjk')
+  }
+  
+  function toPay(){
+    if (payLock.value === false) {
+      payLock.value = true
+      uni.showLoading({mask: true})
+      let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
+      alipayOrder({prod_id: props.haib.list[curIndex.value].id,return_url:returnUrl}, res => {
+        if (res.code === 0) {
+          // location.href = res.data.request_params+'&redirect_url=' + encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
+          location.href = res.data.request_params
+          payLock.value = false
+          uni.hideLoading()
+        } else {
+          payLock.value = false
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          uni.hideLoading()
+        }
+      })
+    }  
   }
   
   function radioChange(){
+    
+  }
+  function openAgreement(type){
+    type === 1 && agreementPopup.value.open()
+    type === 2 && agreementPopup.value.close()
     
   }
 </script>
@@ -179,6 +229,19 @@
     line-height: 32rpx;
     text {
       color: #22C0FF;
+    }
+  }
+  .common-popup {
+    width: 96vw;
+    border-radius: 30rpx;
+    position: relative;
+    .close {
+      width: 48rpx;
+      height: 48rpx;
+      position: absolute;
+      right: 28rpx;
+      top: 58rpx;
+      z-index: 10;
     }
   }
 </style>

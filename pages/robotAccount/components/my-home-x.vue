@@ -1,23 +1,27 @@
 <template>
   <view class="my-home">
-    <view class="my-info">
-      <image class="left" src="../../../static/logo.png"></image>
-      <view class="right">
-        <view class="name">
-          <text class="nickname">小金鱼HY</text>
-          <view class="grage"></view>
-          <image class="masonry" src="../../../static/image/masonry.png"></image>
-        </view>
-        <view class="icon-list">
-          <view class="icon-box"></view>
-          <view class="icon-box"></view>
-          <view class="icon-box"></view>
-        </view>
-        <view class="ip">
-          IP:四川 成都<text>|</text>ID:22311128 <image class="copy" src="../../../static/image/copy.png" mode=""></image>
+    <view class="my-home-info">
+      <view class="my-info-bg">
+        <image src="/static/image/bg-slices/bg8.png" mode="aspectFill"></image>
+      </view>
+      <view class="my-info">
+        <image class="left" :src="props.robotInfo.bg_img"></image>
+        <view class="right">
+          <view class="name">
+            <text class="nickname">{{userInfo.data.user.nick_name}}</text>
+            <!-- <view class="grage"></view> -->
+            <!-- <image v-for="item in userInfo.data.user.ic_list" class="masonry" :src="item" mode="heightFix"></image> -->
+          </view>
+          <view class="icon-list">
+            <image v-for="item in userInfo.data.user.ic_list" :src="item" mode="heightFix"></image>
+          </view>
+          <view class="ip">
+            IP:{{userInfo.data.user.location}}<text>|</text>ID: {{userInfo.data.user.user_id}}<image @click="copyId(props.robotInfo.group_id)" class="copy" src="../../../static/image/copy.png" mode=""></image>
+          </view>
         </view>
       </view>
     </view>
+    
   
     <view class="tab-list">
       <div :class="['tab-box', curTabIndex=== index&&'active']" v-for="(item, index) in tabList" :key="'TAB'+index" @click="switchTab(item,index)">
@@ -25,39 +29,97 @@
         <view class="value">{{item.value}}</view>
       </div>
     </view>
+    <template v-if="infoFlag===true">
+      <!-- 能量助力 -->
+      <energy-assist-x v-if="curTabIndex === 0" :energy="userInfo.data.energy" :haib="userInfo.data.haib" @updateEnergy="updateEnergy"></energy-assist-x>
+      <!-- 我的钱包 -->
+      <my-wallet v-else-if="curTabIndex === 1" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="props.robotInfo"></my-wallet>
+      <!-- 会员中心 -->
+      <vip-center-x v-else-if="curTabIndex === 2" :vip="userInfo.data.vip"></vip-center-x>
+      <!-- 嗨币充值 -->
+      <view v-else class="pay-model">
+        <pay-x :haib="userInfo.data.haib"></pay-x>
+      </view>
+    </template>
     
-    <!-- 能量助力 -->
-    <energy-assist-x v-if="curTabIndex === 0"></energy-assist-x>
-    <!-- 我的钱包 -->
-    <my-wallet v-else-if="curTabIndex === 1"></my-wallet>
-    <!-- 会员中心 -->
-    <vip-center-x v-else-if="curTabIndex === 2"></vip-center-x>
-    <!-- 嗨币充值 -->
-    <view v-else class="pay-model">
-      <pay-x></pay-x>
-    </view>
     
   </view>
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive,inject} from 'vue'
   import energyAssistX from './energy-assist-x.vue';
   import myWallet from './my-wallet.vue'
   import vipCenterX from './vip-center-x.vue';
   import payX from '../../../components/pay-x/pay-x.vue';
+  import {userProfileApi} from '@/service/robotAccount/index.js'
   
+  const props = defineProps({
+    robotInfo: Object
+  })
   const tabList = [
     {value: '能量助力',iconUrl: new URL("@/static/image/home-1.png", import.meta.url).href},
     {value: '我的钱包',iconUrl: new URL("@/static/image/home-2.png", import.meta.url).href},
     {value: '会员中心',iconUrl: new URL("@/static/image/home-3.png", import.meta.url).href},
     {value: 'Hi币充值',iconUrl: new URL("@/static/image/home-4.png", import.meta.url).href},
   ]
-  
+  const infoFlag = ref(false)
   const curTabIndex = ref(0)
+  const userInfo = reactive({
+    data: {
+      energy: {},
+      haib: {},
+      user: {},
+      vip: {},
+      wallet: {}
+    }
+  })
+  const parentInfo = inject('parentGroupInfo')
+  
+  function updateEnergy(data){
+    //更新能量值
+    console.log(data, 'data')
+    userInfo.data.wallet.energy = data
+  }
+  
+  function copyId(content){
+    uni.setClipboardData({
+    	data: content,
+    	success: function () {
+    		console.log('success');
+    	}
+    });
+  }
   
   function switchTab(item, index) {
     curTabIndex.value = index
+  }
+  
+  getUserProfile()
+  
+  function getUserProfile(){
+    console.log('come in')
+    uni.showLoading()
+    
+    userProfileApi({group_id: parentInfo.group_id}, res => {
+      if (res.code === 0) {
+        userInfo.data = res.data
+        console.log(userInfo.data, 'userInfo.data')
+        infoFlag.value = true
+        uni.hideLoading()
+      } else if (res.code === -20001) {
+        // this.$emit('updateAdminToken')
+        uni.hideLoading()
+      } else if (res.code != -10002){
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        uni.hideLoading()
+      } else {
+        uni.hideLoading()
+      }
+    })
   }
   
   
@@ -68,12 +130,28 @@
     font-family: 'MiSans';
     margin-top: 34rpx;
     padding: 0 32rpx;
+    .my-home-info {
+      position: relative;
+      .my-info-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        image {
+          width: 100%;
+          height: 100%;
+          border-radius: 20rpx;
+        }
+      }
+    }
     .my-info {
-      background-color: #333333;
+      // background-color: #333333;
       padding: 30rpx 36rpx;
       border-radius: 20rpx;
       display: flex;
       align-items: center;
+      position: relative;
+      z-index: 10;
       >*{
         flex-shrink: 0;
       }
@@ -81,6 +159,7 @@
         margin-right: 20rpx;
         width: 124rpx;
         height: 124rpx;
+        border-radius: 20rpx;
       }
       .right {
         .name {
@@ -100,21 +179,24 @@
         }
         .masonry {
           margin-left: 8rpx;
-          width: 32rpx;
+          width: auto;
           height: 32rpx;
+          &:first-of-type {
+            height: 36rpx;
+          }
         }
         .icon-list {
           margin-top: 18rpx;
           display: flex;
           align-items: center;
-          .icon-box {
+          image {
             margin-right: 10rpx;
-            width: 124rpx;
+            width: auto;
             height: 28rpx;
-            background: linear-gradient( 90deg, #FFC75D 0%, #EF4A2E 100%);
-            border-radius: 288rpx;
-            // border: 1px solid;
-            border-image: linear-gradient(270deg, rgba(255, 150.0000062584877, 75.00000312924385, 1), rgba(255, 243.15266132354736, 204.22566533088684, 1)) 1 1;
+            // background: linear-gradient( 90deg, #FFC75D 0%, #EF4A2E 100%);
+            // border-radius: 288rpx;
+            // // border: 1px solid;
+            // border-image: linear-gradient(270deg, rgba(255, 150.0000062584877, 75.00000312924385, 1), rgba(255, 243.15266132354736, 204.22566533088684, 1)) 1 1;
           }
         }
         .ip {

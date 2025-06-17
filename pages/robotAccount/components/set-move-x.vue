@@ -21,10 +21,10 @@
     </view>
     <checkbox-group class="checkbox-list" @change="checkboxChange">
       <label>
-        <checkbox value="2" color="#ffffff" />群成员数据
+        <checkbox value="2" :checked="checkMember" />群成员数据
       </label>
       <label class="checkbox-2">
-        <checkbox value="1" color="#ffffff" />群设置
+        <checkbox value="1" />群设置
       </label>
     </checkbox-group>
     <view class="btn-start" @click="startDraw">开始同步</view>
@@ -116,7 +116,8 @@
           status_name: ''
         },
         sureText: '',
-        errorText: ''
+        errorText: '',
+        checkMember: false
       }
     },
     methods: {
@@ -174,6 +175,7 @@
         this.$refs.closePopPopup.close()
       },
       checkboxChange(e){
+        console.log(e.detail.value,'uiu')
         this.dataType = e.detail.value
       },
       sureGroup() {
@@ -202,7 +204,7 @@
       },
       getgroupSynListData() {
         uni.showLoading()
-        groupSynListData({robot_id: this.robot_id},res => {
+        groupSynListData({group_id: this.robotInfo.group_id},res => {
           if (~~res.code === 0) {
             this.list = res.data || []
             this.$refs.groupPopup.open()

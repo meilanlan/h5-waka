@@ -5,23 +5,23 @@
       <view class="info">
         <view class="left">
           <image src="../../../static/image/home-4.png" mode=""></image>
-          <text>0</text>
+          <text>{{props.haib.banlance}}</text>
         </view>
-        <view class="right">去充值</view>
+        <view class="right" @click="openPayHi">去充值</view>
       </view>
       <view class="wallet-bottom">
         <view class="box">
-          <view class="num">66</view>
+          <view class="num">{{props.wallet.energy}}</view>
           <view class="text">能量值</view>
         </view>
         <view class="line"></view>
         <view class="box">
-          <view class="num">12</view>
+          <view class="num">{{props.wallet.yuanqi}}</view>
           <view class="text">元气值</view>
         </view>
         <view class="line"></view>
         <view class="box">
-          <view class="num">30,244,300</view>
+          <view class="num">{{props.wallet.charm}}</view>
           <view class="text">魅力值</view>
         </view>
       </view>
@@ -32,14 +32,34 @@
       </view>
       <image class="right" src="../../../static/image/next.png"></image>
     </view>
+    
+    <!-- 嗨币充值 -->
+    <uni-popup ref="payPopup" type="bottom">
+      <view class="common-popup">
+        <pay-x :haib="props.haib"></pay-x>
+      </view>
+    </uni-popup>
   </view>
 </template>
 
 <script setup>
+  import {ref} from 'vue'
+  import payX from '../../../components/pay-x/pay-x.vue';
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  
+  const payPopup = ref(null)
+  const props = defineProps({
+    wallet: Object,
+    haib: Object,
+    robotInfo: Object
+  })
+  function openPayHi(){
+    payPopup.value.open()
+  }
   
   function toPage(){
     uni.navigateTo({
-    	url: '/pages/robotAccount/myBill?id='+1
+    	url: `/pages/robotAccount/myBill?accountId=1&group_id=${props.robotInfo.group_id}`
     });
   }
 </script>
@@ -152,5 +172,8 @@
         }
       }
     }
+  }
+  .common-popup {
+    height: 1000rpx;
   }
 </style>

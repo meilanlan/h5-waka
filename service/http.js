@@ -10,7 +10,7 @@ const ajax = (opt) => {
     // const userId = uni.getStorageSync('user-id');
     // const groupId = getUrlParam('group_id');
     // const robotId = getUrlParam('robot_id');
-    const token = window.userinfo?.user.auth_token;
+    const token = window.userinfo?.user.auth_token || window.urlToken;
     const userId = window.userinfo?.user.user_id;
     const groupId = getUrlParam('group_id');
     const robotId = getUrlParam('robot_id');
@@ -28,22 +28,27 @@ const ajax = (opt) => {
       }
       opt.header = opt.header || {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'user-token': token,
-        'user-id': userId,
+        // 'user-token': token,
+        // 'user-id': userId,
+        'Authorization': token
       };
       if (opt.adminSet === true) {
         opt.header = {
-          ...opt.header,
-          ...{
-            "group-id": groupId,
-            "admin-token": adminConfigInfo[groupId]&&adminConfigInfo[groupId]['admin_token'],
-            "robot-id": robotId
-          }
+          ...opt.header
         }
+        // opt.header = {
+        //   ...opt.header,
+        //   ...{
+        //     "group-id": groupId,
+        //     "admin-token": adminConfigInfo[groupId]&&adminConfigInfo[groupId]['admin_token'],
+        //     "robot-id": robotId
+        //   }
+        // }
       }
       // "robot-id": adminConfigInfo[groupId]&&adminConfigInfo[groupId]['robot_id'] || robotId
       opt.ApiUrl = opt.apiUrl || ApiUrl;
-      opt.ApiUrl = 'https://api.glxnetwork.com';
+      console.log(ApiUrl, 'ApiUrl')
+      opt.ApiUrl = 'http://110.40.170.35:9898';
       opt.success = opt.success || function () {};
       opt.fail = opt.fail || function () {};
       uni.request({

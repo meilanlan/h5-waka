@@ -66,7 +66,7 @@
         </view>
       </view>
       
-      <view class="list">
+      <!-- <view class="list">
         <image class="icon" src="@/static/image/set/d-6.png"></image>
         <view class="right">
           <view class="h1">本群总水晶：<text>{{info.total_crystel}}</text></view>
@@ -84,7 +84,7 @@
             <text>本群金砖冠军：<text class="text3">{{info.user_name_max_brick}}</text><text class="text4">【{{info.user_max_brick}}】</text></text>
           </view>
         </view>
-      </view>
+      </view> -->
     </view>
     
     <view class="item-box">

@@ -30,31 +30,31 @@
                   <uni-tr v-for="(item, index) in tableData" :key="index">
                     <uni-td :width="tableWidth" align="left" :sortable="curType != 14?true:false">
                       <label for="">
-                        <checkbox :value="item.user_id" :checked="item.ischeck" color="#ffffff" v-if="curType != 14" />
+                        <checkbox :value="item.user_id+''" :checked="item.ischeck"  v-if="curType != 14" />
                         {{item.index}}
                       </label>
                     </uni-td>
                     <template v-if="curType===1">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.gold_coin || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">
                         <image @click="openEditpopup(item)" class="edit-icon" src="../../../static/image/set/edit.png" mode=""></image>
                       </uni-td>
                     </template>
                     <template v-else-if="curType===2">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.fans_val || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">
                         <image @click="openEditpopup(item)" class="edit-icon" src="../../../static/image/set/edit.png" mode=""></image>
                       </uni-td>
                     </template>
                     <template v-else-if="curType===3">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.join_group_time}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.Leave_group_time}}</uni-td>
                     </template>
                     <template v-else-if="curType===4">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.chat_month || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.chat_total || 0}}</uni-td>
                     </template>
@@ -69,48 +69,48 @@
                       </uni-td>
                     </template>
                     <template v-else-if="curType===6">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.title}}</uni-td>
                     </template>
                     <template v-else-if="curType===7">
-                      <uni-td :width="tableWidth2" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth2" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth2" align="center">{{item.total_check_in}}</uni-td>
                       <uni-td :width="tableWidth2" align="center">{{item.continuous_check_in}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.last_check_in_time}}</uni-td>
                     </template>
                     <template v-else-if="curType===8">
-                      <uni-td :width="tableWidth2" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth2" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.today_rob_count}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.last_rob_time}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.rob_release_time}}</uni-td>
                     </template>
                     <template v-else-if="curType===9">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                     </template>
                     <template v-else-if="curType===10">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.time}}</uni-td>
                     </template>
                     <template v-else-if="curType===11">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.time}}</uni-td>
                     </template>
                     <template v-else-if="curType===12">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.brick || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">
                         <image @click="openEditpopup(item)" class="edit-icon" src="../../../static/image/set/edit.png" mode=""></image>
                       </uni-td>
                     </template>
                     <template v-else-if="curType===13">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.crystel || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">
                         <image @click="openEditpopup(item)" class="edit-icon" src="../../../static/image/set/edit.png" mode=""></image>
                       </uni-td>
                     </template>
                     <template v-else-if="curType===14">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.yuanBao}}</uni-td>
                     </template>
                     <template v-else-if="curType===15">
@@ -159,7 +159,7 @@
       <view class="editPopup">
         <view class="title">编辑{{curType===1?'金币值':curType===2?'魅力值':curType===12?'金砖值':'水晶值'}}</view>
         <view class="edit-body">
-          <uni-number-box v-model="curNumber" :min="0" :max="10000000000000000" />
+          <uni-number-box v-model="curNumber" @change="changeNumb" :min="0" :max="10000000000000000" />
         </view>
        <view class="btn-box">
           <view class="btn" @click="$refs.editPopup.close()">取消</view>
@@ -201,8 +201,12 @@
     // mixins: [scrollToTargetPosition],
     components: {uniPopup,uniTable,uniTd,uniTh,uniTr,uniNumberBox},
     props: {
-      robot_id: {
-        type: String,
+      group_id: {
+        type: Number,
+        default: () => {}
+      },
+      robotInfo: {
+        type: Object,
         default: () => {}
       }
     },
@@ -216,8 +220,8 @@
           {id: 14, name: '本群元宝', i: 1},
           {id: 1, name: '本群金币', i: 1},
           {id: 2, name: '本群魅力', i: 2},
-          {id: 12, name: '本群金砖', i: 3},
-          {id: 13, name: '本群水晶', i: 4},
+          // {id: 12, name: '本群金砖', i: 3},
+          // {id: 13, name: '本群水晶', i: 4},
           {id: 3, name: '退群人员', i: 5},
           {id: 4, name: '本群活跃', i: 6},
           {id: 5, name: '本群婚姻', i: 7},
@@ -296,18 +300,18 @@
             {name: '群昵称',key: '',sort: false, arr: 'tableData'},
             {name: '释放时间',key: '',sort: false, arr: 'tableData'},
           ],
-          12: [
-            {name: '序号',key: 'index',sort: true, arr: 'tableData'},
-            {name: '群昵称',key: '',sort: false, arr: 'tableData'},
-            {name: '金砖',key: 'brick',sort: true, arr: 'tableData'},
-            {name: '操作',key: '',sort: false, arr: 'tableData'},
-          ],
-          13: [
-            {name: '序号',key: 'index',sort: true, arr: 'tableData'},
-            {name: '群昵称',key: '',sort: false, arr: 'tableData'},
-            {name: '水晶',key: '',sort: false, arr: 'tableData'},
-            {name: '操作',key: '',sort: false, arr: 'tableData'},
-          ],
+          // 12: [
+          //   {name: '序号',key: 'index',sort: true, arr: 'tableData'},
+          //   {name: '群昵称',key: '',sort: false, arr: 'tableData'},
+          //   {name: '金砖',key: 'brick',sort: true, arr: 'tableData'},
+          //   {name: '操作',key: '',sort: false, arr: 'tableData'},
+          // ],
+          // 13: [
+          //   {name: '序号',key: 'index',sort: true, arr: 'tableData'},
+          //   {name: '群昵称',key: '',sort: false, arr: 'tableData'},
+          //   {name: '水晶',key: '',sort: false, arr: 'tableData'},
+          //   {name: '操作',key: '',sort: false, arr: 'tableData'},
+          // ],
           14: [
             {name: '序号',key: 'index',sort: true, arr: 'tableData'},
             {name: '群昵称',key: '',sort: false, arr: 'tableData'},
@@ -379,6 +383,9 @@
         })
         console.log(params)
       },
+      changeNumb(v){
+        this.curNumber = v
+      },
       saveData() {
         if (this.curNumber == '') {
           uni.showToast({
@@ -433,7 +440,7 @@
       sureClear() {
         uni.showLoading()
         let userids = this.clearUserids.length>0?this.clearUserids.toString(','):''
-        groupClearData({data_type: this.curType, userids: userids}, res=> {
+        groupClearData({type: this.curType,group_id: this.robotInfo.group_id, userids: userids}, res=> {
           if (res.code === 0) {
             uni.showToast({
               title: res.msg,
@@ -511,6 +518,7 @@
             this.tableData[si].ischeck = false
           }
         }
+        console.log(this.clearUserids, 'this.clearUserids is')
       },
       changeTable(e, item){
         let key = item.key
@@ -542,7 +550,7 @@
         this.getUserData(item.id)
       },
       getUserData(type) {
-        groupUserDataData({data_type: type, robot_id: this.robot_id}, res => {
+        groupUserDataData({type: type, group_id: this.robotInfo.group_id}, res => {
             if (res.code === 0) {
               this.clearUserids = []
               this.isReverse = false

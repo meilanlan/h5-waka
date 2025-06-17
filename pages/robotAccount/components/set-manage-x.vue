@@ -1,6 +1,5 @@
 <template>
   <view class="list-content need_scroll_top_view">
-    
     <!-- 群公告 -->
     <view class="list-box">
       <view class="title-box">
@@ -143,8 +142,8 @@
           <input class="inpt-1" v-model="protectData.protect_config.max_warnning_num" type="number" placeholder-style="color:#C5CCD5">
         </view>
       </view>
-      
-      <view :class="['btn', {'btn-gray': !protectData.protect_config.violation_alert || !protectData.protect_config.tick_alert}]" @click="saveProtect">保存</view>
+      <!-- <view :class="['btn', (protectData.protect_config.violation_alert==='' || protectData.protect_config.tick_alert==='')?'btn-gray':'']" @click="saveProtect">保存</view> -->
+      <view class="btn" @click="saveProtect">保存</view>
     </view>
     
     
@@ -245,7 +244,7 @@
   export default {
     // mixins: [scrollToTargetPosition],
     props: {
-      robot_id: {
+      group_id: {
         type: String,
         default: () => {}
       },
@@ -377,20 +376,28 @@
     },
     methods: {
       saveProtect(){
+        console.log(this.protectData.protect_config, 'this.protectData.protect_config.violation_alert')
         if (this.protectData.protect_config.violation_alert && this.protectData.protect_config.tick_alert) {
           let params = {
-            data_type: 25,
+            type: 25,
+            group_id: this.group_id,
             max_warnning_num: this.protectData.protect_config.max_warnning_num, 
             tick_alert: this.protectData.protect_config.tick_alert,
             violation_alert: this.protectData.protect_config.violation_alert,
             violation_words: this.protectData.protect_config.violation_words.replace(/｜/g, '|').replace(/\s/g,'')
           }
           this.setConfig(params)
+        } else {
+          uni.showToast({
+            title: '请输入完整信息',
+            icon: 'none'
+          });
         }
       },
       savePaipai() {
         let params = {
-          data_type: this.paipaiNewData.data_type,
+          type: this.paipaiNewData.data_type,
+          group_id: this.group_id,
           pai_type: this.paipaiNewData.pai_type,
           pai_price: this.paipaiNewData.pai_price,
           pai_rate: ''
@@ -550,7 +557,7 @@
         })
       },
       sureNotice() {
-        this.setConfig({data_type: 12,text: this.notice.data, robot_id: this.robot_id})
+        this.setConfig({type: 12,text: this.notice.data, group_id: this.group_id})
       },
       checkEmoj(item) {
         this.curEmojInfo = item
@@ -559,14 +566,14 @@
         this.curAudioInfo = item
       },
       sureEmoj() {
-        this.setConfig({data_type: 2,res_id: this.curEmojInfo.res_id, robot_id: this.robot_id}, 'chooseEmojiPopup')
+        this.setConfig({type: 2,res_id: this.curEmojInfo.res_id, group_id: this.group_id}, 'chooseEmojiPopup')
       },
       sureAudio() {
-        this.setConfig({data_type: 3,res_id: this.curAudioInfo.res_id, robot_id: this.robot_id}, 'chooseAudioPopup')
+        this.setConfig({type: 3,res_id: this.curAudioInfo.res_id, group_id: this.group_id}, 'chooseAudioPopup')
       },
       sureRule() {
         uni.showLoading()
-        this.setConfig({data_type: 10,text: this.rule.data, robot_id: this.robot_id})
+        this.setConfig({type: 10,text: this.rule.data, group_id: this.group_id})
       },
       sureWelcome() {
         if (this.welcome.data) {
@@ -578,7 +585,7 @@
             return false
           }
           uni.showLoading()
-          this.setConfig({data_type: 1,welcome: this.welcome.data, robot_id: this.robot_id})
+          this.setConfig({type: 1,welcome: this.welcome.data, group_id: this.group_id})
         }
       }
     }

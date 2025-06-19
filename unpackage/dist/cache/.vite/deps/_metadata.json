@@ -1,14 +1,14 @@
 {
-  "hash": "91762ec8",
+  "hash": "7b250973",
   "configHash": "f7fff7da",
-  "lockfileHash": "bac84fbb",
-  "browserHash": "fa66cbe3",
+  "lockfileHash": "ef45c329",
+  "browserHash": "2b763a18",
   "optimized": {
-    "qs": {
-      "src": "../../../../../node_modules/qs/lib/index.js",
-      "file": "qs.js",
-      "fileHash": "6bb692bb",
-      "needsInterop": true
+    "@lucky-canvas/vue": {
+      "src": "../../../../../node_modules/@lucky-canvas/vue/dist/index.esm.js",
+      "file": "@lucky-canvas_vue.js",
+      "fileHash": "715d6f7e",
+      "needsInterop": false
     }
   },
   "chunks": {}

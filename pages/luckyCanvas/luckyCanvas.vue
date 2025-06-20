@@ -1,8 +1,28 @@
 <template>
   <view class="wrapper">
     <image class="bg" src="/static/image/lucky-bg.jpg" mode="aspectFill"></image>
-    <q-turntable ref="turntable" @success="turntableSuccess"></q-turntable>
-    <view :class="['lucky-btn','lucky-btn-'+awaidNum]" @click="turntableStart"></view>
+    <!-- <view class="lucky-wheel-bg"></view> -->
+    <view class="aperture">
+      <!-- <view :class="['aperture-anmi',startAnm===true&&'aniStar']"></view> -->
+      <view :class="['aperture-anmi',{aniStar: startAnm, aniEnd: endAnm}]"></view>
+    </view>
+    <view class="circle">
+      <!-- <view :class="['circle-anmi-1',startAnm===true&&'aniStar']" ></view>
+      <view :class="['circle-anmi-2',startAnm===true&&'aniStar']"></view> -->
+     <view :class="['circle-anmi-1',{aniStar: startAnm, aniEnd: endAnm}]" ></view>
+      <view :class="['circle-anmi-2',{aniStar: startAnm, aniEnd: endAnm}]"></view>
+    </view>
+    
+    <lucky-wheel
+      ref="myLucky"
+      width="486rpx"
+      height="486rpx"
+      :prizes="prizes"
+      :buttons="buttons"
+      @start="turntableStart"
+      @end="endCallBack"
+    ></lucky-wheel>
+    <view :class="['lucky-btn',removeAnm&&'no-animation','scaleAnimation','lucky-btn-'+awaidNum]" @click="turntableStart"></view>
     <view class="rule-box" @click="openRule">
       <view>活</view>
       <view>动</view>
@@ -15,9 +35,9 @@
         <view class="box">
           <view class="list" v-if="showList">
             <view class="left">
-              <image class="gift" :src="data.awardList[data.award-1].icon"></image>
+              <image class="gift" :src="prizes[data.award].icon" mode="aspectFit"></image>
               <view class="text-box">
-                <view class="name">{{data.awardList[data.award-1].title}}</view>
+                <view class="name">{{prizes[data.award].title}}</view>
                 <view class="exp">请在【我的背包】中激活并使用</view>
               </view>
             </view>
@@ -32,61 +52,37 @@
     
     <uni-popup ref="rulePopup" type="center">
       <rule-x v-if="popupType===1" @closePopup="closePopup"></rule-x>
-      <result-x v-else-if="popupType===2" :curAwaid="data.awardList[data.award-1]" @closePopup="closePopup"></result-x>
+      <result-x v-else-if="popupType===2" :curAwaid="prizes[data.award]" @closePopup="closePopup"></result-x>
     </uni-popup>
   </view>
 </template>
 <script setup>
   import { reactive, toRefs, ref } from 'vue';
-  import QTurntable from '@/components/q-turntable/components/q-turntable/q-turntable.vue'
+  import LuckyWheel from '@/components/lucky-canvas_v0.0.10_4/components/@lucky-canvas/uni/lucky-wheel.vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import ruleX from './components/rule-x.vue'
   import resultX from './components/result-x.vue'
+
+  let prizes = [
+    { id: 1,title: 'VIP体验卡3个月',icon: new URL('@/static/image/lucky/1.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid1-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
+    { id: 2,title: '限定红包皮肤1个',icon: new URL('@/static/image/lucky/list-2.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid2-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
+    { id: 3,title: '限定聊天气泡',icon: new URL('@/static/image/lucky/3.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid3-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
+    { id: 4,title: 'hi币20个',icon: new URL('@/static/image/lucky/4.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid4-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
+    { id: 5,title: '季度版机器人',icon: new URL('@/static/image/lucky/5.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid5-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
+    { id: 6,title: '能量助力60个',icon: new URL('@/static/image/lucky/6.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid6-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
+    { id: 7,title: 'SVIP体验卡1个月',icon: new URL('@/static/image/lucky/7.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid7-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
+    { id: 8,title: '现金红包20元',icon: new URL('@/static/image/lucky/8.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid8-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
+  ]
+  let buttons = [
+        { radius: '117rpx' },
+        {imgs: [{src: new URL('@/static/image/pointer.png', import.meta.url).href,width: '234rpx',height: '234rpx',top: '-115rpx'}]},
+        {fonts: [{ text: '新人福利', top: '-20px', fontSize: '28rpx',fontColor: '#ffffff',fontWeight:600,lineHeight:'38rpx' }],},
+        {fonts: [{ text: '免费1次', top: '6rpx', fontSize: '24rpx',fontColor: 'rgba(255,255,255,0.6)',fontWeight:600,lineHeight:'32rpx' }],},
+        // { radius: '66rpx', background: '#afc8ff' },
+      ]
   
   const data = reactive({
-      award: 1,
-      awardList: [
-          {
-            id: 1,
-            title: 'VIP体验卡3个月',
-            icon: new URL('@/static/image/lucky/1.png', import.meta.url).href,
-          },
-          {
-            id: 2,
-            title: '限定红包皮肤1个',
-            icon: new URL('@/static/image/lucky/list-2.png', import.meta.url).href,
-          },
-          {
-            id: 3,
-            title: '限定聊天气泡',
-            icon: new URL('@/static/image/lucky/3.png', import.meta.url).href,
-          },
-          {
-            id: 4,
-            title: 'hi币20个',
-            icon: new URL('@/static/image/lucky/4.png', import.meta.url).href,
-          },
-          {
-            id: 5,
-            title: '季度版机器人',
-            icon: new URL('@/static/image/lucky/5.png', import.meta.url).href,
-          },
-          {
-            id: 6,
-            title: '能量助力60个',
-            icon: new URL('@/static/image/lucky/6.png', import.meta.url).href,
-          },
-          {
-            id: 7,
-            title: 'SVIP体验卡1个月',
-            icon: new URL('@/static/image/lucky/7.png', import.meta.url).href,
-          },
-          {
-            id: 8,
-            title: '现金红包20元',
-            icon: new URL('@/static/image/lucky/8.png', import.meta.url).href,
-          }
-      ] // 顺时针对应每个奖项
+      award: 1
   });
   const showList = ref(false)
   const awaidNum = ref(1)
@@ -94,34 +90,76 @@
   const turntable = ref(null);
   const popupType = ref(-1)
   const { award, awardList } = toRefs(data);
+  const ptLotteryRef = ref(null)
+  const removeAnm = ref(false)
+  const startAnm = ref(false)
+  const endAnm = ref(false)
+  const myLucky = ref()
+
+  
+  // 点击抽奖按钮触发回调
+  function startCallBack () {
+    // 先开始旋转
+    myLucky.value.play()
+    // 使用定时器来模拟请求接口
+    setTimeout(() => {
+      // 假设后端返回的中奖索引是0
+      const index = Math.floor(Math.random() * 8 + 1);
+      // 调用stop停止旋转并传递中奖索引
+      myLucky.value.stop(index)
+    }, 3000)
+  }
+  
   
   // 用户点击开始抽奖
   const turntableStart = () => {
-      if(awaidNum.value===1) {
-        let index = Math.floor(Math.random() * 8 + 1);//前端随机数，这里应该后台返回中奖结果
-        data.award = index;
-        turntable.value.begin(data.award);
-      } else {
-        uni.showToast({
-            title: '抽奖次数已用完',
-            icon: 'none'
-        });
-      }
+    if(awaidNum.value===1) {
+      removeAnm.value = true
+      startAnm.value =true
+      // 先开始旋转
+      myLucky.value.play()
+      // 使用定时器来模拟请求接口
+      setTimeout(() => {
+        // 获取中奖id
+        const currentId = Math.floor(Math.random() * 8 + 1);
+        
+        data.award = prizes.findIndex(item=>item.id===currentId)
+        console.log(data.award,'----中奖id',currentId)
+        // 调用stop停止旋转并传递中奖索引
+        myLucky.value.stop(data.award)
+        // 调用stop停止旋转并传递中奖索引
+      }, 3000)
+    } else {
+      uni.showToast({
+          title: '抽奖次数已用完',
+          icon: 'none'
+      });
+    }
   };
+  
+  // 抽奖结束触发回调
+  function endCallBack (prize) {
+    // 奖品详情
+    popupType.value = 2
+    setTimeout(()=>{
+      rulePopup.value.open()
+    },800)
+    awaidNum.value = 2
+    showList.value = true
+    // console.log(data.awardList[data.award].title)
+    console.log(prize,'pize')
+    // startAnm.value =false
+    endAnm.value =true
+    
+  }
   
   // 抽奖完成后操作
   const turntableSuccess = () => {
       const index = data.award - 1;
       popupType.value = 2
       rulePopup.value.open()
-      
-      // uni.showToast({
-      //     title: `恭喜你获得${data.awardList[index].title}`,
-      //     icon: 'none'
-      // });
       awaidNum.value = 2
       showList.value = true
-      console.log(data.awardList[index].title)
   };
   
   function maskClickTeam(){}
@@ -147,12 +185,109 @@
       width: 100%;
       height: 1206rpx;
     }
+    .lucky-wheel-bg {
+      position: absolute;
+      top: 487rpx;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 486rpx;
+      height: 486rpx;
+      background: linear-gradient(to bottom,#3460cb,#2e3dca);
+      border-radius: 50%;
+      z-index: 9;
+    }
+    .aperture {
+      position: absolute;
+      top: 487rpx;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 486rpx;
+      height: 486rpx;
+      z-index: 8;
+      .aperture-anmi {
+        width: 486rpx;
+        height: 486rpx;
+        border-radius: 50%;
+        background: #438FF2; /* 使用rgba设置半透明 */
+        filter: blur(5px); /* 边缘虚化效果 */
+        position: absolute;
+        z-index: 8;
+        opacity: 0;
+        &.aniStar {
+          animation: scaleFade 1.7s linear 3 forwards;
+          animation-delay: .9s;
+        }
+        &.aniEnd {
+          animation: animateEnd3 1.2s linear forwards,
+          
+        }
+      }
+    }
+    .circle {
+      width: 606rpx;
+      height: 606rpx;
+      border-radius: 50%;
+      position: absolute;
+      top: 430rpx;
+      left: 50%;
+      transform: translateX(-50%);
+      .circle-anmi-1 {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border-radius: 50%;
+        border-style: solid;
+        color: #eaecff;
+        // color: #fdfc93;
+        border-color: currentColor transparent transparent currentColor;
+        border-width: 0.4em 0.4em 0em 0em;
+        filter: blur(2px);
+        --deg: -45deg;
+        animation-direction: normal;
+        opacity: 0;
+        &.aniStar {
+          animation: animate 1.8s linear infinite forwards;
+          animation-delay: 1.5s;
+        }
+        &.aniEnd {
+          animation: animateEnd 1.2s linear forwards,
+        }
+      }
+      .circle-anmi-2 {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border-radius: 50%;
+        border-style: solid;
+        color: #eaecff;
+        border-color: currentColor transparent transparent currentColor;
+        border-width: 0.4em 0.4em 0em 0em;
+        filter: blur(2px);
+        --deg: -45deg;
+        animation-direction: normal‌;
+        opacity: 0;
+        &.aniStar {
+          animation: animateTwon 1.8s linear infinite forwards;
+          animation-delay: 1.5s;
+        }
+        &.aniEnd {
+          animation: animateEnd2 1.2s linear forwards,
+        }
+      }
+    }
+    
     .lucky-btn {
       position: relative;
-      
       margin: -124rpx auto 0;
       width: 508rpx;
       height: 190rpx;
+      
+      &.scaleAnimation {
+        animation: breathing 2s ease-in-out infinite;
+      }
+      &.no-animation {
+        animation: none;
+      }
       &.lucky-btn-1 {
         background: url('@/static/image/lucky-btn-1.png') no-repeat;
         background-size: 100% 100%;
@@ -281,4 +416,104 @@
     }
   }
   
+  /* 呼吸动画关键帧 */
+  @keyframes breathing {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+  }
+  
+  @keyframes scaleFade {
+  
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    20%{
+      opacity: 0.8;
+    }
+    40% {
+      transform: scale(1.8);
+      opacity: 0;
+      filter: blur(6px);
+    }
+    41% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  
+  @keyframes animate {
+    0% {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: rotate(180deg);
+      opacity: 0.5;
+    }
+    100%{
+      transform: rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  
+  @keyframes animateTwon {
+    0% {
+      transform: rotate(180deg);
+      opacity: 0.5;
+    }
+    50% {
+      transform: rotate(360deg);
+      opacity: 1;
+    }
+    
+    100%{
+      transform: rotate(540deg);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes animateEnd {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0;
+    }
+    100%{
+      transform: rotate(180deg);
+      opacity: 0;
+    }
+  }
+
+   @keyframes animateEnd2 {
+      0% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0;
+      }
+      100%{
+        transform: rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes animateEnd3 {
+      0% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0;
+      }
+      100%{
+        transform: scale(1.8);
+        opacity: 0;
+      }
+    }
 </style>

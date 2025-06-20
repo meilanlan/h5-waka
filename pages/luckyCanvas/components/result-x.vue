@@ -36,6 +36,7 @@
     background: url('/static/image/lucky/result-bg.png') no-repeat;
     background-size: 100% 100%;
     font-family: MiSans, MiSans;
+    
     .close {
       position: absolute;
       top: 32rpx;
@@ -57,6 +58,17 @@
       margin: 26rpx auto 0;
       width: 96rpx;
       height: 96rpx;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('@/static/image/lucky/check-line.png') no-repeat;
+        background-size: 100% 100%;
+        // opacity: 0;
+      }
     }
     .gift-name {
       margin-top: 32rpx;

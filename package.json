@@ -1,5 +1,23 @@
 {
   "dependencies": {
     "qs": "^6.13.0"
+  },
+  "uni-app": {
+    "scripts": {
+      "build:test": {
+        "title": "build:test",
+        "env": {
+          "UNI_PLATFORM": "h5",
+          "M_NODE_ENV": "test"
+        }
+      },
+      "build:pro_sh1": {
+        "title": "build:pro_sh1",
+        "env": {
+          "UNI_PLATFORM": "h5",
+          "M_NODE_ENV": "production_sh1"
+        }
+      }
+    }
   }
 }

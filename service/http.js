@@ -47,8 +47,8 @@ const ajax = (opt) => {
       }
       // "robot-id": adminConfigInfo[groupId]&&adminConfigInfo[groupId]['robot_id'] || robotId
       opt.ApiUrl = opt.apiUrl || ApiUrl;
-      console.log(ApiUrl, 'ApiUrl')
-      opt.ApiUrl = 'http://110.40.170.35:9898';
+      console.log(opt.ApiUrl, 'opt.ApiUrl')
+      // opt.ApiUrl = 'http://110.40.170.35:9898';
       opt.success = opt.success || function () {};
       opt.fail = opt.fail || function () {};
       uni.request({

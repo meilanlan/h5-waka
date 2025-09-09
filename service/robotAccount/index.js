@@ -665,6 +665,21 @@ const alipayOrder = (data, success, fail) => {
   })
 }
 
+//购买机器人
+/*
+data.action: 1、购买或者续费，2安装，3启用，4暂停
+*/
+const robotProdDoApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/robot/prod_do',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
 // 我的订单
 const billListApi = (data, success, fail) => {
   ajax({
@@ -699,8 +714,28 @@ const shareGroupApi = (data, success, fail) => {
     fail: fail
   })
 }
-
-
+//检查领奖状态
+const checkAwardStApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/newcomer/check_award_status',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//领奖
+const awardTakeApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/newcomer/award_take',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
 export {
   robotDetailData,
@@ -758,5 +793,8 @@ export {
   alipayOrder,
   billListApi,
   shareUserApi,
-  shareGroupApi
+  shareGroupApi,
+  checkAwardStApi,
+  awardTakeApi,
+  robotProdDoApi
 }

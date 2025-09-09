@@ -216,16 +216,6 @@
                     "titleNView": false
                 }
             }
-        },
-        {
-            "path": "pages/luckyCanvas/luckyDemo",
-            "style": {
-                "navigationBarTitleText": "新人福利",
-                "enablePullDownRefresh": false,
-                "h5": {
-                    "titleNView": false
-                }
-            }
         }
     ],
     "globalStyle": {

@@ -22,7 +22,7 @@
       @start="turntableStart"
       @end="endCallBack"
     ></lucky-wheel>
-    <view :class="['lucky-btn',removeAnm&&'no-animation','scaleAnimation','lucky-btn-'+awaidNum]" @click="turntableStart"></view>
+    <view :class="['lucky-btn',removeAnm&&'no-animation','scaleAnimation','lucky-btn-'+data.status]" @click="turntableStart"></view>
     <view class="rule-box" @click="openRule">
       <view>活</view>
       <view>动</view>
@@ -33,15 +33,16 @@
       <view class="show-box">
         <view class="tit">获得福利展示区</view>
         <view class="box">
-          <view class="list" v-if="showList">
+          <view class="list" v-if="data.status === 1">
             <view class="left">
               <image class="gift" :src="prizes[data.award].icon" mode="aspectFit"></image>
               <view class="text-box">
                 <view class="name">{{prizes[data.award].title}}</view>
-                <view class="exp">请在【我的背包】中激活并使用</view>
+                <view class="exp">{{prizes[data.award].award_desc}}</view>
               </view>
             </view>
-            <view class="right right-1">去激活</view>
+            <view class="right right-1" v-if="prizes[data.award].award_use_status===0" @click="toAppPage">去激活</view>
+            <view class="right right-2" v-else>已使用</view>
           </view>
           <view class="no-lucky" v-else>
             暂无奖品记录~
@@ -52,26 +53,28 @@
     
     <uni-popup ref="rulePopup" type="center">
       <rule-x v-if="popupType===1" @closePopup="closePopup"></rule-x>
-      <result-x v-else-if="popupType===2" :curAwaid="prizes[data.award]" @closePopup="closePopup"></result-x>
+      <result-x v-else-if="popupType===2" :curAwaid="prizes[data.award]" @closePopup="closePopup" @toApp="toAppPage"></result-x>
     </uni-popup>
   </view>
 </template>
 <script setup>
-  import { reactive, toRefs, ref } from 'vue';
+  import { reactive, toRefs, ref, nextTick } from 'vue';
+  import {onLoad} from '@dcloudio/uni-app'
   import LuckyWheel from '@/components/lucky-canvas_v0.0.10_4/components/@lucky-canvas/uni/lucky-wheel.vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import ruleX from './components/rule-x.vue'
   import resultX from './components/result-x.vue'
+  import {checkAwardStApi,awardTakeApi} from '@/service/robotAccount/index.js'
 
   let prizes = [
-    { id: 1,title: 'VIP体验卡3个月',icon: new URL('@/static/image/lucky/1.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid1-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
-    { id: 2,title: '限定红包皮肤1个',icon: new URL('@/static/image/lucky/list-2.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid2-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
-    { id: 3,title: '限定聊天气泡',icon: new URL('@/static/image/lucky/3.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid3-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
-    { id: 4,title: 'hi币20个',icon: new URL('@/static/image/lucky/4.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid4-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
-    { id: 5,title: '季度版机器人',icon: new URL('@/static/image/lucky/5.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid5-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}]},
-    { id: 6,title: '能量助力60个',icon: new URL('@/static/image/lucky/6.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid6-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
-    { id: 7,title: 'SVIP体验卡1个月',icon: new URL('@/static/image/lucky/7.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid7-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
-    { id: 8,title: '现金红包20元',icon: new URL('@/static/image/lucky/8.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid8-bg.png', import.meta.url).href,width: '174rpx',height: '218rpx'}] },
+    { id: 3,action:{id:'',trace_id:'',param:''},award_type: 3,award_use_status:0,title: 'VIP体验卡3个月',icon: new URL('@/static/image/lucky/1.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid1-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
+    { id: 2,action:{id:'',trace_id:'',param:''},award_type: 6,award_use_status:0,title: '限定红包皮肤1个',icon: new URL('@/static/image/lucky/list-2.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid2-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
+    { id: 5,action:{id:'',trace_id:'',param:''},award_type: 5,award_use_status:0,title: '限定聊天气泡',icon: new URL('@/static/image/lucky/3.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid3-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
+    { id: 7,action:{id:'',trace_id:'',param:''},award_type: 2,award_use_status:0,title: 'hi币20个',icon: new URL('@/static/image/lucky/4.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid4-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
+    { id: 6,action:{id:'',trace_id:'',param:''},award_type: 7,award_use_status:0,title: '季度版机器人',icon: new URL('@/static/image/lucky/5.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid5-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
+    { id: 1,action:{id:'',trace_id:'',param:''},award_type: 8,award_use_status:0,title: '能量助力60个',icon: new URL('@/static/image/lucky/6.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid6-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}] },
+    { id: 4,action:{id:'',trace_id:'',param:''},award_type: 4,award_use_status:0,title: 'SVIP体验卡1个月',icon: new URL('@/static/image/lucky/7.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid7-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}] },
+    { id: 8,action:{id:'',trace_id:'',param:''},award_type: 1,award_use_status:0,title: '现金红包20元',icon: new URL('@/static/image/lucky/8.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid8-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}] },
   ]
   let buttons = [
         { radius: '117rpx' },
@@ -82,53 +85,51 @@
       ]
   
   const data = reactive({
-      award: 1
+      award: 1,
+      status: 0,//是否已领取奖品
   });
-  const showList = ref(false)
-  const awaidNum = ref(1)
   const rulePopup = ref()
-  const turntable = ref(null);
   const popupType = ref(-1)
-  const { award, awardList } = toRefs(data);
-  const ptLotteryRef = ref(null)
   const removeAnm = ref(false)
   const startAnm = ref(false)
   const endAnm = ref(false)
   const myLucky = ref()
-
   
-  // 点击抽奖按钮触发回调
-  function startCallBack () {
-    // 先开始旋转
-    myLucky.value.play()
-    // 使用定时器来模拟请求接口
-    setTimeout(() => {
-      // 假设后端返回的中奖索引是0
-      const index = Math.floor(Math.random() * 8 + 1);
-      // 调用stop停止旋转并传递中奖索引
-      myLucky.value.stop(index)
-    }, 3000)
+  function toAppPage(){
+    window.client.JSAction({
+      id: prizes[data.award].action.id,
+      // param: {index: parseInt(1)}
+    })
+    closePopup()
   }
-  
   
   // 用户点击开始抽奖
   const turntableStart = () => {
-    if(awaidNum.value===1) {
+    if(data.status!=1) {
       removeAnm.value = true
       startAnm.value =true
       // 先开始旋转
       myLucky.value.play()
       // 使用定时器来模拟请求接口
-      setTimeout(() => {
-        // 获取中奖id
-        const currentId = Math.floor(Math.random() * 8 + 1);
-        
-        data.award = prizes.findIndex(item=>item.id===currentId)
-        console.log(data.award,'----中奖id',currentId)
-        // 调用stop停止旋转并传递中奖索引
-        myLucky.value.stop(data.award)
-        // 调用stop停止旋转并传递中奖索引
-      }, 3000)
+      
+      awardTakeApi({},res=>{
+        if(res.code === 0){
+          setTimeout(() => {
+            // 获取中奖id的index
+            data.award = prizes.findIndex(item=>item.award_type===res.data.award_type)
+            prizes[ data.award].action = res.data.action
+            prizes[ data.award].award_desc = res.data.award_desc
+            prizes[ data.award].award_use_status = res.data.award_use_status
+            // 调用stop停止旋转并传递中奖索引
+            myLucky.value.stop(data.award)
+          }, 3000)
+        } else {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+        }
+      })
     } else {
       uni.showToast({
           title: '抽奖次数已用完',
@@ -144,25 +145,29 @@
     setTimeout(()=>{
       rulePopup.value.open()
     },800)
-    awaidNum.value = 2
-    showList.value = true
-    // console.log(data.awardList[data.award].title)
-    console.log(prize,'pize')
-    // startAnm.value =false
+    data.status = 1
     endAnm.value =true
     
   }
   
-  // 抽奖完成后操作
-  const turntableSuccess = () => {
-      const index = data.award - 1;
-      popupType.value = 2
-      rulePopup.value.open()
-      awaidNum.value = 2
-      showList.value = true
-  };
-  
-  function maskClickTeam(){}
+  function checkAwardSt(){
+    checkAwardStApi({},res=>{
+      if(res.code === 0){
+        data.status = res.data.status
+        if(res.data.award) {
+          data.award = prizes.findIndex(item=>item.award_type===res.data.award.award_type)
+          prizes[ data.award].action = res.data.award.action
+          prizes[ data.award].award_desc = res.data.award.award_desc
+          prizes[ data.award].award_use_status = res.data.award.award_use_status
+        }
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+      }
+    })
+  }
   
   function openRule(){
     popupType.value = 1
@@ -174,6 +179,14 @@
       popupType.value = -1
     },200)
   }
+  
+  onLoad(()=>{
+    nextTick(()=>{
+        window.client.getUserinfo((res) => {
+            checkAwardSt()
+        });
+    })
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -288,11 +301,11 @@
       &.no-animation {
         animation: none;
       }
-      &.lucky-btn-1 {
+      &.lucky-btn-0 {
         background: url('@/static/image/lucky-btn-1.png') no-repeat;
         background-size: 100% 100%;
       }
-      &.lucky-btn-2 {
+      &.lucky-btn-1 {
         background: url('@/static/image/lucky-btn-2.png') no-repeat;
         background-size: 100% 100%;
       }

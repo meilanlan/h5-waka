@@ -4,7 +4,7 @@
     <image class="close" src="/static/image/close-1.png" @click="closePopup"></image>
     <image class="gift" :src="props.curAwaid.icon" mode="aspectFit"></image>
     <view class="gift-name">{{props.curAwaid.title}}</view>
-    <view class="exp">请在【我的奖品】中激活并使用</view>
+    <view class="exp">{{props.curAwaid.award_desc}}</view>
     <view class="btn" @click="openAppPage">去使用</view>
   </view>
 </template>
@@ -14,7 +14,7 @@
   const props = defineProps({
     curAwaid: Object
   })
-  const emit = defineEmits(['closePopup'])
+  const emit = defineEmits(['closePopup','toApp'])
   
   console.log(props.curAwaid, 'curAwaid is')
   function closePopup(){
@@ -23,7 +23,7 @@
   
   function openAppPage(){
     //打开客户端我的背包页面
-    emit('closePopup')
+    emit('toApp')
   }
 </script>
 

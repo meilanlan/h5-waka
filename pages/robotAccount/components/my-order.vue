@@ -14,7 +14,7 @@
           </view>
         </view>
       </view>
-      <view :class="['right','right-'+item.order_status]" @click="toJoin">
+      <view :class="['right','right-'+item.order_status]" @click="toJoin(item)">
         {{item.order_status===1?'已使用':'待使用'}}
       </view>
     </view>
@@ -51,8 +51,10 @@
   
   const joinPopup = ref(null)
   
-  function sureJoin() {
-    joinPopup.value.close()
+  function sureJoin(item) {
+    if(item.order_status!=1) {
+      joinPopup.value.close()
+    }
   }
   
   function toJoin(){

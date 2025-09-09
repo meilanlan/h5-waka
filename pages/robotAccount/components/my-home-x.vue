@@ -2,10 +2,10 @@
   <view class="my-home">
     <view class="my-home-info">
       <view class="my-info-bg">
-        <image src="/static/image/bg-slices/bg8.png" mode="aspectFill"></image>
+        <image :src="userInfo.data.user.bg_img || '/static/image/bg-slices/bg.png'" mode="aspectFill"></image>
       </view>
       <view class="my-info">
-        <image class="left" :src="props.robotInfo.bg_img"></image>
+        <image class="left" :src="userInfo.data.user.head_img"></image>
         <view class="right">
           <view class="name">
             <text class="nickname">{{userInfo.data.user.nick_name}}</text>
@@ -104,6 +104,7 @@
     userProfileApi({group_id: parentInfo.group_id}, res => {
       if (res.code === 0) {
         userInfo.data = res.data
+        userInfo.data.user.bg_img = ''
         console.log(userInfo.data, 'userInfo.data')
         infoFlag.value = true
         uni.hideLoading()

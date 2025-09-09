@@ -60,7 +60,7 @@
   import {ref,reactive,inject} from 'vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import payMethodsX from '../../../components/pay-methods-x/pay-methods-x.vue';
-  import {alipayOrder} from '@/service/robotAccount/index.js'
+  import {alipayOrder,robotProdDoApi} from '@/service/robotAccount/index.js'
   
   const curPay = ref('1')
   const payLock = ref(false)
@@ -72,35 +72,79 @@
   })
   const payMethodsRef = ref(null)
   
-  console.log(props.robot_list, 'robot_list is')
   function openMethods(item){
     if (item.prod_status === 0) {
       curRobotInfo.data = item
       payMethodsRef.value.open()
-      console.log(curRobotInfo.data ,'o')
     }
   }
   
   function toPay(){
     if (payLock.value === false) {
       payLock.value = true
+      
+      // action: 1、购买或者续费，2安装，3启用，4暂停
+      let params = {
+        group_id: parentInfo.data.group_id,
+        prod_id: curRobotInfo.data.id,
+        action: 1
+      }
       uni.showLoading({mask: true})
-      let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=4&show_title=0`)
-      alipayOrder({prod_id: curRobotInfo.data.id,return_url:returnUrl}, res => {
-        if (res.code === 0) {
-          // location.href = res.data.request_params+'&redirect_url=' + encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
-          location.href = res.data.request_params
-          payLock.value = false
+      // let res = {
+      //     "group_id": 15112564338,
+      //     "prod_id": 1000002,
+      //     "prod_status": 3,
+      //     "sn": "",
+      //     "request_params": ""
+      // }
+      // let res = {
+      //     "group_id": 15112564338,
+      //     "prod_id": 1000001,
+      //     "prod_status": 0,
+      //     "sn": "286644375554",
+      //     "request_params": "app_id=2021004161602824&biz_content=%7B%22out_trade_no%22%3A%22286644375554%22%2C%22product_code%22%3A%22FAST_INSTANT_TRADE_PAY%22%2C%22subject%22%3A%22%E5%B0%8F%E5%97%A8%E6%9C%BA%E5%99%A8%E4%BA%BA%E7%BE%A4%E5%8A%A9%E6%89%8B%EF%BC%88%E5%A8%B1%E4%B9%90%E7%89%88%EF%BC%89%22%2C%22total_amount%22%3A%22288%22%7D&charset=utf-8&format=JSON&method=alipay.trade.app.pay&notify_url=http%3A%2F%2F110.40.170.35%3A9898%2Falipay%2Fcallback_v1&sign=FWEYr9gFnKQ61bcNgeggkNeLr4QZHMRnDfVl9%2Fa26Y%2BlmEVUEZbqCNQWgrHkQloAv18rlRbGv2b3orx1pagd8e3GaJt%2Ba52%2B%2BkA%2FgalogKkGQfejKTizD7bHmVUgy7kEUZfOGnPpfDlNOQzz8%2FVyO90ZCe7TK9KOICQc9jfnWriIk5sL9Dnij4yBUsGLmgu1d3fYTudPMetrXKO0gn8zliO0ilu46DgFBdtHKoXT2OzWrRl5IZ7CxFlJXONc7fueik2NWFj507%2BTXo4p41KKoh8KLt0zdaO7f0OamKRampYE7pMxzJqVAcCy%2FmCZ5mpQQhd2K%2B2OAV%2FVBIAnjNoX3g%3D%3D&sign_type=RSA2&timestamp=2025-07-29+15%3A40%3A12&version=1.0"
+      // }
+      // location.href = res.request_params
+      robotProdDoApi(params,res=>{
+        if (res.data) {
+          if(res.data.request_params) {
+            //付费
+            location.href = res.data.request_params
+          } else {
+            // 免费
+            curRobotInfo.data.prod_status = res.data.prod_status
+          }
+          payMethodsRef.value.close()
           uni.hideLoading()
-        } else {
+          payLock.value = false
+        }else {
           payLock.value = false
           uni.showToast({
             title: res.msg,
             icon: 'none'
           });
           uni.hideLoading()
+          payMethodsRef.value.close()
         }
       })
+      
+      // return false
+      // uni.showLoading({mask: true})
+      // let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=4&show_title=0`)
+      // alipayOrder({prod_id: curRobotInfo.data.id,return_url:returnUrl}, res => {
+      //   if (res.code === 0) {
+      //     location.href = res.data.request_params
+      //     payLock.value = false
+      //     uni.hideLoading()
+      //   } else {
+      //     payLock.value = false
+      //     uni.showToast({
+      //       title: res.msg,
+      //       icon: 'none'
+      //     });
+      //     uni.hideLoading()
+      //   }
+      // })
     }  
   }
   function radioPayChange(){

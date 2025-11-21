@@ -1,9 +1,6 @@
 <template>
   <view class="wrapper">
-    <view :class="['common-header',isIos!=true?'safeTop':'']">
-      <image class="back" src="../../static/image/btn_back.png" @click="backPage()"></image>
-      <text>数据同步</text>
-    </view>
+   <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="数据同步" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-select">
       <text class="label">小嗨机器人</text>
       <view class="select-box" @click="openSelectCont1">
@@ -114,6 +111,7 @@
 <script setup>
   import {ref} from 'vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import myCustomNavbar from '@/components/myCustomNavbar.vue'
   
   let isIos = ''
   if (u.indexOf('iPhone') > -1 || u.indexOf('iOS') > -1) {
@@ -172,9 +170,9 @@
 
 <style lang="scss" scoped>
   .wrapper {
-    min-height: 100vh;
+    padding-top: 88rpx;
+    min-height: calc(100vh - 88rpx);
     background-color: #ffffff;
-    font-family: 'MiSans, MiSans';
   }
   .wrapper-select {
     padding: 32rpx 32rpx 0;

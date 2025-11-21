@@ -222,7 +222,7 @@
           border-radius: 40rpx;
           border: 2rpx solid #EEF0F4;
           font-size: 24rpx;
-          font-family: PingFang SC-Regular, PingFang SC;
+          // font-family: MiSans, 'MiSans';
           font-weight: 400;
           color: #606178;
           text-align: center;

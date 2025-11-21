@@ -175,6 +175,29 @@ window.client = {
             if (typeof callback === "function") callback(anres);
         }
     },
+    // 唤起客户端支付：购买机器人套餐
+    BuyRobotJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSPay",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSPay(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启支付");
+      }
+    },
+    
     // 唤起app端播放
     JSOpenVideoPlay(param) {
         if (window.inAPP) {
@@ -542,6 +565,10 @@ if (window.inAPP) {
                     "JSWeb3WalletVerifyCallback",
                     JSWeb3WalletVerifyCallback
                 );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSPayResultCallBack",
+                    JSPayResultCallBack
+                );
                 //window.WKWebViewJavascriptBridge.registerHandler('JSOrderVipCallBack', JSOrderVipCallBack);
                 // -------------执行所有已经注册了的callback-----------------
                 window.WKWebViewJavascriptBridge.callHandler(
@@ -578,6 +605,14 @@ window.JSPhotoAlbumCallBack = function (res) {
     if (typeof window.updateImgAfter === "function") {
         window.updateImgAfter(res);
     }
+};
+
+ // 安卓支付回调函数
+window.JSPayResultCallBack = function (res) {
+  // ios返回的res是object类型   安卓返回的res是string 需要JSON.parse转一下
+  if (typeof window.pay_result_after === "function") {
+      window.pay_result_after(res);
+  }
 };
 
 window.JSShareSnapshotImageCallBack = function (res) {
@@ -630,7 +665,7 @@ window.JSUpdateData = function (res) {
         }
     }
 };
-/*window.JSBridgeAppNoticeH5 = function (res) {
+window.JSBridgeAppNoticeH5 = function (res) {
     window.localStorage.removeItem("JSBridgeAppNoticeH5");
     window.localStorage.setItem("JSBridgeAppNoticeH5", JSON.stringify(res));
     let flag = typeof window.getAppNoticeH5 === "function";
@@ -650,7 +685,7 @@ window.JSUpdateData = function (res) {
             }
         }, 40);
     }
-};*/
+};
 // 主动获取传递的参数
 window.JSWebGetPageData_toBridge = function (callback) {
     if (isiOS) {

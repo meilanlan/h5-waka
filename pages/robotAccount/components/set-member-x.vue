@@ -646,7 +646,7 @@
     height: 84vh;
     .title {
       font-size: 32rpx;
-      font-family: PingFang SC-Medium, PingFang SC;
+      // font-family: MiSans, 'MiSans';
       font-weight: 500;
       color: #000000;
       line-height: 32rpx;

@@ -12,56 +12,19 @@
             "style": {
                 "navigationBarTitleText": "群主页",
                 // "enablePullDownRefresh": false,
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
             }
         },
-        {
-            "path": "pages/robotAccount/myBill",
-            "style": {
-                "navigationBarTitleText": "我的账单",
-                // "enablePullDownRefresh": false,
-                "h5": {
-                    "titleNView": false
-                }
-            }
-        },
-        {
-            "path": "pages/robotAccount/profitDetail",
-            "style": {
-                "navigationBarTitleText": "收益明细",
-                // "enablePullDownRefresh": false,
-                "h5": {
-                    "titleNView": false
-                }
-            }
-        },
-        {
-            "path": "pages/robotAccount/settlement",
-            "style": {
-                "navigationBarTitleText": "嗨币结算",
-                // "enablePullDownRefresh": false,
-                "h5": {
-                    "titleNView": false
-                }
-            }
-        },
-        {
-            "path": "pages/robotAccount/wathdrawal",
-            "style": {
-                "navigationBarTitleText": "嗨豆结算",
-                // "enablePullDownRefresh": false,
-                "h5": {
-                    "titleNView": false
-                }
-            }
-        },
+        
         {
             "path": "pages/robotAccount/taskGiftRecord",
             "style": {
                 "navigationBarTitleText": "任务礼物记录",
-                "enablePullDownRefresh": false,
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -70,8 +33,9 @@
         {
             "path": "pages/robotAccount/groupAccount",
             "style": {
-                "navigationBarTitleText": "groupAccount",
-                "enablePullDownRefresh": false,
+                "navigationBarTitleText": "群主账户",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -80,8 +44,7 @@
         {
             "path": "pages/agreements/userTerms",
             "style": {
-                "navigationBarTitleText": "用户条款",
-                "enablePullDownRefresh": false,
+                "navigationBarTitleText": "Whack软件许可及用户协议",
                 "h5": {
                     "titleNView": false
                 }
@@ -90,8 +53,7 @@
         {
             "path": "pages/agreements/privacyAgreement",
             "style": {
-                "navigationBarTitleText": "咓咔社群隐私政策",
-                "enablePullDownRefresh": false,
+                "navigationBarTitleText": "Whack隐私政策",
                 "h5": {
                     "titleNView": false
                 }
@@ -100,8 +62,16 @@
         {
             "path": "pages/agreements/wehi",
             "style": {
-                "navigationBarTitleText": "wehi社区守则",
-                "enablePullDownRefresh": false,
+                "navigationBarTitleText": "Whack公约",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/newPolicy",
+            "style": {
+                "navigationBarTitleText": "2025年个税新政",
                 "h5": {
                     "titleNView": false
                 }
@@ -111,7 +81,24 @@
             "path": "pages/agreements/commonProblem",
             "style": {
                 "navigationBarTitleText": "常见问题",
-                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/rechargeAgreement",
+            "style": {
+                "navigationBarTitleText": "Whack充值服务协议",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/profitAgreement",
+            "style": {
+                "navigationBarTitleText": "运营协议",
                 "h5": {
                     "titleNView": false
                 }
@@ -121,7 +108,6 @@
             "path": "pages/shareh5/wakaGroup",
             "style": {
                 "navigationBarTitleText": "咓咔社群",
-                "enablePullDownRefresh": false,
                 "h5": {
                     "titleNView": false
                 }
@@ -131,7 +117,6 @@
             "path": "pages/shareh5/wakaGroupH5",
             "style": {
                 "navigationBarTitleText": "咓咔社群",
-                "enablePullDownRefresh": false,
                 "h5": {
                     "titleNView": false
                 }
@@ -141,7 +126,6 @@
             "path": "pages/shareh5/sharePerson",
             "style": {
                 "navigationBarTitleText": "咓咔社群",
-                "enablePullDownRefresh": false,
                 "h5": {
                     "titleNView": false
                 }
@@ -151,7 +135,8 @@
             "path": "pages/admin/leaderSync",
             "style": {
                 "navigationBarTitleText": "数据同步",
-                "enablePullDownRefresh": false,
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -161,7 +146,6 @@
             "path": "pages/admin/login",
             "style": {
                 "navigationBarTitleText": "登录",
-                "enablePullDownRefresh": false,
                 "h5": {
                     "titleNView": false
                 }
@@ -171,7 +155,7 @@
             "path": "pages/vip/vipCenter",
             "style": {
                 "navigationBarTitleText": "会员中心",
-                "enablePullDownRefresh": false,
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -181,7 +165,40 @@
             "path": "pages/wallet/wallet",
             "style": {
                 "navigationBarTitleText": "钱包",
-                "enablePullDownRefresh": false,
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/renewal",
+            "style": {
+                "navigationBarTitleText": "续费管理",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/rechargeDetail",
+            "style": {
+                "navigationBarTitleText": "充值明细",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/myBill",
+            "style": {
+                "navigationBarTitleText": "我的账单",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -191,7 +208,40 @@
             "path": "pages/income/income",
             "style": {
                 "navigationBarTitleText": "我的收益",
-                "enablePullDownRefresh": false,
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/income/profitDetail",
+            "style": {
+                "navigationBarTitleText": "收益明细",
+                "navigationStyle": "custom",
+                // "navigationBarBackgroundColor": "#ffffff",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/income/settlement",
+            "style": {
+                "navigationBarTitleText": "嗨币结算",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/income/wathdrawal",
+            "style": {
+                "navigationBarTitleText": "嗨豆结算",
+                // "navigationBarBackgroundColor": "#ffffff"
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
@@ -201,17 +251,36 @@
             "path": "pages/robotShop/robotShop",
             "style": {
                 "navigationBarTitleText": "机器人助手",
-                "enablePullDownRefresh": false,
+                "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false
                 }
             }
         },
         {
+            "path": "pages/robotShop/joinGroup",
+            "style": {
+                "navigationBarTitleText": "选择入驻社群",
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+                // "navigationBarBackgroundColor": "#ffffff"
+            }
+        },
+        {
             "path": "pages/luckyCanvas/luckyCanvas",
             "style": {
                 "navigationBarTitleText": "新人福利",
-                "enablePullDownRefresh": false,
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/recharge/hbRecharge",
+            "style": {
+                "navigationBarTitleText": "嗨币充值",
                 "h5": {
                     "titleNView": false
                 }

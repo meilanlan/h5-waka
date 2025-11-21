@@ -4,6 +4,13 @@
   },
   "uni-app": {
     "scripts": {
+      "build:dev": {
+        "title": "build:dev",
+        "env": {
+          "UNI_PLATFORM": "h5",
+          "M_NODE_ENV": "dev"
+        }
+      },
       "build:test": {
         "title": "build:test",
         "env": {

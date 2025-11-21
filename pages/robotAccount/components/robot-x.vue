@@ -7,9 +7,9 @@
     </view>
     <template v-if="flagLock===true">
       <!-- 机器人助手 -->
-      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list'></robot-assistant-x>
+      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list||[]' @updateInfo="getSpaceRobot"></robot-assistant-x>
       <!-- 我的订单 -->
-      <my-order :order_list="spaceRobotData.data.order_list" v-else></my-order>
+      <my-order :order_list="spaceRobotData.data.order_list||[]" :user_robot_list="spaceRobotData.data.user_robot_list||[]" v-else></my-order>
     </template>
     
     
@@ -30,7 +30,8 @@
   parentInfo.data = inject('parentGroupInfo')
   const spaceRobotData = reactive(({data:{
     robot_list: [],
-    order_list: []
+    order_list: [],
+    user_robot_list: []
   }}))
   
   function switchTab(item){
@@ -40,39 +41,47 @@
   getSpaceRobot()
   function getSpaceRobot(){
     uni.showLoading()
-    spaceRobotApi({group_id: parentInfo.data.group_id}, res => {
+    
+    spaceRobotApi({group_id: parentInfo.data.group_id,channel:window.isiOS?'ios':'android'}, res => {
       if (res.code === 0) {
         spaceRobotData.data = res.data
         flagLock.value = true
         // dataSummary.data = res.data || {}
         uni.hideLoading()
-      } else if (res.code === -20001) {
-        // uni.showToast({
-        //   title: '登录失效，请重新登录',
-        //   icon: 'none'
-        // });
-        clearAdminToken()
+      } 
+      // else if (res.code === -20001) {
+      //   // uni.showToast({
+      //   //   title: '登录失效，请重新登录',
+      //   //   icon: 'none'
+      //   // });
+      //   clearAdminToken()
+      //   uni.hideLoading()
+      // } 
+      else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
         uni.hideLoading()
-      } else {
-        if (res.code != -10002){
-          uni.showToast({
-            title: res.msg,
-            icon: 'none'
-          });
-          uni.hideLoading()
-        } else {
-          uni.hideLoading()
-          if (JSON.stringify(dataSummary.data)== "{}") {
-            uni.showLoading({
-              title: "小嗨正在努力加载中...",
-              icon: 'none'
-            })
-            setTimeout(()=>{
-              getGroupSummaryInfo()
-            },3000)
-          }
+        // if (res.code != -10002){
+        //   uni.showToast({
+        //     title: res.msg,
+        //     icon: 'none'
+        //   });
+        //   uni.hideLoading()
+        // } else {
+        //   uni.hideLoading()
+        //   // if (JSON.stringify(dataSummary.data)== "{}") {
+        //   //   uni.showLoading({
+        //   //     title: "小嗨正在努力加载中...",
+        //   //     icon: 'none'
+        //   //   })
+        //   //   setTimeout(()=>{
+        //   //     getGroupSummaryInfo()
+        //   //   },3000)
+        //   // }
           
-        }
+        // }
       }
     })
   }
@@ -86,7 +95,7 @@
     margin-top: 32rpx;
     background: #F0F3F8;
     border-radius: 16rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     display: flex;
     .box {
       width: 342rpx;

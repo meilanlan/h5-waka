@@ -1,23 +1,28 @@
 <template>
-  <view class="content need_scroll_top_view">
-    <image class="bg" :src="robotInfo.data.bg_img_url||'../../static/image/bg_wxq.jpg'" @error="imgError"></image>
+  <view class="content need_scroll_top_view " id="navbarHeight">
+    <myCustomNavbar 
+    :navBg="robotInfo.data.bg_img_url||navbarBgImg" 
+    backIcon="../../static/image/btn_back_white.png" 
+    :navBgStyle="{height: '460rpx'}" 
+    :navStyle="{background: 'url('+(robotInfo.data.bg_img_url||navbarBgImg)+') no-repeat'}"
+    @backPage="backPage"
+    >
+      <image class="share" src="/static/image/share.png" @click="toShare"></image>
+    </myCustomNavbar>
     <view class="top navBar">
-      <view class="common-header">
-        <image class="back" src="@/static/image/btn_back_white.png" @click="backPage"></image>
-        <!-- <text>群空间</text> -->
-      </view>
       <view class="robotList">
         <view class="list">
           <view class="left" v-if="robotInfo.data.group_id">
             <view class="headimg">
-              <image :src="robotInfo.data.group_cover" mode=""></image>
+              <!-- <image src="https://res.whackgroup.com/user/10000000/group/fc3613383d744280b7d565c045fe1f6b.jpeg" mode="aspectFill"></image> -->
+              <image :src="robotInfo.data.group_cover" mode="aspectFill"></image>
               <!-- <view class="off-text" v-show="!robotInfo.is_alive">离线</view> -->
             </view>
             <view class="info">
               <view class="">
                 <view class="name textEllipsis">
                   <text>{{robotInfo.data.group_name}}</text>
-                  <image v-show="robotInfo.data.ic_list.length" class="cv" :src="robotInfo.data.ic_list[0]" mode="aspectFit"></image>
+                  <image v-for="(img,imgIdx) in robotInfo.data.ic_list" :key="imgIdx" class="cv" :src="img" mode="heightFix"></image>
                 </view>
               </view>
               <view class="ing">
@@ -56,8 +61,10 @@
           <robot-x v-else-if="groupInfo.tabId === 4"></robot-x>
           <!-- 群收益 -->
           <group-profit-x v-else-if="groupInfo.tabId === 5"></group-profit-x>
+          <!-- 数据同步 -->
+          <data-sync-x v-else-if="groupInfo.tabId === 6 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></data-sync-x>
           <!-- 群设置 -->
-          <group-set-x v-else-if="groupInfo.tabId === 6 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></group-set-x>
+          <group-set-x v-else-if="groupInfo.tabId === 7 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></group-set-x>
       </template>
       
     </view>
@@ -77,6 +84,9 @@
   import robotX from './components/robot-x.vue'
   import groupProfitX from './components/group-profit-x.vue'
   import groupSetX from './components/group-set-x.vue'
+  import dataSyncX from './components/data-sync-x.vue'
+  import myCustomNavbar from '../../components/myCustomNavbar.vue'
+  import navbarBgImg from '@/static/image/bg_wxq.jpg'
   // defineComponent({
   //   mixins: [scrollToTargetPosition]
   // })
@@ -99,12 +109,15 @@
     tabId: '',
     origin: 1,// 1: 买家端进入群设置   2: 群空间进入群设置
     loading: false,
-    defaultTopBg: new URL("@/static/image/bg_wxq.jpg", import.meta.url).href,
     lineLeft: "8%",
   })
   const adminConfigInfo=ref(null)
   const adminToken = ref('')
   const flagLock = ref(false)
+  
+  function toShare(){
+    console.log('share img')
+  }
   
   function openPage() {
     if (robotInfo.data.ad_jump_url) {
@@ -131,119 +144,53 @@
         groupInfo.loading = false
         uni.hideLoading()
       }else {
-        if (res.code != -10002){
-          uni.showToast({
-            title: res.msg,
-            icon: 'none'
-          });
-        }
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
         uni.hideLoading()
         groupInfo.loading = false
       }
     })
-    // await groupDetailData({group_id: groupInfo.group_id}, res => {
-    //   if (~~res.code === 0) {
-    //     robotInfo.data = res.data
-    //     provide('parentRobotInfo',robotInfo.data )
-    //     groupInfo.loading = false
-    //     uni.hideLoading()
-    //   }else {
-    //     if (res.code != -10002){
-    //       uni.showToast({
-    //         title: res.msg,
-    //         icon: 'none'
-    //       });
-    //     }
-    //     uni.hideLoading()
-    //     groupInfo.loading = false
-    //   }
-    // })
   }
-  function back () {
-    uni.navigateBack();
-  }
-  
   function switchTab(tabId) {
     groupInfo.tabId = tabId
-    console.log(tabId, 'tabId is')
   }
-  
-  
   onLoad(option=>{
     uni.showLoading()
-    
-    // groupInfo.robot_id = option.robot_id
     groupInfo.group_id = option.group_id
-    provide('parentGroupInfo', {group_id:groupInfo.group_id})
     groupInfo.tabId = option.pid*1 || 1
-    groupInfo.origin = option.origin*1 || 1
-    // if (option.key && option.kid) {
-    //   uni.setStorageSync('user-id',option.kid)
-    //   uni.setStorageSync('user-token',option.key)
-    // }
-    // adminConfigInfo.value = uni.getStorageSync('ADMIN_CONFIG') || {}
-    // if (!adminConfigInfo.value[option.group_id] && option.origin === 2) {
-    //   adminToken.value = ''
-    //   adminConfigInfo.value[option.group_id] = {"group_id": groupInfo.group_id,"admin_token": '',"robot_id": option.robot_id}
-    //   uni.setStorageSync('ADMIN_CONFIG', adminConfigInfo.value)
-    // } else {
-    //   adminConfigInfo.value[groupInfo.group_id]&&(adminToken.value = adminConfigInfo.value[groupInfo.group_id]['admin_token'])
-    // }
+    // groupInfo.origin = option.origin*1 || 1
+    provide('parentGroupInfo', {group_id:groupInfo.group_id})
+    
     nextTick(()=>{
         window.client.getUserinfo((res) => {
             console.log(res, "resresres");
             flagLock.value = true
-            // initPageData()
             getGroupInfo()
         });
     })
-    
-    // this.groupUserInfo()
   })
-  
-  function imgError(e) {
-    robotInfo.data.bg_img_url = groupInfo.defaultTopBg
-  }
   
   function backPage() {
     window.client.closeWebview()
-    // uni.navigateTo({
-    // 	url: `/pages/robotAccount/index?wx_id=${groupInfo.robot_id}`
-    // });
   }
   
 </script>
 
 <style lang="scss" scoped>
   .content {
-    position: relative;
-    .bg {
-      width: 100%;
-      height: 460rpx;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+    padding-top: 88rpx;
+    min-height: 100vh;
     .top {
       width: 100vw;
-      // height: 264rpx;
       position: relative;
       
-      .common-header {
-        justify-content: center;
-        text {
-          color: #FFFFFF;
-          z-index: 10;
-        }
-        .back {
-          
-        }
-      }
-      
       .robotList {
-        margin-top: 128rpx;
+        // margin-top: 128rpx;
         .list {
           box-shadow: none;
+          margin-bottom: 0;
           .info {
             .name {
               // width: 400rpx;
@@ -267,30 +214,23 @@
         }
       }
       &.navBar {
-        // height: 440rpx;
         position: relative;
-        padding-top: 88rpx;
-        .common-header {
-          .back {
-            // top: 100rpx;
-          }
-        }
+        padding-top: 128rpx;
       }
     }
     .groupList {
+      margin-top: 24rpx;
       width: 100%;
-      min-height: calc(100vh - 400rpx);
+      // min-height: calc(100vh - 300rpx);
       background: #ffffff;
       border-top-left-radius: 24rpx;
       border-top-right-radius: 24rpx;
-      padding: 32rpx 0;
+      padding: 24rpx 0;
       box-sizing: border-box;
+      position: relative;
       &.newBgColor {
         background: linear-gradient(to bottom, #ffffff, #F4F5F7);
       }
-      // &.navBar {
-      //   top: 370rpx;
-      // }
       
       .ad {
         // padding: 0 30rpx;
@@ -322,5 +262,13 @@
       }
     }
     
+  }
+  .share {
+    position: absolute;
+    right: 32rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48rpx;
+    height: 48rpx;
   }
 </style>

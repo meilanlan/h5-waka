@@ -14,7 +14,7 @@
         <view class="price">¥{{item.cash}}</view>
       </view>
     </view>
-    <view class="methods">
+    <!-- <view class="methods">
       <radio-group @change="radioChange">
           <label class="uni-list-cell uni-list-cell-pd">
               <view class="left">
@@ -29,37 +29,26 @@
               <radio value="2" :checked="curPay === '2'" color="#22c0ff" />
           </label>
         </radio-group>
-    </view>
+    </view> -->
     <view :class="['now-pay', curIndex!=-1&&'active']" @click="toPay">
       立即充值<text v-if="curIndex!=-1">{{props.haib.list[curIndex].cash}}元</text>
     </view>
     <view class="exp"  @click="openAgreement(1)">
-      点击支付即代表同意 <text>《嗨币用户协议》</text>
+      点击支付即代表同意 <text>《充值服务协议》</text>
     </view>
-    
-    <!-- 嗨币用户协议 -->
-    <uni-popup ref="agreementPopup" type="center">
-      <view class="common-popup">
-        <image @click="openAgreement(2)" class="close" src="/static/image/close.png"></image>
-       <user-agreement-x-vue></user-agreement-x-vue>
-      </view>
-    </uni-popup>
-  
 </template>
 
 <script setup>
   import {ref,reactive,inject} from 'vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
-  import userAgreementXVue from '../../pages/robotAccount/components/user-agreement-x.vue'
-  import {alipayOrder} from '@/service/robotAccount/index.js'
+  import {createOrderApi} from '@/service/robotAccount/index.js'
   
   const props = defineProps({
     haib: Object
   })
+  const emit = defineEmits(['updateInfo','openAgreement'])
   const parentInfo = reactive({data:{}})
   parentInfo.data = inject('parentGroupInfo')
-  console.log(encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`),'url')
-  const agreementPopup = ref(null)
   
   // const hiList = ref([
   //   {id:1,price: 1,hi: 10},
@@ -76,39 +65,84 @@
   
   function switchHi(item, index) {
     curIndex.value = index
-    console.log(props.haib.list[index], 'jkjk')
   }
   
   function toPay(){
     if (payLock.value === false) {
       payLock.value = true
-      uni.showLoading({mask: true})
-      let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
-      alipayOrder({prod_id: props.haib.list[curIndex.value].id,return_url:returnUrl}, res => {
-        if (res.code === 0) {
-          // location.href = res.data.request_params+'&redirect_url=' + encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
-          location.href = res.data.request_params
-          payLock.value = false
-          uni.hideLoading()
-        } else {
-          payLock.value = false
-          uni.showToast({
-            title: res.msg,
-            icon: 'none'
-          });
-          uni.hideLoading()
+      
+      if(window.isiOS){
+        //ios端
+        let params = {
+          group_id: parentInfo.data.group_id,
+          prod_id: props.haib.list[curIndex.value].id,
+          pay_channel: 'ios',
+          prod_type: 3,//嗨币充值
+          action: 1
         }
-      })
+        createOrderApi(params,res=>{
+          if (res.data) {
+              //付费
+              window.client.BuyRobotJSAction({
+                prodId: props.haib.list[curIndex.value].t_prod_id,
+                orderId: res.data.sn,
+              },(respon)=>{
+                console.log(respon, 'oooios')
+                if(!respon) {
+                  uni.showToast({
+                    title: '充值失败，请重新再试',
+                    icon: 'none'
+                  });
+                } else {
+                  emit('updateInfo')
+                  uni.showToast({
+                    title: '充值成功',
+                    icon: 'none'
+                  });
+                }
+              })
+            payLock.value = false
+          }else {
+            payLock.value = false
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
+          }
+        })
+      } else {
+        /*
+           prod_type: 商品类型 (APP:1 ; H5:2;) | (普通商品: 0; Robot:4)  => (如 H5 购买 Robot => 6(2+4))
+        */
+        window.client.BuyRobotJSAction({
+          prod_id: props.haib.list[curIndex.value].id,
+          prod_type: 3,
+          customize: ''
+        })
+        payLock.value = false
+      }
+     
     }  
+  }
+  
+  window.pay_result_after = (res)=>{
+    // 唤起支付后，获取客户端返回的结果信息
+    let respon = JSON.parse(res)
+    if (respon.isSuccess){
+       emit('updateInfo')
+    }
+    
+    uni.showToast({
+      title: respon.isSuccess?'充值成功':'充值失败，请重新再试',
+      icon: 'none'
+    });
   }
   
   function radioChange(){
     
   }
   function openAgreement(type){
-    type === 1 && agreementPopup.value.open()
-    type === 2 && agreementPopup.value.close()
-    
+    emit('openAgreement',1)
   }
 </script>
 
@@ -126,7 +160,7 @@
     .right {
       display: flex;
       align-items: center;
-      font-family: 'PingFang SC';
+      // font-family: MiSans, 'MiSans';
       font-weight: 500;
       font-size: 28rpx;
       line-height: 32rpx;
@@ -138,7 +172,7 @@
     }
   }
   .hi-list {
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     margin-top: 32rpx;
     display: flex;
     flex-wrap: wrap;
@@ -205,12 +239,13 @@
     }
   }
   .now-pay {
+    margin-top: 40rpx;
     width: 686rpx;
     height: 96rpx;
     border-radius: 16rpx;
     text-align: center;
     line-height: 96rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     font-weight: 600;
     font-size: 32rpx;
     color: #FFFFFF;
@@ -222,7 +257,7 @@
   .exp {
     margin-top: 16rpx;
     text-align: center;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     font-weight: 400;
     font-size: 24rpx;
     color: rgba(0,0,0,0.4);
@@ -232,7 +267,7 @@
     }
   }
   .common-popup {
-    width: 96vw;
+    width: 92vw;
     border-radius: 30rpx;
     position: relative;
     .close {

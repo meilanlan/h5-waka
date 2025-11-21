@@ -1672,7 +1672,7 @@
               height: 100%;
               padding-left: 20rpx;
               font-size: 28rpx;
-              font-family: PingFang SC-Medium, PingFang SC;
+              // font-family: MiSans, 'MiSans';
               font-weight: 500;
               color: #0E1B2E;
             }
@@ -1961,7 +1961,7 @@
       height: 80rpx;
       border-radius: 10rpx;
       font-size: 24rpx;
-      font-family: PingFang SC-Regular, PingFang SC;
+      // font-family: MiSans, 'MiSans';
     }
     .title {
       display: flex;

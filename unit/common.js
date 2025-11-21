@@ -1,6 +1,9 @@
 const trim = (str) => { // 去除字符串前后所有空
   return str.replace(/(^\s*)|(\s*$)/g, ""); 
 }
+// 千分位数字
+const formatNumber = (num) => Number(num).toLocaleString('en-US');
+
 const processParams = (obj) => { // 去除空的参数
   let param = {};
   if (obj === null || obj === undefined || obj === '') return param;
@@ -42,10 +45,86 @@ const getIsAndroid = ()=>{
   return u+'---'+isAndroid+'---'+window.native
 }
 
+function formatDate(date){
+  return [
+      date.getFullYear(),
+      (date.getMonth() + 1).toString().padStart(2, '0'),
+      date.getDate().toString().padStart(2, '0')
+    ].join('-');
+}
+
+// 获取最近三个月的起始和结束日期（含当月）
+function getRecentThreeMonthsRange() {
+  const today = new Date();
+  const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  
+  // 计算前两个月的起始日
+  const twoMonthsAgoStart = new Date(currentMonthStart);
+  twoMonthsAgoStart.setMonth(twoMonthsAgoStart.getMonth() - 2);
+  
+  // 计算当月最后一天
+  const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  
+  return {
+    start: formatDate(twoMonthsAgoStart),
+    end: formatDate(currentMonthEnd),
+    // 包含完整日期对象用于进一步计算
+    // startObj: twoMonthsAgoStart,
+    // endObj: currentMonthEnd
+  };
+}
+
+function getRecentMonthRange() {
+  //获取当月开始-结束
+  const date = new Date()
+  let start = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-01`
+  let end =  new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+  return {
+    start:start,
+    end:end
+  }
+}
+function getRecentWeekRange(){
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0-6（0是周日）
+  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 计算与周一的差值
+  
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - diffToMonday);
+  
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  return {
+    start: formatDate(monday),
+    end: formatDate(sunday),
+    // weekStartObj: monday,
+    // weekEndObj: sunday
+  };
+}
+function getRecentDayRange() {
+  //获取当天开始结束
+  const date = new Date();
+  return formatDate(date)
+}
+
+function maskPhoneNumber(phoneNumber) {
+  if(!phoneNumber){
+    return false
+  }
+  return phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+}
+
 export {
   trim,
   processParams,
   getUrlParam,
   getIsAndroid,
-  isInApp
+  isInApp,
+  getRecentMonthRange,
+  getRecentDayRange,
+  getRecentWeekRange,
+  getRecentThreeMonthsRange,
+  formatNumber,
+  maskPhoneNumber
 }

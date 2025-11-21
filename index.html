@@ -2,6 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script>
       var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
         CSS.supports('top: constant(a)'))
@@ -9,6 +12,21 @@
         '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
         (coverSupport ? ', viewport-fit=cover' : '') + '" />')
     </script>
+    <script type="text/javascript">
+        window.timeLogList = [];
+        window.timeLog = function(RouterName,HookName){
+            let _time = new Date().getTime();
+            window.timeLogList.unshift(
+                [`${RouterName} ===> ${HookName}: `,
+                _time,
+                (timeLogList.length?_time-timeLogList[0][1]:0)
+            ]);
+            console.log(window.timeLogList[0]);
+            return timeLogList[0];
+        };
+        window.timeLog('index.html','head');
+    </script>
+    
     <script src="static/js/JSBridge.js"></script>
     <title>Waka</title>
     <!--preload-links-->

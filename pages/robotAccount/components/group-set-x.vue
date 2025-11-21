@@ -714,8 +714,8 @@
             list: [{title: '',content: ''}]
           }
         }
-        if (!configInfo.data[23].title_list.length) {
-          // configInfo.data[23].title_list = []
+        if (!configInfo.data[23].title_list) {
+          configInfo.data[23].title_list = []
           configInfo.data[23].title_list.push({id: '', name: '',res_id:-1})
         }
         if (!configInfo.data[24].coin_gift_list.length) {

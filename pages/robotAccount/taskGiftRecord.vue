@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="任务礼物记录" @backPage="backPage"></myCustomNavbar>
     <view class="tab-list">
       <view :class="['skewed', 'skewed'+item, curTab === item ? 'active':''] " v-for="item in 2" :key="item" @click="switchTab(item)">
         <p>{{item===1?'陪我玩':'摘星星'}}</p>
@@ -50,8 +51,9 @@
   import uniTh from '@/components/uni-table/components/uni-th/uni-th.vue'
   import uniTr from '@/components/uni-table/components/uni-tr/uni-tr.vue'
   import {groupTaskListData} from '@/service/robotAccount/index.js'
+  import myCustomNavbar from '@/components/myCustomNavbar.vue'
   export default {
-    components: {uniTable,uniThead,uniTbody,uniTd,uniTh,uniTr},
+    components: {uniTable,uniThead,uniTbody,uniTd,uniTh,uniTr,myCustomNavbar},
     data() {
       return {
         curTab: 1,
@@ -72,6 +74,9 @@
       this.init()
     },
     methods: {
+      backPage(){
+        uni.navigateBack()
+      },
       init () {
         groupTaskListData({robot_id:this.robot_id}, res => {
           if (res.code === 0) {
@@ -143,17 +148,20 @@
 </script>
 
 <style lang="scss" scoped>
+  .content {
+    padding-top: 88rpx;
+  }
 .tab-list {
   width: 750rpx;
   height: 80rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 99;
+  // position: fixed;
+  // top: 0;
+  // left: 50%;
+  // transform: translateX(-50%);
+  // z-index: 99;
   >*{
     flex-shrink: 0;
   }
@@ -218,7 +226,7 @@
 .tableList {
   padding: 140rpx 0 80rpx;
   width: 750rpx;
-  min-height: calc(100vh - 40px);
+  min-height: calc(100vh - 256rpx);
   background-color: #ffffff;
   :deep .uni-table-th {
     font-size: 24rpx;

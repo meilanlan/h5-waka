@@ -680,6 +680,22 @@ const robotProdDoApi = (data, success, fail) => {
   })
 }
 
+//创建订单
+/*
+data.prod_type : 0:机器人 1:vip 2:svip 3:嗨币
+data.action: 1、购买或者续费，2安装，3启用，4暂停
+*/
+const createOrderApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/order/create',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
 // 我的订单
 const billListApi = (data, success, fail) => {
   ajax({
@@ -736,6 +752,60 @@ const awardTakeApi = (data, success, fail) => {
     fail: fail
   })
 }
+//机器人助手
+const ownerSuperGroupsApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/owner_super_groups',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//机器人入驻
+const robotBindGroupApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/robot_bind_group',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+//数据同步-查询群信息
+const glxGroupQueryApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group/glx_group_query',
+    data: data,
+    header: {
+      'Content-Type': 'application/json',
+    },
+    success: success,
+    fail: fail
+  })
+}
+
+//数据同步
+const glxGroupSyncApi = (data, success, fail) => {
+  console.log(1)
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group/glx_group_sync',
+    data: data,
+    header: {
+      'Content-Type': 'application/json',
+    },
+    success: success,
+    fail: fail
+  })
+}
+
 
 export {
   robotDetailData,
@@ -796,5 +866,10 @@ export {
   shareGroupApi,
   checkAwardStApi,
   awardTakeApi,
-  robotProdDoApi
+  robotProdDoApi,
+  ownerSuperGroupsApi,
+  robotBindGroupApi,
+  createOrderApi,
+  glxGroupSyncApi,
+  glxGroupQueryApi
 }

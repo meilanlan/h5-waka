@@ -177,7 +177,7 @@
 
 <style lang="scss" scoped>
   .energy {
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     margin-top: 32rpx;
     .header {
       display: flex;
@@ -192,7 +192,7 @@
       .right {
         display: flex;
         align-items: center;
-        font-family: 'PingFang SC';
+        // font-family: MiSans, 'MiSans';
         font-weight: 500;
         font-size: 28rpx;
         line-height: 32rpx;

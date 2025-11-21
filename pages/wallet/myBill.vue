@@ -1,19 +1,18 @@
 <template>
-  <view>
-    <view :class="['common-header',isIos!=true?'safeTop':'']">
-      <image class="back" src="../../static/image/btn_back.png" @click="backPage()"></image>
-      <text>我的账单</text>
-    </view>
+  <view class="wrapper">
+    <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="我的账单" @backPage="backPage"></myCustomNavbar>
     <view class="header-tab">
       <view :class="['box',curTab === item&&'active']" v-for="item in 3" :key="'tab-'+item" @click="switchTab(item)">
         {{item === 1 ? '获得嗨币' : item === 2 ? '使用记录':'兑换'}}
       </view>
     </view>
-    <view class="no-data" v-if="!billList.length">
-      <image src="@/static/image/no-data.png" mode=""></image>
-      <view>暂无数据</view>
-    </view>
-    <scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="lower">
+    
+    <scroll-view scroll-y="true" class="scroll-Y">
+    <!-- <scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="lower"> -->
+      <view class="no-data" v-if="!billList.length">
+        <image src="@/static/image/no-data.png" mode=""></image>
+        <view>暂无数据</view>
+      </view>
       <view class="list-box">
         <view class="box" v-for="(item,index) in billList" :key="'bill-'+index">
           <view class="left">
@@ -24,15 +23,6 @@
             {{item.desc}}
           </view>
         </view>
-        <!-- <view class="box">
-          <view class="left">
-            <view class="tit textEllipsis">购买会员礼物赠送给OscarOscarOscar</view>
-            <view class="time">2024-02-09</view>
-          </view>
-          <view class="right">
-            +88,888,850嗨币
-          </view>
-        </view> -->
       </view>
     </scroll-view>
    
@@ -44,53 +34,34 @@
   import {ref,nextTick} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import {billListApi} from '@/service/robotAccount/index.js'
-  
+  import myCustomNavbar from '@/components/myCustomNavbar.vue'
   
   const curTab = ref(1)
-  const curPage = ref(0)
+  const curPage = ref(1)
   const group_id = ref()
   const billList = ref([])
   const isIos = ref(window.isiOS)
   
   function lower(e){
-    curPage.value = curPage.value+1
-    getBillList()
+    // curPage.value = curPage.value+1
+    // getBillList()
   }
   
   function switchTab(item) {
     curTab.value = item
-    curPage.value = 0
+    curPage.value = 1
     getBillList()
   }
   
   function backPage() {
     uni.navigateBack();
-    // uni.navigateTo({
-    // 	url: `pages/robotAccount/robotDetail?group_id=${group_id.value}&pid=3&show_title=0`
-    // });
   }
   function getBillList(){
     uni.showLoading({mask: true})
-  //   let arr = [
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  //   {key:10},
-  // ]
   //   billList.value=billList.value.concat(arr)
     billListApi({type: curTab.value, last_id: curPage.value}, res => {
         if (res.code === 0) {
+          
           billList.value=res.data
           uni.hideLoading()
         } else {
@@ -115,9 +86,8 @@
 </script>
 
 <style lang="scss" scoped>
-  .common-header {
-    background-color: #ffffff;
-    box-sizing: content-box;
+  .wrapper {
+    padding-top: 88rpx;
   }
   .header-tab {
     width: 100%;
@@ -187,6 +157,9 @@
     }
   }
   .scroll-Y {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 256rpx);
+  }
+  .no-data {
+    margin-top: 50rpx;
   }
 </style>

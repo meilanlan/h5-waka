@@ -747,7 +747,7 @@
         text-align: right;
         margin: 40rpx 0 20rpx;
         font-size: 24rpx;
-        font-family: PingFang SC-Regular, PingFang SC;
+        // font-family: MiSans, 'MiSans';
         font-weight: 400;
         color: #9DA9B9;
         line-height: 24rpx;

@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="群主账户" @backPage="backPage"></myCustomNavbar>
     <uni-table ref="tableList" :loading="loading" emptyText="暂无数据" border>
       <uni-tr>
         <uni-th :width="w1" align="center" sortable  @sort-change="changeTable">月份</uni-th>
@@ -32,8 +33,9 @@
   import uniTh from '@/components/uni-table/components/uni-th/uni-th.vue'
   import uniTr from '@/components/uni-table/components/uni-tr/uni-tr.vue'
   import {groupIncomeListData} from '@/service/robotAccount/index.js'
+  import myCustomNavbar from '@/components/myCustomNavbar.vue'
   export default {
-    components: {uniTable,uniTbody,uniTd,uniTh,uniTr},
+    components: {uniTable,uniTbody,uniTd,uniTh,uniTr,myCustomNavbar},
     data() {
       return {
         loading: false,
@@ -49,6 +51,9 @@
       this.init()
     },
     methods: {
+      backPage(){
+        uni.navigateBack()
+      },
       init() {
         groupIncomeListData({robot_id:this.robot_id}, res => {
           if (res.code === 0) {
@@ -98,7 +103,8 @@
 
 <style scoped lang="scss">
 .content {
-  height: 100vh;
+  padding-top: 88rpx;
+  height: calc(100vh - 88rpx);
   width: 750rpx;
   background-color: #ffffff;
   position: relative;
@@ -133,7 +139,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 24rpx;
-  font-family: PingFang SC-Medium, PingFang SC;
+  // font-family: MiSans, 'MiSans';
   font-weight: 500;
   >*{
     flex-shrink: 0;

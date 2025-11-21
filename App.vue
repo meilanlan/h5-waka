@@ -1,16 +1,33 @@
-<script>
-	export default {
-		onLaunch: function() {
-			console.log('App Launch')
-		},
-		onShow: function() {
-      
-			console.log('App Show')
-		},
-		onHide: function() {
-			console.log('App Hide')
-		}
-	}
+<script setup>
+  import { onMounted,getCurrentInstance } from 'vue';
+  
+  onMounted(()=>{
+    // ios获取系统状态栏高度
+    const systemInfo = uni.getSystemInfoSync()
+    console.log(systemInfo, 'systemInfo is')
+    const statusBarHeight = systemInfo.safeAreaInsets?.top || systemInfo.statusBarHeight || '44'
+    let funDataIos = { hide: 1 };
+    let funDataAn = JSON.stringify({
+      show_title: 0, //show_title：1、显示客户端标题栏，否则不显示
+      immersive: 1, //1、沉浸式显示，否则不需要沉浸式
+    });
+    
+   const appPage = document.getElementById('app');
+   if(window.isiOS) {
+     appPage.style.paddingTop = `${statusBarHeight}px`;
+     console.log(statusBarHeight, '---statusBarHeight---')
+     uni.setStorageSync('paddingTop',statusBarHeight)
+   }
+   window.client.JSNavigationBar((response) => {
+     console.log(response, '安全区域是多少')
+     if (!window.isiOS) {
+       appPage.style.paddingTop = `${response}px`;
+       uni.setStorageSync('paddingTop',response)
+     }
+   }, funDataIos, funDataAn)
+   
+  })
+	
 </script>
 
 <style lang="scss">
@@ -18,10 +35,11 @@
 	/*每个页面公共css */
   
   body {
-    font-family: "PingFang SC-Medium", "PingFang SC";
+    // font-family: "PingFang SC-Medium", "PingFang SC";
+    font-family: 'MiSans', 'PingFang SC', 'PingFang';
     color: #0E1B2E;
     line-height: 1;
-    background-color: #F4F5F7;
+    background-color: #F0F3F8;
   }
   * {
     box-sizing: border-box;
@@ -40,11 +58,15 @@
     padding-top: env(safe-area-inset-top);
     // padding: 0 40rpx 0 32rpx;
     width: 100%;
-    min-height: 120rpx;
+    height: 120rpx;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // z-index: 999;
     .back {
       width: 48rpx;
       height: 48rpx;
@@ -59,12 +81,13 @@
     }
     text {
       font-size: 36rpx;
-      font-family: "PingFang SC-Medium";
+      // font-family: MiSans, 'MiSans';
       font-weight: 500;
       color: #000000;
     }
     &.safeTop {
-      padding-top: 88rpx;
+      height: 160rpx;
+      // padding-top: 88rpx;
     }
   }
   
@@ -127,7 +150,8 @@
           display: flex;
           align-items:center;
           .cv {
-            width: 80rpx;
+            // width: 80rpx;
+            width: auto;
             height: 32rpx;
             margin-left: 16rpx;
           }
@@ -248,13 +272,15 @@
     width: 100vw;
     height: calc(100vh - 120px);
     padding: 40rpx 28rpx;
+    // padding-bottom: constant(safe-area-inset-bottom);
+    // padding-bottom: env(safe-area-inset-bottom);
     background-color: #ffffff;
     border-top-left-radius: 30rpx;
     border-top-right-radius: 30rpx;
   }
   
   .no-data {
-    margin-top: 328rpx;
+    margin-top: 280rpx;
     text-align: center;
     font-size: 28rpx;
     color: #606163;
@@ -307,13 +333,20 @@
   .common-empty {
     margin-top: 76rpx;
     text-align: center;
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: #606178;
     image {
       display: block;
       margin: 0 auto 42rpx;
-      width: 200rpx;
-      height: 200rpx;
+      width: 320rpx;
+      height: 320rpx;
     }
+  }
+  .text3Ellipsis{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

@@ -21,7 +21,7 @@
   import {ref,reactive} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import {shareUserApi} from '@/service/robotAccount/index.js'
-  import defaultimg from '../../static/image/logo.png'
+  import defaultimg from '../../static/image/logo.jpg'
   
   const groupType = ref(1)
   const userId = ref()
@@ -54,7 +54,7 @@
     width: 100vw;
     height: 100vh;
     position: relative;
-    font-family: MiSans, MiSans;
+    // font-family: MiSans, MiSans;
     // display: flex;
     // justify-content: center;
     // align-items: center;
@@ -96,7 +96,7 @@
         }
         .tex {
           margin-top: 8rpx;
-          font-family: PingFang SC, PingFang SC;
+          // font-family: PingFang SC, PingFang SC;
           font-weight: 400;
           font-size: 22rpx;
           color: rgba(0,0,0,0.4);
@@ -141,7 +141,7 @@
       }
       .tex2 {
         margin-top: 12rpx;
-        font-family: PingFang SC, PingFang SC;
+        // font-family: PingFang SC, PingFang SC;
         font-weight: 500;
         font-size: 28rpx;
         color: rgba(0,0,0,0.4);
@@ -157,7 +157,6 @@
         .group-bg {
           width: 100%;
           height: 386rpx;
-          
         }
         .headimg-box {
           position: relative;

@@ -7,8 +7,11 @@
       </view>
       <view class="info">
         <view class="title textEllipsis">{{item.title}}</view>
-        <view class="date-box date-box-1">季度版(3个月)</view>
-        <!-- <view class="date-box date-box-2">季度版(12个月)</view> -->
+        <view class="placeholder-box">
+          <view v-if="item.duration>0" :class="['date-box','date-box-'+(item.duration===31536000?2:1)]">
+            {{timeObj[item.duration]}}
+          </view>
+        </view>
         <view class="text text2">{{item.prod_name}}</view>
         <view class="text">{{item.prod_develop}}</view>
         <view class="text1 text3Ellipsis">
@@ -60,8 +63,15 @@
   import {ref,reactive,inject} from 'vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import payMethodsX from '../../../components/pay-methods-x/pay-methods-x.vue';
-  import {alipayOrder,robotProdDoApi} from '@/service/robotAccount/index.js'
+  import {createOrderApi} from '@/service/robotAccount/index.js'
   
+  const timeObj = {
+    86400: '1天体验版',
+    604800: '1周体验版',
+    2592000: '月度版(1个月)',
+    7776000: '季度版(3个月)',
+    31536000: '年度版(12个月)'
+  }
   const curPay = ref('1')
   const payLock = ref(false)
   const curRobotInfo = reactive({data:{}})
@@ -70,82 +80,95 @@
   const props = defineProps({
     robot_list: Array
   })
+  const emit = defineEmits(['updateInfo'])
   const payMethodsRef = ref(null)
   
   function openMethods(item){
-    if (item.prod_status === 0) {
-      curRobotInfo.data = item
-      payMethodsRef.value.open()
-    }
+    // if (item.prod_status === 0) {
+    curRobotInfo.data = item
+    toPay()
+      // payMethodsRef.value.open()
+    // }
   }
   
   function toPay(){
     if (payLock.value === false) {
       payLock.value = true
-      
-      // action: 1、购买或者续费，2安装，3启用，4暂停
-      let params = {
-        group_id: parentInfo.data.group_id,
-        prod_id: curRobotInfo.data.id,
-        action: 1
-      }
-      uni.showLoading({mask: true})
-      // let res = {
-      //     "group_id": 15112564338,
-      //     "prod_id": 1000002,
-      //     "prod_status": 3,
-      //     "sn": "",
-      //     "request_params": ""
-      // }
-      // let res = {
-      //     "group_id": 15112564338,
-      //     "prod_id": 1000001,
-      //     "prod_status": 0,
-      //     "sn": "286644375554",
-      //     "request_params": "app_id=2021004161602824&biz_content=%7B%22out_trade_no%22%3A%22286644375554%22%2C%22product_code%22%3A%22FAST_INSTANT_TRADE_PAY%22%2C%22subject%22%3A%22%E5%B0%8F%E5%97%A8%E6%9C%BA%E5%99%A8%E4%BA%BA%E7%BE%A4%E5%8A%A9%E6%89%8B%EF%BC%88%E5%A8%B1%E4%B9%90%E7%89%88%EF%BC%89%22%2C%22total_amount%22%3A%22288%22%7D&charset=utf-8&format=JSON&method=alipay.trade.app.pay&notify_url=http%3A%2F%2F110.40.170.35%3A9898%2Falipay%2Fcallback_v1&sign=FWEYr9gFnKQ61bcNgeggkNeLr4QZHMRnDfVl9%2Fa26Y%2BlmEVUEZbqCNQWgrHkQloAv18rlRbGv2b3orx1pagd8e3GaJt%2Ba52%2B%2BkA%2FgalogKkGQfejKTizD7bHmVUgy7kEUZfOGnPpfDlNOQzz8%2FVyO90ZCe7TK9KOICQc9jfnWriIk5sL9Dnij4yBUsGLmgu1d3fYTudPMetrXKO0gn8zliO0ilu46DgFBdtHKoXT2OzWrRl5IZ7CxFlJXONc7fueik2NWFj507%2BTXo4p41KKoh8KLt0zdaO7f0OamKRampYE7pMxzJqVAcCy%2FmCZ5mpQQhd2K%2B2OAV%2FVBIAnjNoX3g%3D%3D&sign_type=RSA2&timestamp=2025-07-29+15%3A40%3A12&version=1.0"
-      // }
-      // location.href = res.request_params
-      robotProdDoApi(params,res=>{
-        if (res.data) {
-          if(res.data.request_params) {
-            //付费
-            location.href = res.data.request_params
-          } else {
-            // 免费
-            curRobotInfo.data.prod_status = res.data.prod_status
-          }
-          payMethodsRef.value.close()
-          uni.hideLoading()
-          payLock.value = false
-        }else {
-          payLock.value = false
-          uni.showToast({
-            title: res.msg,
-            icon: 'none'
-          });
-          uni.hideLoading()
-          payMethodsRef.value.close()
-        }
-      })
-      
-      // return false
-      // uni.showLoading({mask: true})
-      // let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=4&show_title=0`)
-      // alipayOrder({prod_id: curRobotInfo.data.id,return_url:returnUrl}, res => {
-      //   if (res.code === 0) {
-      //     location.href = res.data.request_params
-      //     payLock.value = false
-      //     uni.hideLoading()
-      //   } else {
-      //     payLock.value = false
-      //     uni.showToast({
-      //       title: res.msg,
-      //       icon: 'none'
-      //     });
-      //     uni.hideLoading()
-      //   }
-      // })
+      /*
+        action: 1、购买或者续费，2安装，3启用，4暂停
+        prod_type： 4(商品类型)
+        0:机器人 1:vip 2:svip 3:hi币
+      */
+     
+     if(window.isiOS || curRobotInfo.data.prod_price === '免费'){
+       //ios端
+       let params = {
+         group_id: parentInfo.data.group_id,
+         prod_id: curRobotInfo.data.id,
+         pay_channel: window.isiOS?'ios':'',
+         prod_type: 0,
+         action: 1
+       }
+       createOrderApi(params,res=>{
+         if (res.data) {
+           if(curRobotInfo.data.prod_price === '免费') {
+             // 免费
+             curRobotInfo.data.prod_status = res.data.prod_status
+           } else {
+             //付费
+               window.client.BuyRobotJSAction({
+                 prodId: curRobotInfo.data.t_id,
+                 orderId: res.data.sn,
+               },(respon)=>{
+                 console.log(respon, 'oooios')
+                 if(!respon) {
+                   emit('updateInfo')
+                   uni.showToast({
+                     title: '购买失败，请重新再试',
+                     icon: 'none'
+                   });
+                 } else {
+                   emit('updateInfo')
+                   uni.showToast({
+                     title: '购买成功',
+                     icon: 'none'
+                   });
+                 }
+               })
+           }
+           payLock.value = false
+         }else {
+           payLock.value = false
+           uni.showToast({
+             title: res.msg,
+             icon: 'none'
+           });
+           // payMethodsRef.value.close()
+         }
+       })
+     } else {
+       /*
+          prod_type: 商品类型 (APP:1 ; H5:2;) | (普通商品: 0; Robot:4)  => (如 H5 购买 Robot => 6(2+4))
+       */
+       window.client.BuyRobotJSAction({
+         prod_id: curRobotInfo.data.id,
+         prod_type: 0,
+         customize: ''
+       })
+       payLock.value = false
+     }
     }  
+  }
+  
+  window.pay_result_after = (res)=>{
+    // 唤起支付后，获取客户端返回的结果信息
+    let respon = JSON.parse(res)
+    console.log(res,'---android---',respon)
+    if (respon.isSuccess) emit('updateInfo')
+    uni.showToast({
+      title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
+      icon: 'none'
+    });
   }
   function radioPayChange(){
     
@@ -158,7 +181,7 @@
     margin-top: 24rpx;
     display: flex;
     flex-wrap: wrap;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     .box {
       margin-bottom: 24rpx;
       margin-right: 14rpx;
@@ -182,8 +205,6 @@
         top: 164rpx;
         width: 72rpx;
         height: 72rpx;
-        border: 4rpx solid #F0F3F8;
-        border-radius: 16rpx;
         image {
           width: 100%;
           height: 100%;
@@ -198,17 +219,19 @@
           font-weight: 500;
           line-height: 24rpx;
         }
+        .placeholder-box {
+          height: 32rpx;
+        }
         .date-box {
           margin: 8rpx 0;
           display: inline-block;
           padding: 0 12rpx;
-          height: 32rpx;
+          height: 100%;
           line-height: 32rpx;
           border-radius: 16rpx;
-          font-family: MiSans, MiSans;
+          // font-family: 'MiSans';
           font-weight: 500;
           font-size: 20rpx;
-          line-height: 32rpx;
           &.date-box-1 {
             background: #D4F1FF;
             color: #4599FF;
@@ -250,8 +273,10 @@
             line-height: 48rpx;
             font-weight: 400;
             font-size: 24rpx;
+            background: #F0F3F8;
+            color: rgba(0,0,0,0.2);
             &.btn-1 {
-              background: #FFFFFF;
+              background: #F0F3F8;
               color: rgba(0,0,0,0.2);
             }
             &.btn-0 {
@@ -307,7 +332,7 @@
     border-radius: 16rpx;
     text-align: center;
     line-height: 96rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     font-weight: 600;
     font-size: 32rpx;
     color: #FFFFFF;

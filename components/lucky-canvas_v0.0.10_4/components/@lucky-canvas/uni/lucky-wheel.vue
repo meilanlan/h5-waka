@@ -246,7 +246,7 @@
     transform: translateX(-50%);
     /* width: 510rpx;
     height: 510rpx; */
-    font-family: 'MiSans';
+    /* font-family: 'MiSans'; */
     z-index: 99;
   }
   .lucky-box canvas {

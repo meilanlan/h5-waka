@@ -174,10 +174,19 @@
 
 <style lang="scss" scoped>
   .wrapper {
-    height: 100%;
-    font-family: 'MiSans';
+    width: 100% !important;
+    height: 100% !important;
+    // font-family: 'MiSans';
     uni-scroll-view {
       height: 100%;
+    }
+    .title {
+      font-weight: 700;
+      font-size: 36rpx;
+      color: #000000;
+      line-height: 40rpx;
+      text-align: center;
+      padding: 20rpx 0 30rpx;
     }
   }
  
@@ -185,21 +194,14 @@
     view {
       margin-bottom: 20rpx;
       font-weight: 400;
-      font-size: 32rpx;
+      font-size: 28rpx;
       color: rgba(0,0,0,0.8);
       line-height: 48rpx;
     }
     .mt32 {
       margin-top: 60rpx;
     }
-    .title {
-      font-weight: 700;
-      font-size: 40rpx;
-      color: #000000;
-      line-height: 40rpx;
-      text-align: center;
-      padding: 20rpx 0 30rpx;
-    }
+    
     .text-right {
       text-align: right;
     }

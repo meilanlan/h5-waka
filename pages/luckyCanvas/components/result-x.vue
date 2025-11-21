@@ -35,7 +35,7 @@
     min-height: 592rpx;
     background: url('/static/image/lucky/result-bg.png') no-repeat;
     background-size: 100% 100%;
-    font-family: MiSans, MiSans;
+    // font-family: MiSans, MiSans;
     
     .close {
       position: absolute;

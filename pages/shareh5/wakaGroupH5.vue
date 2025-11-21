@@ -4,7 +4,7 @@
     <image class="bg" src="/static/image/community-bg2.jpg"></image>
     <view class="top-box">
       <view class="left">
-        <image src="/static/image/logo.png"></image>
+        <image src="/static/image/logo.jpg"></image>
         <view class="info">
           <view class="name">咓咔社群</view>
           <view class="tex">这就是你想要的超级社群</view>
@@ -21,7 +21,7 @@
     </view>
     <view class="download-btn">
       <view class="logo">
-        <image src="/static/image/logo.png" mode=""></image>
+        <image src="/static/image/logo.jpg" mode=""></image>
       </view>
       App 内打开
     </view>
@@ -30,19 +30,19 @@
       <view class="contener-body contener-body-2">
         <image class="group-bg" src="/static/image/bg_wxq_1.jpg" mode=""></image>
         <view class="headimg-box">
-          <image src="/static/image/logo.png" mode=""></image>
+          <image src="/static/image/logo.jpg" mode=""></image>
         </view>
         <view class="name">晚风惬意王者战队</view>
         <view class="tex3">
           <image src="/static/image/group.png"></image>1200人
         </view>
         <view class="invite">
-          <image src="/static/image/logo.png" mode=""></image>
+          <image src="/static/image/logo.jpg" mode=""></image>
           Nichol 邀请你加入
         </view>
         <view class="invite-btn">接受邀请</view>
       </view>
-      <image class="logo-share" src="/static/image/logo-share.png"></image>
+      <image class="logo-share" src="/static/image/logo-share.jpg"></image>
     </template> -->
     
     
@@ -62,7 +62,7 @@
     width: 100vw;
     height: 100vh;
     position: relative;
-    font-family: MiSans, MiSans;
+    // font-family: MiSans, MiSans;
     // display: flex;
     // justify-content: center;
     // align-items: center;
@@ -104,7 +104,7 @@
         }
         .tex {
           margin-top: 8rpx;
-          font-family: PingFang SC, PingFang SC;
+          // font-family: PingFang SC, PingFang SC;
           font-weight: 400;
           font-size: 22rpx;
           color: rgba(0,0,0,0.4);
@@ -149,7 +149,7 @@
       }
       .tex2 {
         margin-top: 12rpx;
-        font-family: PingFang SC, PingFang SC;
+        // font-family: PingFang SC, PingFang SC;
         font-weight: 500;
         font-size: 28rpx;
         color: rgba(0,0,0,0.4);

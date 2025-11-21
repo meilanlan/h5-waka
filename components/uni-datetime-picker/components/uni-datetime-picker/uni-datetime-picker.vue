@@ -12,7 +12,7 @@
 					</view>
 
 					<view v-else class="uni-date-x uni-date-range">
-            <uni-icons class="icon-calendar" type="calendar" color="#c0c4cc" size="22"></uni-icons>
+            <!-- <uni-icons class="icon-calendar" type="calendar" color="#c0c4cc" size="22"></uni-icons> -->
             <view class="uni-date__x-input text-center">{{ displayRangeValue.startDate || startPlaceholderText }}</view>
 
             <view class="range-separator">{{rangeSeparator}}</view>
@@ -135,6 +135,7 @@
 	import TimePicker from './time-picker.vue'
 	import { initVueI18n } from '@dcloudio/uni-i18n'
 	import i18nMessages from './i18n/index.js'
+  import UniIcons from '../../../uni-icons/components/uni-icons/uni-icons.vue'
   import { getDateTime, getDate, getTime, getDefaultSecond, dateCompare, checkDate, fixIosDateFormat } from './util'
 
 	export default {
@@ -144,7 +145,8 @@
 		},
 		components: {
 			Calendar,
-			TimePicker
+			TimePicker,
+      UniIcons
 		},
 		data() {
 			return {

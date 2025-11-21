@@ -2,19 +2,19 @@
   <view class="my-home">
     <view class="my-home-info">
       <view class="my-info-bg">
-        <image :src="userInfo.data.user.bg_img || '/static/image/bg-slices/bg.png'" mode="aspectFill"></image>
+        <image :src="userInfo.data.user.bg_img||'https://waka-1311025102.cos.ap-shanghai.myqcloud.com/app/prod/cover/u_free_1.png'" mode="aspectFill"></image>
       </view>
       <view class="my-info">
-        <image class="left" :src="userInfo.data.user.head_img"></image>
+        <image class="left" :src="userInfo.data.user.head_img || gender"></image>
         <view class="right">
           <view class="name">
             <text class="nickname">{{userInfo.data.user.nick_name}}</text>
             <!-- <view class="grage"></view> -->
-            <!-- <image v-for="item in userInfo.data.user.ic_list" class="masonry" :src="item" mode="heightFix"></image> -->
+            <image v-for="(item,idx) in userInfo.data.user.ic_list" :key="idx" class="masonry" :src="item" mode="heightFix"></image>
           </view>
-          <view class="icon-list">
-            <image v-for="item in userInfo.data.user.ic_list" :src="item" mode="heightFix"></image>
-          </view>
+          <!-- <view class="icon-list">
+            <image v-for="(item,idx) in userInfo.data.user.ic_list" :key="'ic'+idx" :src="item" mode="heightFix"></image>
+          </view> -->
           <view class="ip">
             IP:{{userInfo.data.user.location}}<text>|</text>ID: {{userInfo.data.user.user_id}}<image @click="copyId(props.robotInfo.group_id)" class="copy" src="../../../static/image/copy.png" mode=""></image>
           </view>
@@ -22,7 +22,6 @@
       </view>
     </view>
     
-  
     <view class="tab-list">
       <div :class="['tab-box', curTabIndex=== index&&'active']" v-for="(item, index) in tabList" :key="'TAB'+index" @click="switchTab(item,index)">
         <image :src="item.iconUrl"></image>
@@ -33,16 +32,22 @@
       <!-- 能量助力 -->
       <energy-assist-x v-if="curTabIndex === 0" :energy="userInfo.data.energy" :haib="userInfo.data.haib" @updateEnergy="updateEnergy"></energy-assist-x>
       <!-- 我的钱包 -->
-      <my-wallet v-else-if="curTabIndex === 1" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="props.robotInfo"></my-wallet>
+      <my-wallet v-else-if="curTabIndex === 1" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="props.robotInfo" @updateProfile="updateProfile"></my-wallet>
       <!-- 会员中心 -->
       <vip-center-x v-else-if="curTabIndex === 2" :vip="userInfo.data.vip"></vip-center-x>
       <!-- 嗨币充值 -->
       <view v-else class="pay-model">
-        <pay-x :haib="userInfo.data.haib"></pay-x>
+        <pay-x :haib="userInfo.data.haib" @updateInfo="updateProfile" @openAgreement="openAgreement"></pay-x>
       </view>
     </template>
     
-    
+    <!-- 嗨币用户协议 -->
+    <uni-popup ref="agreementPopup" type="center">
+      <view class="common-popup common-popup-agreement">
+        <image @click="openAgreement(2)" class="close" src="/static/image/close.png"></image>
+       <userReachargeAgreement></userReachargeAgreement>
+      </view>
+    </uni-popup>
   </view>
 </template>
 
@@ -52,8 +57,12 @@
   import myWallet from './my-wallet.vue'
   import vipCenterX from './vip-center-x.vue';
   import payX from '../../../components/pay-x/pay-x.vue';
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import userReachargeAgreement from './user-reacharge-agreement.vue'
   import {userProfileApi} from '@/service/robotAccount/index.js'
   
+  const boyHeadimg = new URL("@/static/image/boy.png", import.meta.url).href
+  const girlHeadimg = new URL("@/static/image/girl.png", import.meta.url).href
   const props = defineProps({
     robotInfo: Object
   })
@@ -63,8 +72,10 @@
     {value: '会员中心',iconUrl: new URL("@/static/image/home-3.png", import.meta.url).href},
     {value: 'Hi币充值',iconUrl: new URL("@/static/image/home-4.png", import.meta.url).href},
   ]
+  const agreementPopup = ref(null)
   const infoFlag = ref(false)
   const curTabIndex = ref(0)
+  const gender = ref(window.userinfo.user.gender===1?boyHeadimg:girlHeadimg)
   const userInfo = reactive({
     data: {
       energy: {},
@@ -76,10 +87,21 @@
   })
   const parentInfo = inject('parentGroupInfo')
   
+  function openAgreement(type){
+    type === 1 && agreementPopup.value.open()
+    type === 2 && agreementPopup.value.close()
+  }
+  
   function updateEnergy(data){
     //更新能量值
     console.log(data, 'data')
     userInfo.data.wallet.energy = data
+  }
+  
+  function updateProfile(){
+    //更新我的主页的内容
+    console.log('update')
+    getUserProfile()
   }
   
   function copyId(content){
@@ -98,26 +120,20 @@
   getUserProfile()
   
   function getUserProfile(){
-    console.log('come in')
     uni.showLoading()
     
-    userProfileApi({group_id: parentInfo.group_id}, res => {
+    userProfileApi({group_id: parentInfo.group_id,channel:window.isiOS?'ios':'android'}, res => {
       if (res.code === 0) {
         userInfo.data = res.data
-        userInfo.data.user.bg_img = ''
+        // userInfo.data.user.bg_img = ''
         console.log(userInfo.data, 'userInfo.data')
         infoFlag.value = true
         uni.hideLoading()
-      } else if (res.code === -20001) {
-        // this.$emit('updateAdminToken')
-        uni.hideLoading()
-      } else if (res.code != -10002){
+      } else{
         uni.showToast({
           title: res.msg,
           icon: 'none'
         });
-        uni.hideLoading()
-      } else {
         uni.hideLoading()
       }
     })
@@ -128,7 +144,7 @@
 
 <style lang="scss" scoped>
   .my-home {
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     margin-top: 34rpx;
     padding: 0 32rpx;
     .my-home-info {
@@ -181,7 +197,7 @@
         .masonry {
           margin-left: 8rpx;
           width: auto;
-          height: 32rpx;
+          height: 36rpx;
           &:first-of-type {
             height: 36rpx;
           }
@@ -260,5 +276,18 @@
   .pay-model {
     margin-top: 32rpx;
   }
-  
+  .common-popup-agreement {
+    width: 92vw;
+    height: calc(100vh - 120px);
+    border-radius: 30rpx;
+    position: relative;
+    .close {
+      width: 48rpx;
+      height: 48rpx;
+      position: absolute;
+      right: 28rpx;
+      top: 58rpx;
+      z-index: 10;
+    }
+  }
 </style>

@@ -16,7 +16,7 @@
           <view :class="['vip-box',curVipIndex === index&&'active']" v-for="(item, index) in curVipInfo.list" :key="'vip-'+item.id" @click="switchVip(item,index)">
             <view class="month">{{item.title}}</view>
             <view class="price">¥{{item.price}}</view>
-            <view class="text4">{{item.desc}}</view>
+            <view class="text4"><text>{{item.desc}}</text></view>
             <view class="text5">{{item.discount}}</view>
             <view class="text6">{{item.tag}}</view>
           </view>
@@ -58,7 +58,7 @@
             </label>
           </radio-group> -->
           <view :class="['check-box', agaree === false&&'active']" ></view>
-            开通前确认 <text @click.stop="openAgreement(1)">《咓咔超级社群会员服务协议》</text>
+            开通前确认 <text @click.stop="openAgreement(1)">《Whack VIP会员服务协议》</text>
         </view>
       </view>
       
@@ -109,10 +109,11 @@
   import uniTh from '@/components/uni-table/components/uni-th/uni-th.vue'
   import uniTr from '@/components/uni-table/components/uni-tr/uni-tr.vue'
   import vipAgreementXVue from './vip-agreement-x.vue'
-  import {alipayOrder} from '@/service/robotAccount/index.js'
+  import {createOrderApi} from '@/service/robotAccount/index.js'
   const props = defineProps({
     vip: Object
   })
+  const emit = defineEmits(['checkTab'])
   const parentInfo = reactive({data:{}})
   parentInfo.data = inject('parentGroupInfo')
   const payPopup = ref(null)
@@ -128,44 +129,84 @@
   const payLock = ref(false)
   
   curVipInfo.value = props.vip.tab_list[curTab.value].data
+  emit('checkTab',curTab.value)
   function radioChange() {
     agaree.value = agaree.value === '1'?'':'1'
   }
   function switchVip(item, index){
     curVipIndex.value = index
-    console.log(curVipInfo.value.list[index])
-    
   }
   function switchTab(item,index){
     curVipIndex.value = 0
     curTab.value = index
     curVipInfo.value = item.data
+    emit('checkTab',curTab.value)
   }
   function toPay(){
     if (payLock.value === false) {
       payLock.value = true
-      uni.showLoading({mask: true})
-      let returnUrl=encodeURIComponent(window.location.origin+`/index.html#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
-      alipayOrder({prod_id: curVipInfo.value.list[curVipIndex.value].id,return_url:returnUrl}, res => {
-        if (res.code === 0) {
-          payPopup.value.close()
-          // location.href = res.data.request_params+'&redirect_url=' + encodeURIComponent(window.location.origin+`/#/pages/robotAccount/robotDetail?group_id=${parentInfo.data.group_id}&pid=3&show_title=0`)
-          location.href = res.data.request_params
-          payLock.value = false
-          uni.hideLoading()
-        } else {
-          payLock.value = false
-          uni.showToast({
-            title: res.msg,
-            icon: 'none'
-          });
-          uni.hideLoading()
+      if(window.isiOS){
+        // ios端
+        let params = {
+          group_id: parentInfo.data.group_id,
+          prod_id: curVipInfo.value.list[curVipIndex.value].id,
+          pay_channel: 'ios',
+          prod_type: curTab.value===0?1:2,//1:vip 2:svip
+          action: 1
         }
-      })
+        createOrderApi(params,res=>{
+          if (res.data) {
+              //付费
+              window.client.BuyRobotJSAction({
+                prodId: curVipInfo.value.list[curVipIndex.value].t_prod_id,
+                orderId: res.data.sn,
+              },(respon)=>{
+                console.log(respon, 'oooios')
+                if(!respon) {
+                  uni.showToast({
+                    title: '支付失败，请重新再试',
+                    icon: 'none'
+                  });
+                } else {
+                  emit('updateInfo')
+                  uni.showToast({
+                    title: '支付成功',
+                    icon: 'none'
+                  });
+                }
+              })
+            payLock.value = false
+          }else {
+            payLock.value = false
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
+          }
+        })
+      } else {
+        window.client.BuyRobotJSAction({
+          prod_id: curVipInfo.value.list[curVipIndex.value].id,
+          prod_type: curTab.value===0?1:2,//1:vip 2:svip,
+          customize: ''
+        })
+        payLock.value = false
+      }
     }
   }
+  window.pay_result_after = (res)=>{
+    // 唤起支付后，获取客户端返回的结果信息
+    let respon = JSON.parse(res)
+    console.log(res,'-----',respon)
+    if (respon.isSuccess) emit('updateInfo')
+    uni.showToast({
+      title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
+      icon: 'none'
+    });
+  }
   function openPayPopup(){
-    payPopup.value.open()
+    toPay()
+    // payPopup.value.open()
   }
   function radioPayChange(){
     
@@ -179,12 +220,13 @@
 <style lang="scss" scoped>
   .wrapper {
     padding-bottom: 300rpx;
+    // font-family: 'MiSans';
   }
   .tab-list {
     margin-top: 32rpx;
     background: #F0F3F8;
     border-radius: 16rpx;
-    font-family: 'MiSans';
+    font-family: 'MiSans-Medium';
     display: flex;
     .box {
       width: 342rpx;
@@ -233,7 +275,7 @@
   }
   .detail {
     margin-top: 32rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     .top {
       text-align: center;
       font-size: 32rpx;
@@ -306,9 +348,10 @@
         text-align: center;
         color: #000000;
         border: 2px solid transparent;
+        font-family: 'MiSans-Medium';
         .month {
           font-weight: 500;
-          font-size: 32rpx;
+          font-size: 30rpx;
           line-height: 40rpx;
         }
         .price {
@@ -316,12 +359,14 @@
           font-size: 36rpx;
           line-height: 48rpx;
           margin-top: 10rpx;
+          font-family: 'MiSans-Bold';
         }
         .text4 {
           font-weight: 400;
           font-size: 24rpx;
           color: rgba(0,0,0,0.3);
           line-height: 36rpx;
+          min-height: 36rpx;
         }
         .text5 {
           margin-top: 18rpx;
@@ -338,7 +383,7 @@
           height: 40rpx;
           background: #22C0FF;
           border-radius: 16rpx 0 16rpx 0;
-          font-family: 'PingFang SC';
+          // font-family: 'PingFang SC';
           font-weight: 500;
           font-size: 24rpx;
           color: #FFFFFF;
@@ -382,7 +427,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: 'PingFang SC';
+        // font-family: 'PingFang SC';
         font-weight: 500;
         font-size: 24rpx;
         color: rgba(0,0,0,0.4);
@@ -410,7 +455,7 @@
       height: 400rpx;
     }
     &.agreement-popup {
-      width: 96vw;
+      width: 92vw;
       border-radius: 30rpx;
       position: relative;
       .close {
@@ -447,7 +492,7 @@
     border-radius: 16rpx;
     text-align: center;
     line-height: 96rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     font-weight: 600;
     font-size: 32rpx;
     color: #FFFFFF;

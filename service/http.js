@@ -23,11 +23,12 @@ const ajax = (opt) => {
       // const hash = crypto.createHash('md5');
       // opt.data.sign = hash.update(decodeURIComponent(qs.stringify(processParams(opt.data)))).digest('hex');
       opt.method = opt.method || 'POST';
-      if (opt.method === 'POST') {
-        opt.data = qs.stringify(processParams(opt.data));
+      if (opt.method === 'POST'&& !opt.header) {
+          opt.data = qs.stringify(processParams(opt.data));
       }
-      opt.header = opt.header || {
+      opt.header = {
         'Content-Type': 'application/x-www-form-urlencoded',
+        ...opt.header,
         // 'user-token': token,
         // 'user-id': userId,
         'Authorization': token
@@ -47,8 +48,7 @@ const ajax = (opt) => {
       }
       // "robot-id": adminConfigInfo[groupId]&&adminConfigInfo[groupId]['robot_id'] || robotId
       opt.ApiUrl = opt.apiUrl || ApiUrl;
-      console.log(opt.ApiUrl, 'opt.ApiUrl')
-      // opt.ApiUrl = 'http://110.40.170.35:9898';
+      // opt.ApiUrl = 'https://api-test.whackgroup.com';
       opt.success = opt.success || function () {};
       opt.fail = opt.fail || function () {};
       uni.request({
@@ -88,17 +88,17 @@ const ajax = (opt) => {
       });
     } else {
       uni.hideLoading()
-      uni.showToast({
-        title: '请先登录！',
-        icon: 'none',
-        success: () => {
-          setTimeout(() => {
-            uni.navigateTo({
-              url: '/pages/login/index' + (from ? ('?from=' + from) : '')
-            });
-          }, 2000);
-        }
-      });
+      // uni.showToast({
+      //   title: '请先登录！',
+      //   icon: 'none',
+      //   success: () => {
+      //     setTimeout(() => {
+      //       uni.navigateTo({
+      //         url: '/pages/login/index' + (from ? ('?from=' + from) : '')
+      //       });
+      //     }, 2000);
+      //   }
+      // });
     }
   } catch (e) {
     uni.hideLoading()

@@ -61,8 +61,8 @@
       <template v-else-if="menuIndex===5">
         <uni-tr v-for="(item,i) in titInfo" :key="i">
           <uni-td :width="tableWidth3" align="left">{{item.index <= 9?'0'+item.index:item.index}}</uni-td>
-          <uni-td align="center">{{item.display_name}}</uni-td>
-          <uni-td align="right" >{{item.title}}</uni-td>
+          <uni-td align="center">{{item.nick_name}}</uni-td>
+          <uni-td align="right" >{{item.title_name}}</uni-td>
         </uni-tr>
       </template>
       
@@ -355,7 +355,6 @@
   }
   
   function switchMenu(item, i) {
-    console.log(i,'ooo')
     if (menuIndex.value != i) {
         menuIndex.value = i
         groupUserInfo(item.type)

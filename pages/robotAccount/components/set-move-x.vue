@@ -175,7 +175,7 @@
         this.$refs.closePopPopup.close()
       },
       checkboxChange(e){
-        console.log(e.detail.value,'uiu')
+        // console.log(e.detail.value,'uiu')
         this.dataType = e.detail.value
       },
       sureGroup() {

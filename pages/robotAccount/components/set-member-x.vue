@@ -14,7 +14,15 @@
     <!-- 详细数据 -->
     <uni-popup ref="clearTable" type="bottom" background-color="#ffffff">
       <view class="clearTable">
-        <view class="title">{{curType===14?curName:curName+'数据清理'}}</view>
+        <view class="title-box">
+          <view class="title">{{curType===14?curName:curName+'数据清理'}}</view>
+          <view class="search-box" v-if="curType===3">
+            <input class="inpt-1" v-model="searchUser" placeholder="搜索用户昵称" placeholder-style="color:#C5CCD5">
+            <image src="/static/image/search.png" @click="getUserData(3)"></image>
+          </view>
+          <image class="close" src="/static/image/close.png" @click="$refs.clearTable.close()"></image>
+        </view>
+        
         <view class="tableList">
           <scroll-view scroll-y="true" class="scroll">
             <!-- <uni-table ref="table" :loading="loading" border stripe type="selection" emptyText="暂无更多数据" @selection-change="selectionChange"> -->
@@ -95,12 +103,18 @@
                       <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="right">{{item.time}}</uni-td>
                     </template>
-                    <template v-else-if="curType===12">
+                    <!-- <template v-else-if="curType===12">
                       <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.brick || 0}}</uni-td>
                       <uni-td :width="tableWidth" align="right">
                         <image @click="openEditpopup(item)" class="edit-icon" src="../../../static/image/set/edit.png" mode=""></image>
                       </uni-td>
+                    </template> -->
+                    <!-- <template v-else-if="curType===15"> -->
+                    <template v-else-if="curType===12">
+                      <uni-td :width="tableWidth" align="center">{{item.display_name_1}}<br />{{item.display_name_2}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.baby_name}}</uni-td>
+                      <uni-td :width="tableWidth" align="center">{{item.baby_grow}}</uni-td>
                     </template>
                     <template v-else-if="curType===13">
                       <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
@@ -113,11 +127,7 @@
                       <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
                       <uni-td :width="tableWidth" align="center">{{item.yuanBao}}</uni-td>
                     </template>
-                    <template v-else-if="curType===15">
-                      <uni-td :width="tableWidth" align="center">{{item.display_name_1}}<br />{{item.display_name_2}}</uni-td>
-                      <uni-td :width="tableWidth" align="center">{{item.baby_name}}</uni-td>
-                      <uni-td :width="tableWidth" align="center">{{item.baby_grow}}</uni-td>
-                    </template>
+                    
                   </uni-tr>
               </uni-table>
             </checkbox-group>
@@ -128,7 +138,7 @@
           <view class="left">
             <checkbox-group class="checkbox-list" @change="checkboxChangeAll">
               <label for="">
-                <checkbox value="all" color="#ffffff" :checked="isAll" /> 全选
+                <checkbox value="all" :checked="isAll" /> 全选
               </label>
             </checkbox-group>
             
@@ -201,14 +211,11 @@
     // mixins: [scrollToTargetPosition],
     components: {uniPopup,uniTable,uniTd,uniTh,uniTr,uniNumberBox},
     props: {
-      group_id: {
-        type: Number,
-        default: () => {}
-      },
       robotInfo: {
         type: Object,
         default: () => {}
-      }
+      },
+      authCode: String,
     },
     data() {
       return {
@@ -225,7 +232,7 @@
           {id: 3, name: '退群人员', i: 5},
           {id: 4, name: '本群活跃', i: 6},
           {id: 5, name: '本群婚姻', i: 7},
-          {id: 15, name: '本群宝宝', i: 7},
+          {id: 12, name: '本群宝宝', i: 7},
           {id: 6, name: '本群头衔', i: 8},
           {id: 7, name: '本群签到', i: 9},
           {id: 8, name: '本群打劫', i: 10},
@@ -300,6 +307,12 @@
             {name: '群昵称',key: '',sort: false, arr: 'tableData'},
             {name: '释放时间',key: '',sort: false, arr: 'tableData'},
           ],
+          12: [
+            {name: '序号',key: 'index',sort: true, arr: 'tableData'},
+            {name: '父母',key: '',sort: false, arr: 'tableData'},
+            {name: '名称',key: '',sort: false, arr: 'tableData'},
+            {name: '成长值',key: '',sort: false, arr: 'tableData'},
+          ],
           // 12: [
           //   {name: '序号',key: 'index',sort: true, arr: 'tableData'},
           //   {name: '群昵称',key: '',sort: false, arr: 'tableData'},
@@ -316,13 +329,7 @@
             {name: '序号',key: 'index',sort: true, arr: 'tableData'},
             {name: '群昵称',key: '',sort: false, arr: 'tableData'},
             {name: '元宝',key: '',sort: false, arr: 'tableData'},
-          ],
-          15: [
-            {name: '序号',key: 'index',sort: true, arr: 'tableData'},
-            {name: '父母',key: '',sort: false, arr: 'tableData'},
-            {name: '名称',key: '',sort: false, arr: 'tableData'},
-            {name: '成长值',key: '',sort: false, arr: 'tableData'},
-          ],
+          ]
           
         },
         tableData: [],
@@ -337,10 +344,14 @@
         curItemInfo: {},
         curNumber: 0,
         m_day: 0,
-        m_love: 0
+        m_love: 0,
+        searchUser: ''
       }
     },
     methods: {
+      searchUserInfo(){
+        
+      },
       saveMarryData(){
         if (this.m_day === '' || this.m_love === '') {
           uni.showToast({
@@ -350,10 +361,12 @@
           return false
         }
         let params = {
+          group_id: this.robotInfo.group_id,
           data_type: this.curType,
           m_id: this.curItemInfo.id,
-          m_day: this.m_day,
-          m_love: this.m_love
+          m_days: this.m_day,
+          m_love: this.m_love,
+          auth_code: this.authCode
         }
         uni.showLoading({
           mask: true
@@ -381,7 +394,7 @@
             uni.hideLoading()
           }
         })
-        console.log(params)
+        // console.log(params)
       },
       changeNumb(v){
         this.curNumber = v
@@ -398,9 +411,15 @@
           mask: true
         })
         let params = {
-          data_type: this.curType,
+          group_id: this.robotInfo.group_id,
+          type: this.curType,
           user_id: this.curItemInfo.user_id,
-          value: this.curNumber
+          auth_code: this.authCode
+        }
+        if(this.curType===1){
+          params['coin'] = this.curNumber
+        } else if(this.curType===2) {
+          params['charm'] = this.curNumber
         }
         groupData(params, res => {
           if (res.code === 0) {
@@ -440,28 +459,21 @@
       sureClear() {
         uni.showLoading()
         let userids = this.clearUserids.length>0?this.clearUserids.toString(','):''
-        groupClearData({type: this.curType,group_id: this.robotInfo.group_id, userids: userids}, res=> {
+        groupClearData({type: this.curType,group_id: this.robotInfo.group_id, userids: userids, auth_code: this.authCode}, res=> {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
           if (res.code === 0) {
-            uni.showToast({
-              title: res.msg,
-              icon: 'none'
-            });
             this.getUserData(this.curType)
             this.$refs.clearSurePopup.close()
-          } else if (res.code === -20001) {
+          }else if (res.code === 100401) {
             this.$refs.clearSurePopup.close()
             this.$refs.clearTable.close()
             this.$emit('updateAdminToken')
             uni.hideLoading()
-          } else if (res.code != -10002){
-            this.$refs.clearSurePopup.close()
-            // this.$refs.clearTable.close()
-            uni.showToast({
-              title: res.msg,
-              icon: 'none'
-            });
-            uni.hideLoading()
           } else {
+            this.$refs.clearSurePopup.close()
             uni.hideLoading()
           }
         })
@@ -503,11 +515,12 @@
         }
       },
       checkboxChange(e) {
+        console.log(e, 'e is')
         this.clearUserids = e.detail.value
         for(var si = 0; si<this.tableData.length;si++){
           if (this.clearUserids.length > 0) {
             for(var i = 0; i<this.clearUserids.length;i++) {
-              if (this.clearUserids[i] === this.tableData[si].user_id) {
+              if (this.clearUserids[i]*1 === this.tableData[si].user_id) {
                 this.tableData[si].ischeck = true
                 break
               }else {
@@ -518,7 +531,7 @@
             this.tableData[si].ischeck = false
           }
         }
-        console.log(this.clearUserids, 'this.clearUserids is')
+        // console.log(this.clearUserids, 'this.clearUserids is')
       },
       changeTable(e, item){
         let key = item.key
@@ -534,7 +547,7 @@
         } else {
           //倒序
           contents = contents.sort((a, b) => {
-            console.log(a[key], 'a[key] ')
+            // console.log(a[key], 'a[key] ')
           	if (!isNaN(Number(a[key])) && !isNaN(Number(b[key]))) {
           		return b[key] - a[key]
           	}
@@ -550,7 +563,9 @@
         this.getUserData(item.id)
       },
       getUserData(type) {
-        groupUserDataData({type: type, group_id: this.robotInfo.group_id}, res => {
+        uni.showLoading()
+        if(type!=3) this.searchUser = ''
+        groupUserDataData({type: type, group_id: this.robotInfo.group_id,auth_code: this.authCode, key_word: this.searchUser}, res => {
             if (res.code === 0) {
               this.clearUserids = []
               this.isReverse = false
@@ -569,11 +584,15 @@
               }
               this.tableData = res.data || []
               this.loading = false
-            } else if (res.code === -20001) {
+            } else if (res.code === 100401) {
+              uni.showToast({
+                title: res.msg,
+                icon: 'none'
+              });
               this.$refs.clearTable.close()
               this.$emit('updateAdminToken')
               this.loading = false
-            } else if (res.code != -10002){
+            }else if (res.code != -10002){
               this.$refs.clearTable.close()
               uni.showToast({
                 title: res.msg,
@@ -584,6 +603,7 @@
               this.$refs.clearTable.close()
               this.loading = false
             }
+            uni.hideLoading()
         })
       }
     }
@@ -644,13 +664,47 @@
     border-radius: 30rpx 30rpx 0 0;
     box-sizing: content-box;
     height: 84vh;
-    .title {
-      font-size: 32rpx;
-      // font-family: MiSans, 'MiSans';
-      font-weight: 500;
-      color: #000000;
-      line-height: 32rpx;
+    .title-box {
+      display: flex;
+      align-items: center;
+      position: relative;
+      .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 42rpx;
+        height: 42rpx;
+      }
+      .title {
+        flex-shrink: 0;
+        font-size: 32rpx;
+        // font-family: MiSans, 'MiSans';
+        font-weight: 500;
+        color: #000000;
+        line-height: 32rpx;
+      }
+      .search-box {
+        flex-shrink: 0;
+        margin-left: 32rpx;
+        padding: 0 20rpx;
+        height: 60rpx;
+        width: 330rpx;
+        display: flex;
+        align-items: center;
+        background-color: #F4F5F7;
+        border-radius: 20rpx;
+        input {
+          flex-shrink: 0;
+          font-size: 24rpx;
+        }
+        image {
+          flex-shrink: 0;
+          width: 40rpx;
+          height: 40rpx;
+        }
+      }
     }
+    
     .footer {
       position: fixed;
       bottom: 0;
@@ -756,9 +810,9 @@
        }
     }
    }
-   :deep uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
-     // border-color: #C5CCD5;
-   }
+   // :deep uni-checkbox:not([disabled]) .uni-checkbox-input:hover {
+   //   // border-color: #C5CCD5;
+   // }
  }
  .editPopup {
    width: 690rpx;

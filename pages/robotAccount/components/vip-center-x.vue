@@ -92,7 +92,7 @@
       <uni-popup ref="agreementPopup" type="center">
         <view class="common-popup agreement-popup">
           <image @click="openAgreement(2)" class="close" src="/static/image/close.png"></image>
-          <vip-agreement-x-vue></vip-agreement-x-vue>
+          <vipAgreementX></vipAgreementX>
         </view>
       </uni-popup>
       
@@ -108,12 +108,12 @@
   import uniTd from '@/components/uni-table/components/uni-td/uni-td.vue'
   import uniTh from '@/components/uni-table/components/uni-th/uni-th.vue'
   import uniTr from '@/components/uni-table/components/uni-tr/uni-tr.vue'
-  import vipAgreementXVue from './vip-agreement-x.vue'
+  import vipAgreementX from './vip-agreement-x.vue'
   import {createOrderApi} from '@/service/robotAccount/index.js'
   const props = defineProps({
     vip: Object
   })
-  const emit = defineEmits(['checkTab'])
+  const emit = defineEmits(['checkTab','updateInfo'])
   const parentInfo = reactive({data:{}})
   parentInfo.data = inject('parentGroupInfo')
   const payPopup = ref(null)
@@ -161,19 +161,18 @@
                 prodId: curVipInfo.value.list[curVipIndex.value].t_prod_id,
                 orderId: res.data.sn,
               },(respon)=>{
-                console.log(respon, 'oooios')
-                if(!respon) {
-                  uni.showToast({
-                    title: '支付失败，请重新再试',
-                    icon: 'none'
-                  });
-                } else {
-                  emit('updateInfo')
-                  uni.showToast({
-                    title: '支付成功',
-                    icon: 'none'
-                  });
-                }
+                // console.log(respon, 'oooios')
+                // if(!respon) {
+                //   uni.showToast({
+                //     title: '支付失败，请重新再试',
+                //     icon: 'none'
+                //   });
+                // } else {
+                //   uni.showToast({
+                //     title: '支付成功',
+                //     icon: 'none'
+                //   });
+                // }
               })
             payLock.value = false
           }else {
@@ -196,13 +195,19 @@
   }
   window.pay_result_after = (res)=>{
     // 唤起支付后，获取客户端返回的结果信息
+    // let respon = JSON.parse(res)
+    // // if (respon.isSuccess) emit('updateInfo')
+    // uni.showToast({
+    //   title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
+    //   icon: 'none'
+    // });
+  }
+  window.notice_result_callback = (res)=>{
+    // 客户端通知h5更新页面数据
     let respon = JSON.parse(res)
-    console.log(res,'-----',respon)
-    if (respon.isSuccess) emit('updateInfo')
-    uni.showToast({
-      title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
-      icon: 'none'
-    });
+    if(respon.type===1){
+      emit('updateInfo')
+    }
   }
   function openPayPopup(){
     toPay()
@@ -351,7 +356,7 @@
         font-family: 'MiSans-Medium';
         .month {
           font-weight: 500;
-          font-size: 30rpx;
+          font-size: 28rpx;
           line-height: 40rpx;
         }
         .price {

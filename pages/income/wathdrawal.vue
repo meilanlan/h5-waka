@@ -42,7 +42,7 @@
         </view>
       </view>
       <view class="exp1">
-        每月1日可以发起提现，提交后5个工作日到帐
+        提交后1-5个工作日到账
       </view>
       <view :class="['btn',num>0&&'active']" @click="submitWathdrawal">
         提现
@@ -357,7 +357,7 @@
       }
       .all {
         min-width: 128rpx;
-        padding: 12rpx 16rpx;
+        padding: 12rpx 0;
         // height: 48rpx;
         background: #FFFFFF;
         border-radius: 222rpx;

@@ -5,7 +5,7 @@
     <view class="contener-body contener-body-2">
       <image class="group-bg" src="/static/image/bg_wxq_1.jpg" mode=""></image>
       <view class="headimg-box">
-        <image :src="infoData.group.group_cover" mode=""></image>
+        <image :src="infoData.group.group_cover" mode="aspectFill"></image>
       </view>
       <view class="name">{{infoData.group.group_name}}</view>
       <view class="tex3">
@@ -15,19 +15,25 @@
         <image :src="infoData.user.head_img || defaultimg" mode=""></image>
         {{infoData.user.nick_name}} 邀请你加入
       </view>
-      <view class="invite-btn">接受邀请</view>
+      <button class="invite-btn" @click="openApp" :disabled="btnDisabled">接受邀请</button>
     </view>
     <image class="logo-share" src="/static/image/logo-share.png"></image>
+    
+    
+    <uni-popup ref="expPopup" type="top">
+      <image src="/static/image/share-exp.png" class="share-img"></image>
+    </uni-popup>
     
   </view>
 </template>
 
 <script setup>
-  import {ref,reactive} from 'vue'
+  import {ref,reactive,onMounted} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import {shareGroupApi} from '@/service/robotAccount/index.js'
   import defaultimg from '../../static/image/logo.jpg'
-  
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import {jumpApp} from '@/unit/common.js'
   
   const opt = reactive({
     group_id: '',
@@ -46,6 +52,26 @@
       user_id: ''
     }
   })
+  const expPopup = ref()
+  
+  function isWeixinBrowser() {
+      var ua = navigator.userAgent.toLowerCase();
+      return ua.indexOf('micromessenger') !== -1;
+  }
+  
+  // H5非微信：唤起+计时兜底
+  function openApp(){
+    if (isWeixinBrowser()) {
+      //微信浏览器内
+      expPopup.value.open()
+    } else {
+      let param = {
+        iosAppUrl: `whackapp://group-invite?group_id=${opt.group_id}`,
+        androidAppUrl: `whackapp://group-invite?group_id=${opt.group_id}`,
+      }
+      jumpApp(param)
+    }
+  }
   
   function getGroupInfo(){
     uni.showLoading()
@@ -68,10 +94,12 @@
   onLoad(option=>{
     opt.group_id = option.group_id
     opt.user_id = option.user_id
-    
     getGroupInfo()
   })
-  
+  onMounted(()=>{
+    const appPage = document.getElementById('app');
+    appPage.style.paddingTop = 0;
+  })
   
 </script>
 
@@ -175,7 +203,7 @@
         line-height: 44rpx;
       }
       &-2 {
-        top: 244rpx;
+        top: 240rpx;
         width: 630rpx;
         height: 888rpx;
         background: #FFFFFF;
@@ -287,5 +315,12 @@
       width: 330rpx;
       height: 72rpx;
     }
+  }
+  .share-img {
+    position: absolute;
+    top: 32rpx;
+    right: 32rpx;
+    width: 430rpx;
+    height: 304rpx;
   }
 </style>

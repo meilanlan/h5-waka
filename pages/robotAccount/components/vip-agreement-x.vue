@@ -1,8 +1,7 @@
 <template>
   <view class="agreement-wrapper">
     <scroll-view scroll-y="true" >
-      
-      <view class="title">Whack VIP会员服务协议</view>
+      <view class="title" v-if="props.noTit!=true">Whack VIP会员服务协议</view>
       <view class="content">
              <view>欢迎您阅读《Whack VIP/SVIP会员服务协议》并成为Whack VIP/SVIP会员！</view> 
       <view>《Whack VIP/SVIP超级社群会员服务协议》（简称为“本协议”）是您与Whack APP（以下统称为“Whack”）之间关于“Whack VIP/SVIP会员”以及“Whack VIP/SVIP会员”中Whack提供的各项服务（以下统称为“VIP/SVIP会员”）的法律协议。</view>
@@ -86,7 +85,11 @@
     
 </template>
 
-<script>
+<script setup>
+  
+  const props = defineProps({
+    noTit: false
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -97,8 +100,16 @@
       height: 100%;
     }
   }
- 
+   .title {
+     font-weight: 700;
+     font-size: 36rpx;
+     color: #000000;
+     line-height: 40rpx;
+     text-align: center;
+     padding: 20rpx 0 30rpx;
+   }
   .content {
+    padding-top: 20rpx;
     view {
       margin-bottom: 20rpx;
       font-weight: 400;
@@ -109,14 +120,7 @@
     .mt32 {
       margin-top: 60rpx;
     }
-    .title {
-      font-weight: 700;
-      font-size: 36rpx;
-      color: #000000;
-      line-height: 40rpx;
-      text-align: center;
-      padding: 20rpx 0 30rpx;
-    }
+    
     .text-right {
       text-align: right;
     }

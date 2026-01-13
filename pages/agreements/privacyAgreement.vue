@@ -2,7 +2,8 @@
   <view class="wrapper">
     <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="Whack隐私政策" @backPage="backPage" />
     <!-- <view class="title">Whack隐私政策</view> -->
-    <view class="text-indent mt32">欢迎您选择由上海格乐喜网络信息科技有限公司（以下简称“本公司”或“我们”）为您提供的网络服务，我们特此制定本《Whack隐私政策》（以下简称“本政策”），以便您了解我们如何收集、存储、使用、共享、转让、公开披露、删除您的个人信息，以及您所享有的相关权利等事宜。我们非常重视您的个人信息保护并充分尊重您的用户权利，请您仔细阅读本政策，并按照本政策的指引做出您认为适当的选择。<span class="font-bold">在使用我们的产品及服务前，请您务必仔细阅读本政策，特别是以粗体标识的条款，您应重点阅读，在充分理解本政策并同意后再开始使用我们的产品及服务。如您不同意本政策的任何内容，您应立即停止使用我们的产品及服务。</span></view>
+    <view class="text-indent mt32">2025年12月18日更新</view>
+    <view class="text-indent">欢迎您选择由上海格乐喜网络信息科技有限公司（以下简称“本公司”或“我们”）为您提供的网络服务，我们特此制定本《Whack隐私政策》（以下简称“本政策”），以便您了解我们如何收集、存储、使用、共享、转让、公开披露、删除您的个人信息，以及您所享有的相关权利等事宜。我们非常重视您的个人信息保护并充分尊重您的用户权利，请您仔细阅读本政策，并按照本政策的指引做出您认为适当的选择。<span class="font-bold">在使用我们的产品及服务前，请您务必仔细阅读本政策，特别是以粗体标识的条款，您应重点阅读，在充分理解本政策并同意后再开始使用我们的产品及服务。如您不同意本政策的任何内容，您应立即停止使用我们的产品及服务。</span></view>
     <view>本政策为《Whack用户协议》的组成部分，本政策中未约定的事宜，适用《Whack用户协议》的约定。</view>
     <view><span class="font-bold">目录</span></view>
     <view>1.我们如何收集和使用您的个人信息</view>
@@ -131,21 +132,32 @@
           <uni-td>网易易盾是网易(杭州)网络有限公司</uni-td>
         </uni-tr>
         <uni-tr>
-          <uni-td>alipaySDK</uni-td>
-          <uni-td>消费与支付：绑定支付宝账号，收发红包功能</uni-td>
+          <uni-td>支付宝SDK</uni-td>
+          <uni-td>用户使用支付宝注册、授权登录；消费与支付：绑定支付宝账号，收发红包功能</uni-td>
           <uni-td>设备信息(用于风险控制和网络优化)-(IMEI、IMSI、Android ID、MAC地址、硬件序列号、ICCID、SSID BSSID、传感器信息、网络类型、运营商信息、WIFI状态/参数/列表、系统设置、系统属性、设备品牌、设备型号、操作系统、IP地址)。 身份认证信息-(相机:设备权限、人脸信息）</uni-td>
           <uni-td>SDK本机采集</uni-td>
           <uni-td>支付宝（中国）网络技术有限公司</uni-td>
         </uni-tr>
         <uni-tr>
-          <uni-td>WeChatSDK</uni-td>
-          <uni-td>
-            <view class="size">注册登录：微信登录</view>
-            <view class="size">信息浏览、发布与互动：微信分享</view>
-          </uni-td>
-          <uni-td>微信分享内容、应用安装列表、IMEI、Mac地址</uni-td>
+          <uni-td>微信SDK</uni-td>
+          <uni-td>在用户使用微信注册、授权登录或者分享时使用</uni-td>
+          <uni-td>设备标识符（Android如IMEI、Android ID、IMSI、ICCID、MEID，iOS如IDFV）、设备MAC地址、IP地址、位置信息（如GPS、蓝牙）、WLAN接入点（如SSID、BSSID）、分享图片或内容</uni-td>
           <uni-td>SDK本机采集</uni-td>
           <uni-td>腾讯科技（深圳）有限公司</uni-td>
+        </uni-tr>
+        <uni-tr>
+          <uni-td>微信支付SDK</uni-td>
+          <uni-td>在用户使用微信支付时使用</uni-td>
+          <uni-td>设备标识符（Android如IMEI、Android ID、硬件序列号/Serial）、设备MAC地址、WLAN接入点（如SSID、BSSID）</uni-td>
+          <uni-td>SDK本机采集</uni-td>
+          <uni-td>财富通支付科技有限公司</uni-td>
+        </uni-tr>
+        <uni-tr>
+          <uni-td>抖音SDK</uni-td>
+          <uni-td>在用户使用抖音注册、授权登录或者分享时使用</uni-td>
+          <uni-td>设备标识符（Android如IMEI、Android ID、GAID、OAID、IMSI、ICCID、MEID，iOS如IDFV）、设备MAC地址、IP地址、位置信息（如GPS、蓝牙）、WLAN接入点（如SSID、BSSID）、设备传感器信息</uni-td>
+          <uni-td>SDK本机采集</uni-td>
+          <uni-td>北京抖音信息服务有限公司</uni-td>
         </uni-tr>
         <uni-tr>
           <uni-td>IM融云SDK</uni-td>
@@ -198,8 +210,13 @@
         </uni-tr>
         <uni-tr>
           <uni-td>个推SDK</uni-td>
-          <uni-td>提供准时的消息推送和通知功能</uni-td>
-          <uni-td>设备信息(设备平台、设备厂商及品牌、设备型号及系统版本、SIM卡信息、MAC地址、IMEI/IMSIAndroid_id、设备序列号OAID)，应用信息列表、网络访问、wifi状态访问、SSID、BSSID、IP地址、获取GPS定位信息、蓝牙设备信息特别提醒:为您提供消息推送服务时，个推SDK会授权每日互动股份有限公司进行链路调节，相互促活被关闭的SDK推送进程，保障您可以及时接收到推送的消息</uni-td>
+          <uni-td>为App用户提供消息推送技术服务</uni-td>
+          <uni-td>
+            （1）设备信息、网络信息：必选信息：设备平台、设备厂商、设备品牌、设备型号及系统版本、OAID、AndroidID、WIFI连接信息、运营商信息、DHCP、SSID、BSSID
+            可选信息：IMEI、MAC、Google Advertising ID（GAID）、Serial Number、IMSI、ICCID、IP地址、基站信息。用于生成唯一的推送目标ID（CID）和设备ID（GID），以此保证消息推送的准确下发和消息设备的准确识别。
+            （2）位置相关信息：应景推送、智能推送和应急推送扩展功能的必选信息，提供线下场景的精细化推送，可以为您推荐更符合您需要的推送内容，减少无用推送消息对您的打扰。应国家有关部门要求，为了提升移动互联网技术服务社会公益的功能，发挥 APP 消息推送在灾害预警方面的作用，当发生地震及气象等重大灾害时，通过开发者的APP 推送通道实时向受影响地区的用户下发相关的灾害通知信息
+            （3）应用列表信息：智能推送、应急推送和链路调节器扩展功能的必选信息，推荐更符合您需要的推送内容，减少无用推送信息对您的打扰。应国家有关部门要求，为了提升移动互联网技术服务社会公益的功能，发挥 APP 消息推送在灾害预警方面的作用，当发生地震及气象等重大灾害时，通过开发者的APP 推送通道实时向受影响地区的用户下发相关的灾害通知信息。我们采⽤合并链路技术进⾏技术推送，当⼀个设备有多个APP的推送链路同时活跃时，我们会随机合并成⼀条链路，以达到为您省电省流量的⽬的，当一个设备有离线推送消息待下发的场景时，通过关联启动功能可以下发离线消息，您可以选择开启或关闭这项服务，当您关闭这项服务时，关联启动也同时会关闭，会导致电量和流量消耗加大的同时消息触达率也会降低。
+            </uni-td>
           <uni-td>SDK本机采集</uni-td>
           <uni-td>每人互动股份有限公司</uni-td>
         </uni-tr>
@@ -426,8 +443,8 @@
         </uni-tr>
         <uni-tr>
           <uni-td>18</uni-td>
-          <uni-td>极光推送权限</uni-td>
-          <uni-td>个推推送：用于校验是否为极光推送的应用</uni-td>
+          <uni-td>个推推送权限</uni-td>
+          <uni-td>个推推送：用于校验是否为个推推送的应用</uni-td>
           <uni-td>否</uni-td>
           <uni-td>Android、HarmonyOS</uni-td>
         </uni-tr>
@@ -488,7 +505,7 @@
           <uni-td>Android、HarmonyOS</uni-td>
         </uni-tr>
         <uni-tr>
-          <uni-td>26</uni-td>
+          <uni-td>27</uni-td>
           <uni-td>安装权限管理</uni-td>
           <uni-td>用于版本更新</uni-td>
           <uni-td>是</uni-td>
@@ -502,6 +519,7 @@
         </uni-tr>
       </uni-table>
     </view>
+    <view class="text-right mt32">2025年12月18日更新</view>
   </view>
 </template>
 

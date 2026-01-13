@@ -9,29 +9,62 @@
         </view>
         <view class="right" @click="openPayHi">去充值</view>
       </view>
-      <view class="wallet-bottom">
-        <view class="box">
-          <view class="num">{{props.wallet.energy}}</view>
-          <view class="text">能量值</view>
-        </view>
+      <view class="wallet-bottom wallet-bottom-1">
+        <view class="box" @click="toPage('/pages/wallet/rechargeDetail?show_title=0')">充值明细</view>
         <view class="line"></view>
-        <view class="box">
-          <view class="num">{{props.wallet.yuanqi}}</view>
-          <view class="text">元气值</view>
-        </view>
-        <view class="line"></view>
-        <view class="box">
-          <view class="num">{{props.wallet.charm}}</view>
-          <view class="text">魅力值</view>
-        </view>
+        <view class="box" @click="toPage(`/pages/wallet/myBill?accountId=1&group_id=${props.robotInfo.group_id}&show_title=0`)">支付明细</view>
       </view>
     </view>
-    <view class="bill" @click="toPage">
+    <template v-if="source==='user'">
+      <view class="wallet wallet-2">
+        <view class="title">我的福袋</view>
+        <view class="info">
+          <view class="left">
+            <image src="../../../static/image/icon_lucky.png" mode=""></image>
+            <text>{{props.haib.banlance}}</text>
+          </view>
+          <view class="right" @click="openPayHi">去提现</view>
+        </view>
+        <view class="wallet-bottom">
+          <view class="box">
+            <!-- <view class="num">{{props.wallet.energy}}</view> -->
+            <view class="text">收到福袋</view>
+          </view>
+          <view class="line"></view>
+          <view class="box">
+            <!-- <view class="num">{{props.wallet.yuanqi}}</view> -->
+            <view class="text">发出福袋</view>
+          </view>
+          <view class="line"></view>
+          <view class="box">
+            <!-- <view class="num">{{props.wallet.charm}}</view> -->
+            <view class="text">福气袋</view>
+          </view>
+        </view>
+      </view>
+      <view class="wallet wallet-3">
+        <view class="title">我的红包</view>
+        <view class="info">
+          <view class="left">
+            <image src="../../../static/image/icon-red.png" mode=""></image>
+            <text>{{props.haib.banlance}}</text>
+          </view>
+          <!-- <view class="right" @click="openPayHi">去充值</view> -->
+        </view>
+        <view class="wallet-bottom wallet-bottom-1">
+          <view class="box" @click="toPage('/pages/wallet/rechargeDetail?show_title=0')">收到红包</view>
+          <view class="line"></view>
+          <view class="box" @click="toPage(`/pages/wallet/myBill?accountId=1&group_id=${props.robotInfo.group_id}&show_title=0`)">发出红包</view>
+        </view>
+      </view>
+    </template>
+    
+    <!-- <view class="bill" @click="toPage">
       <view class="left">
         <image src="../../../static/image/bill.png"></image>账单
       </view>
       <image class="right" src="../../../static/image/next.png"></image>
-    </view>
+    </view> -->
     
     <!-- 嗨币充值 -->
     <uni-popup ref="payPopup" type="bottom" :safe-area="false" background-color="#ffffff">
@@ -59,6 +92,7 @@
   const payPopup = ref(null)
   const agreementPopup = ref(null)
   const props = defineProps({
+    source: String,
     wallet: Object,
     haib: Object,
     robotInfo: Object
@@ -78,9 +112,9 @@
     payPopup.value.close()
     emit('updateProfile')
   }
-  function toPage(){
+  function toPage(url){
     uni.navigateTo({
-    	url: `/pages/wallet/myBill?accountId=1&group_id=${props.robotInfo.group_id}&show_title=0`
+    	url: url
     });
   }
 </script>
@@ -90,8 +124,9 @@
     margin-top: 32rpx;
     // font-family: 'MiSans';
     .wallet {
+      margin-bottom: 24rpx;
       width: 100%;
-      height: 296rpx;
+      height: 274rpx;
       background: url('../../../static/image/wallet-bg.png') no-repeat;
       background-size: 100% 100%;
       position: relative;
@@ -103,7 +138,7 @@
         line-height: 32rpx;
       }
       .info {
-        margin: 32rpx 0;
+        margin: 36rpx 0 34rpx;
         padding: 0 32rpx;
         display: flex;
         justify-content: space-between;
@@ -139,32 +174,57 @@
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 106rpx;
+        height: 84rpx;
         background: #59B8FF;
         border-radius: 0 0 24rpx 24rpx;
         display: flex;
         align-items: center;
+        
         .line {
           width: 2rpx;
           height: 36rpx;
           background: rgba(255,255,255,0.4);
         }
         .box {
-          padding-top: 18rpx;
+          // padding-top: 18rpx;
           width: 227rpx;
           text-align: center;
           font-size: 28rpx;
-          .num {
-            font-weight: 700;
-            color: #FFFFFF;
-            line-height: 32rpx;
-          }
+          color: #FFFFFF;
+          // .num {
+          //   font-weight: 700;
+          //   color: #FFFFFF;
+          //   line-height: 32rpx;
+          // }
           .text {
             margin-top: 8rpx;
             font-weight: 400;
-            color: rgba(255,255,255,0.6);
+            // color: rgba(255,255,255,0.6);
             line-height: 32rpx;
           }
+        }
+        &.wallet-bottom-1 {
+          justify-content: space-between;
+          .box {
+            width: 49%;
+          }
+        }
+      }
+      &.wallet-2 {
+        background: url('../../../static/image/luckybag.png') no-repeat;
+        background-size: 100% 100%;
+        .right {
+          color: #FF4A4A;
+        }
+        .wallet-bottom {
+          background: #FF846C;
+        }
+      }
+      &.wallet-3 {
+        background: url('../../../static/image/redpackage.png') no-repeat;
+        background-size: 100% 100%;
+        .wallet-bottom {
+          background: #FFBC6A;
         }
       }
     }

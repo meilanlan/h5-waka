@@ -62,7 +62,6 @@
     uni.showLoading()
     myProfitGroupsApi({page_id:searchInfo.page_id},res=>{
       if (~~res.code === 0) {
-        
         if(searchInfo.page_id === 1) {
           groups.value = res.data.items||[]
           searchInfo.total = res.data.total

@@ -7,7 +7,7 @@
     </view>
     <template v-if="flagLock===true">
       <!-- 机器人助手 -->
-      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list||[]' @updateInfo="getSpaceRobot"></robot-assistant-x>
+      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list||[]' @updateInfo="updateGroup"></robot-assistant-x>
       <!-- 我的订单 -->
       <my-order :order_list="spaceRobotData.data.order_list||[]" :user_robot_list="spaceRobotData.data.user_robot_list||[]" v-else></my-order>
     </template>
@@ -23,6 +23,7 @@
   import myOrder from './my-order.vue';
   import {spaceRobotApi} from '@/service/robotAccount/index.js'
   
+  const emit = defineEmits(['updateGroupInfo'])
   const curTab = ref(1)
   const loading = ref(false)
   const flagLock = ref(false)
@@ -37,7 +38,10 @@
   function switchTab(item){
     curTab.value = item
   }
-  console.log(parentInfo.data, 'parentInfo.data is')
+  function updateGroup(){
+    getSpaceRobot()
+    emit('updateGroupInfo')
+  }
   getSpaceRobot()
   function getSpaceRobot(){
     uni.showLoading()

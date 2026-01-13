@@ -40,7 +40,7 @@
       <view class="btn" @click="sureWelcome">保存</view>
     </view>
     <!-- 新人入群欢迎表情 -->
-    <view class="list-box">
+   <!-- <view class="list-box">
       <view class="title-box">
         <view class="left">
           <image src="@/static/image/set/t-2.png" mode=""></image>
@@ -75,7 +75,7 @@
         </view>
       </view>
       <view class="btn" @click="toConfig(2)">重新配置</view>
-    </view>
+    </view> -->
     
     <view class="list-box">
       <view class="title-box">
@@ -91,7 +91,7 @@
       <view class="inpt-box">
         <text>拍一拍消耗</text>
         <view class="clap-box">
-          <view :class="['box', paipaiNewData.pai_type===i?'active':'']" v-for="(item, i) in 2" :key="'p-'+i" @click="switchPai(i)">
+          <view :class="['box', paipaiNewData.pai_type===i?'active':'']" v-for="(item, i) in 1" :key="'p-'+i" @click="switchPai(i)">
             <view class="left">
               <view class="img"></view>
               <text>{{i===1?'金砖':'金币'}}</text>
@@ -136,12 +136,12 @@
         <view class="textarea-box-tit">违规踢人提示语：</view>
         <textarea class="textarea1" v-model="protectData.protect_config.tick_alert" placeholder="违规踢人提示语" placeholder-style="color:#C5CCD5" />
       </view>
-      <view class="inpt-box inpt-box-1">
+      <!-- <view class="inpt-box inpt-box-1">
         <text>警告次数自动踢人</text>
         <view class="inpt">
           <input class="inpt-1" v-model="protectData.protect_config.max_warnning_num" type="number" placeholder-style="color:#C5CCD5">
         </view>
-      </view>
+      </view> -->
       <!-- <view :class="['btn', (protectData.protect_config.violation_alert==='' || protectData.protect_config.tick_alert==='')?'btn-gray':'']" @click="saveProtect">保存</view> -->
       <view class="btn" @click="saveProtect">保存</view>
     </view>
@@ -240,7 +240,7 @@
 <script>
   // import {scrollToTargetPosition} from '@/mixin/index.mixin.js'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
-  import {groupConfigData, groupSetConfigData, groupResData} from '@/service/robotAccount/index.js'
+  import { groupSetConfigData, groupResData} from '@/service/robotAccount/index.js'
   export default {
     // mixins: [scrollToTargetPosition],
     props: {
@@ -248,6 +248,7 @@
         type: String,
         default: () => {}
       },
+      authCode: String,
       welcome: {
         type: Object,
         default: () => {
@@ -376,11 +377,12 @@
     },
     methods: {
       saveProtect(){
-        console.log(this.protectData.protect_config, 'this.protectData.protect_config.violation_alert')
+        // console.log(this.protectData.protect_config, 'this.protectData.protect_config.violation_alert')
         if (this.protectData.protect_config.violation_alert && this.protectData.protect_config.tick_alert) {
           let params = {
             type: 25,
             group_id: this.group_id,
+            auth_code: this.authCode,
             max_warnning_num: this.protectData.protect_config.max_warnning_num, 
             tick_alert: this.protectData.protect_config.tick_alert,
             violation_alert: this.protectData.protect_config.violation_alert,
@@ -398,6 +400,7 @@
         let params = {
           type: this.paipaiNewData.data_type,
           group_id: this.group_id,
+          auth_code: this.authCode,
           pai_type: this.paipaiNewData.pai_type,
           pai_price: this.paipaiNewData.pai_price,
           pai_rate: ''
@@ -500,11 +503,11 @@
               this.curAudioState = 0
             }
             uni.hideLoading()
-          } else if (res.code === -20001) {
-            // uni.showToast({
-            //   title: '登录失效，请重新登录',
-            //   icon: 'none'
-            // });
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
             this.$emit('updateAdminToken')
             uni.hideLoading()
           } else if (res.code != -10002){
@@ -557,7 +560,7 @@
         })
       },
       sureNotice() {
-        this.setConfig({type: 12,text: this.notice.data, group_id: this.group_id})
+        this.setConfig({type: 12,text: this.notice.data, group_id: this.group_id, auth_code: this.authCode})
       },
       checkEmoj(item) {
         this.curEmojInfo = item
@@ -566,14 +569,14 @@
         this.curAudioInfo = item
       },
       sureEmoj() {
-        this.setConfig({type: 2,res_id: this.curEmojInfo.res_id, group_id: this.group_id}, 'chooseEmojiPopup')
+        this.setConfig({type: 2,res_id: this.curEmojInfo.res_id, group_id: this.group_id, auth_code: this.authCode}, 'chooseEmojiPopup')
       },
       sureAudio() {
-        this.setConfig({type: 3,res_id: this.curAudioInfo.res_id, group_id: this.group_id}, 'chooseAudioPopup')
+        this.setConfig({type: 3,res_id: this.curAudioInfo.res_id, group_id: this.group_id, auth_code: this.authCode}, 'chooseAudioPopup')
       },
       sureRule() {
         uni.showLoading()
-        this.setConfig({type: 10,text: this.rule.data, group_id: this.group_id})
+        this.setConfig({type: 10,text: this.rule.data, group_id: this.group_id, auth_code: this.authCode})
       },
       sureWelcome() {
         if (this.welcome.data) {
@@ -585,7 +588,7 @@
             return false
           }
           uni.showLoading()
-          this.setConfig({type: 1,welcome: this.welcome.data, group_id: this.group_id})
+          this.setConfig({type: 1,welcome: this.welcome.data, group_id: this.group_id, auth_code: this.authCode})
         }
       }
     }
@@ -685,7 +688,8 @@
         }
         .clap-box {
           width: 450rpx;
-          height: 208rpx;
+          // height: 208rpx;
+          height: 130rpx;
           background: #F8F9FA;
           border-radius: 8rpx;
           padding: 30rpx;

@@ -115,6 +115,58 @@ function maskPhoneNumber(phoneNumber) {
   return phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
 }
 
+function jumpApp(param){
+  // let  iosAppUrl= `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
+  // let androidAppUrl = `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
+  let downloadIos = 'https://apps.apple.com/cn/app/whack/id6752324554'
+  let downloadAnd = 'https://www.whackgroup.com/#/'
+  console.log('UPDATE!')
+  
+  // 配置参数（需替换为你的APP实际信息）
+  const config = {
+      // APP的URL Scheme（需与APP开发时配置一致，如：myapp://home）
+      scheme: window.isiOS?param.iosAppUrl:param.androidAppUrl, // 可携带参数
+      // 下载链接（分iOS/Android）
+      downloadUrl: {
+          ios: "https://apps.apple.com/cn/app/whack/id6752324554", // App Store链接
+          android: "https://www.whackgroup.com/#/", // 应用宝/官网链接
+          fallback: "https://www.whackgroup.com/#/" // 通用下载页（兜底）
+      },
+      timeout: 500 // 唤起检测延迟（毫秒，建议300-500）
+  };
+  
+  // 核心逻辑：唤起APP或跳转下载
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isAndroid = /Android/i.test(ua);
+  const isWeChat = /MicroMessenger/i.test(ua);
+
+  // 记录唤起前的时间戳
+  const startTime = Date.now();
+  window.location.href = config.scheme;
+
+  // 检测唤起是否成功：若500ms内页面未隐藏（进入后台），则跳转下载
+  setTimeout(() => {
+    // console.log('计时开始')
+      const endTime = Date.now();
+      // console.log(document.hidden, 'document.hidden')
+      // console.log(endTime,'----',startTime, '----', endTime - startTime)
+      // 若时间差小于1000ms（未唤起成功），且页面可见，则跳转下载
+      // && endTime - startTime < 1000
+      if (!document.hidden) {
+        // console.log('打开下载页面')
+          const downloadLink = window.isiOS 
+              ? config.downloadUrl.ios 
+              : !window.isiOS 
+                  ? config.downloadUrl.android 
+                  : config.downloadUrl.fallback;
+          // console.log(downloadLink, 'downloadLink')
+          window.location.href = downloadLink;
+      }
+  }, config.timeout);
+
+}
+
 export {
   trim,
   processParams,
@@ -126,5 +178,6 @@ export {
   getRecentWeekRange,
   getRecentThreeMonthsRange,
   formatNumber,
-  maskPhoneNumber
+  maskPhoneNumber,
+  jumpApp
 }

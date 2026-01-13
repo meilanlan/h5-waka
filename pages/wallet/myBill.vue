@@ -7,8 +7,7 @@
       </view>
     </view>
     
-    <scroll-view scroll-y="true" class="scroll-Y">
-    <!-- <scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="lower"> -->
+    <scroll-view scroll-y="true" class="scroll-Y" @scrolltolower="lower">
       <view class="no-data" v-if="!billList.length">
         <image src="@/static/image/no-data.png" mode=""></image>
         <view>暂无数据</view>
@@ -37,19 +36,19 @@
   import myCustomNavbar from '@/components/myCustomNavbar.vue'
   
   const curTab = ref(1)
-  const curPage = ref(1)
+  const last_id = ref(0)
   const group_id = ref()
   const billList = ref([])
   const isIos = ref(window.isiOS)
   
   function lower(e){
-    // curPage.value = curPage.value+1
-    // getBillList()
+    last_id.value = billList.value[billList.value.length-1].id
+    getBillList()
   }
   
   function switchTab(item) {
     curTab.value = item
-    curPage.value = 1
+    last_id.value = 0
     getBillList()
   }
   
@@ -59,10 +58,13 @@
   function getBillList(){
     uni.showLoading({mask: true})
   //   billList.value=billList.value.concat(arr)
-    billListApi({type: curTab.value, last_id: curPage.value}, res => {
+    billListApi({type: curTab.value, last_id: last_id.value}, res => {
         if (res.code === 0) {
-          
-          billList.value=res.data
+          if(last_id.value === 0) {
+            billList.value=res.data||[]
+          } else {
+            billList.value = [...billList.value,...res.data]
+          }
           uni.hideLoading()
         } else {
           uni.showToast({
@@ -158,6 +160,7 @@
   }
   .scroll-Y {
     height: calc(100vh - 256rpx);
+    // height: 500rpx;
   }
   .no-data {
     margin-top: 50rpx;

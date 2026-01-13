@@ -18,25 +18,47 @@
         type: Number,
         default: 1,
     },
+    userRole:{
+      type: Number,
+      default: 0,
+    }
   })
   const emit = defineEmits(['switchTab'])
-  const tabArr = ref([
-    {id: 1, value: '群空间', distance: '4%'},
-    {id: 2, value: '群指令', distance: '25%'},
-    {id: 3, value: '我的主页', distance: '49%'},
-    {id: 4, value: '机器人', distance: '71.5%'},
-    {id: 5, value: '群收益', distance: '93%'},
-    {id: 6, value: '数据同步', distance: '116%'},
-    {id: 7, value: '群设置', distance: '140%'},
-  ])
-  const distance = ref(['4%','25%','49%','71.5%','93%','116%','140%'])
+  const tabArr = ref([])
   const tabId = ref(props.tabId) //当前的tab id 的值
   const lineLeft = ref('4%') //样式下划线的位置
   const scrollLeft = ref(0) //设置滚动条的位置
   const itemRefList = ref([])
   
+  // console.log(props.userRole, 'props.userRole')
+  if(props.userRole===1){ //群主
+    tabArr.value = [
+      {id: 1, value: '群空间', distance: '4%'},
+      {id: 2, value: '群指令', distance: '25%'},
+      {id: 3, value: '我的主页', distance: '49%'},
+      {id: 4, value: '机器人', distance: '71.5%'},
+      {id: 5, value: '群收益', distance: '93%'},
+      {id: 6, value: '数据同步', distance: '116%'},
+      {id: 7, value: '群设置', distance: '140%'},
+    ]
+  } else if(props.userRole===2){ //超管
+    tabArr.value = [
+      {id: 1, value: '群空间', distance: '4%'},
+      {id: 2, value: '群指令', distance: '25%'},
+      {id: 3, value: '我的主页', distance: '49%'},
+      {id: 4, value: '机器人', distance: '71.5%'},
+      {id: 7, value: '群设置', distance: '93%'},
+    ]
+  } else {//普通管理、群成员
+    tabArr.value = [
+      {id: 1, value: '群空间', distance: '4%'},
+      {id: 2, value: '群指令', distance: '25%'},
+      {id: 3, value: '我的主页', distance: '49%'}
+    ]
+  }
   let index = tabArr.value.findIndex(item=>{return item.id===props.tabId})
-  lineLeft.value = distance.value[index]
+  // console.log(index, 'index is')
+  lineLeft.value = tabArr.value[index===-1?1:index].distance
   
   if (tabId.value==6 && tabArr.value.length>5) { //将隐藏的tab在页面中展示
     scrollLeft.value = 100
@@ -47,7 +69,7 @@
  
   function switchTab(item,index){
     tabId.value = item.id
-    lineLeft.value = distance.value[index]
+    lineLeft.value = tabArr.value[index].distance
     emit('switchTab',tabId.value)
     // uni.createSelectorQuery()
     // .select('.tab-box-'+index)  // 选择器或ref名称

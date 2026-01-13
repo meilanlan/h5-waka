@@ -5,27 +5,51 @@
     <view class="contener-body contener-body-2">
       <image class="group-bg" src="/static/image/bg_wxq_1.jpg" mode=""></image>
       <view class="headimg-box">
-        <image :src="userInfo.data.head_img||defaultimg" mode=""></image>
+        <image :src="userInfo.data.head_img||defaultimg" mode="aspectFill"></image>
       </view>
       <view class="name">晚风惬意王者战队</view>
       <view class="invite">
         邀请你加入{{userInfo.data.nick_name}}成为好友
       </view>
-      <view class="invite-btn">接受邀请</view>
+      <view class="invite-btn" @click="openApp">接受邀请</view>
     </view>
-    <image class="logo-share" src="/static/image/logo-share.png"></image>P
+    <image class="logo-share" src="/static/image/logo-share.png"></image>
+    
+    <uni-popup ref="expPopup" type="top">
+      <image src="/static/image/share-exp.png" class="share-img"></image>
+    </uni-popup>
   </view>
 </template>
 
 <script setup>
-  import {ref,reactive} from 'vue'
+  import {ref,reactive,onMounted} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import {shareUserApi} from '@/service/robotAccount/index.js'
   import defaultimg from '../../static/image/logo.jpg'
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import {jumpApp} from '@/unit/common.js'
   
   const groupType = ref(1)
   const userId = ref()
   const userInfo = reactive({data:{}})
+  const expPopup = ref()
+  
+  function isWeixinBrowser() {
+      var ua = navigator.userAgent.toLowerCase();
+      return ua.indexOf('micromessenger') !== -1;
+  }
+  function openApp(){
+    if (isWeixinBrowser()) {
+      //微信浏览器内
+      expPopup.value.open()
+    } else {
+      let param = {
+        iosAppUrl: `whackapp://userpage?user_id=${userId.value}`,
+        androidAppUrl: `whackapp://userpage?user_id=${userId.value}`,
+      }
+      jumpApp(param)
+    }
+  }
   
   function getShareInfo(){
     uni.showLoading()
@@ -45,6 +69,10 @@
   onLoad(option=>{
     userId.value = option.user_id*1
     getShareInfo()
+  })
+  onMounted(()=>{
+    const appPage = document.getElementById('app');
+    appPage.style.paddingTop = 0;
   })
 </script>
 
@@ -259,5 +287,12 @@
       width: 330rpx;
       height: 72rpx;
     }
+  }
+  .share-img {
+    position: absolute;
+    top: 32rpx;
+    right: 32rpx;
+    width: 430rpx;
+    height: 304rpx;
   }
 </style>

@@ -120,20 +120,18 @@
                  prodId: curRobotInfo.data.t_id,
                  orderId: res.data.sn,
                },(respon)=>{
-                 console.log(respon, 'oooios')
-                 if(!respon) {
-                   emit('updateInfo')
-                   uni.showToast({
-                     title: '购买失败，请重新再试',
-                     icon: 'none'
-                   });
-                 } else {
-                   emit('updateInfo')
-                   uni.showToast({
-                     title: '购买成功',
-                     icon: 'none'
-                   });
-                 }
+                 // console.log(respon, 'oooios')
+                 // if(!respon) {
+                 //   uni.showToast({
+                 //     title: '购买失败，请重新再试',
+                 //     icon: 'none'
+                 //   });
+                 // } else {
+                 //   uni.showToast({
+                 //     title: '购买成功',
+                 //     icon: 'none'
+                 //   });
+                 // }
                })
            }
            payLock.value = false
@@ -161,14 +159,19 @@
   }
   
   window.pay_result_after = (res)=>{
-    // 唤起支付后，获取客户端返回的结果信息
+    // // 唤起支付后，获取客户端返回的结果信息
+    // let respon = JSON.parse(res)
+    // uni.showToast({
+    //   title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
+    //   icon: 'none'
+    // });
+  }
+  window.notice_result_callback = (res)=>{
+    // 客户端通知h5更新页面数据
     let respon = JSON.parse(res)
-    console.log(res,'---android---',respon)
-    if (respon.isSuccess) emit('updateInfo')
-    uni.showToast({
-      title: respon.isSuccess?'购买成功':'购买失败，请重新再试',
-      icon: 'none'
-    });
+    if(respon.type===1){
+      emit('updateInfo')
+    }
   }
   function radioPayChange(){
     

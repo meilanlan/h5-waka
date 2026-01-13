@@ -48,7 +48,8 @@
   }
   
   function updateInfo(){
-    window.client.closeWebview()
+    getHiMoney()
+    // window.client.closeWebview()
   }
   
   function getHiMoney(){

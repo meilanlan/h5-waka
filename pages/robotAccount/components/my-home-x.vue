@@ -2,10 +2,10 @@
   <view class="my-home">
     <view class="my-home-info">
       <view class="my-info-bg">
-        <image :src="userInfo.data.user.bg_img||'https://waka-1311025102.cos.ap-shanghai.myqcloud.com/app/prod/cover/u_free_1.png'" mode="aspectFill"></image>
+        <image :src="userInfo.data.user.bg_img" mode="aspectFill"></image>
       </view>
       <view class="my-info">
-        <image class="left" :src="userInfo.data.user.head_img || gender"></image>
+        <image class="left" :src="userInfo.data.user.head_img || gender" mode="aspectFill"></image>
         <view class="right">
           <view class="name">
             <text class="nickname">{{userInfo.data.user.nick_name}}</text>
@@ -32,7 +32,7 @@
       <!-- 能量助力 -->
       <energy-assist-x v-if="curTabIndex === 0" :energy="userInfo.data.energy" :haib="userInfo.data.haib" @updateEnergy="updateEnergy"></energy-assist-x>
       <!-- 我的钱包 -->
-      <my-wallet v-else-if="curTabIndex === 1" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="props.robotInfo" @updateProfile="updateProfile"></my-wallet>
+      <my-wallet v-else-if="curTabIndex === 1" :source="'group'" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="props.robotInfo" @updateProfile="updateProfile"></my-wallet>
       <!-- 会员中心 -->
       <vip-center-x v-else-if="curTabIndex === 2" :vip="userInfo.data.vip"></vip-center-x>
       <!-- 嗨币充值 -->
@@ -94,13 +94,11 @@
   
   function updateEnergy(data){
     //更新能量值
-    console.log(data, 'data')
     userInfo.data.wallet.energy = data
   }
   
   function updateProfile(){
     //更新我的主页的内容
-    console.log('update')
     getUserProfile()
   }
   
@@ -125,8 +123,9 @@
     userProfileApi({group_id: parentInfo.group_id,channel:window.isiOS?'ios':'android'}, res => {
       if (res.code === 0) {
         userInfo.data = res.data
-        // userInfo.data.user.bg_img = ''
-        console.log(userInfo.data, 'userInfo.data')
+        if(!userInfo.data.user.bg_img) {
+          userInfo.data.user.bg_img = 'https://waka-1311025102.cos.ap-shanghai.myqcloud.com/app/prod/cover/u_free_1.png'
+        }
         infoFlag.value = true
         uni.hideLoading()
       } else{

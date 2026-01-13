@@ -9,9 +9,9 @@
           <image src="@/static/image/next-1.png"></image>
         </view>
         <view class="list list-1">
-          <view class="text">收益嗨币</view>
+          <view class="text">可兑换嗨币</view>
           <view class="num">{{profitData.hi_coin.num}}</view>
-          <view class="btn" @click="toExchange">去结算</view>
+          <view class="btn" @click="toExchange">去兑换</view>
         </view>
       </view>
       <view class="list-box">
@@ -30,7 +30,7 @@
     </view>
     <view class="tablist">
       <view class="tab-box">
-        <text :class="['text1', tabIndex===item?'active':'']" v-for="(item,index) in 2" :key="'tab-'+index" @click="switchTab(item)">{{item===1?'收益明细':'交易记录'}}</text>
+        <text :class="['text1', tabIndex===item?'active':'']" v-for="(item,index) in 2" :key="'tab-'+index" @click="switchTab(item)">{{item===1?'收益明细':'提现记录'}}</text>
       </view>
     </view>
    <view class="wrapper-list">
@@ -38,7 +38,7 @@
       <templat v-if="tabIndex===1">
         <slot name="profitDetailSlot"></slot>
       </templat>
-      <!-- 交易记录 -->
+      <!-- 提现记录 -->
       <tradeDetail :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :rangeObject="rangeObject" v-else></tradeDetail>
     </view>
   </view>

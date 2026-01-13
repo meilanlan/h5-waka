@@ -105,6 +105,15 @@
             }
         },
         {
+            "path": "pages/agreements/vipAgreement",
+            "style": {
+                "navigationBarTitleText": "VIP会员服务协议",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
             "path": "pages/shareh5/wakaGroup",
             "style": {
                 "navigationBarTitleText": "咓咔社群",
@@ -165,6 +174,47 @@
             "path": "pages/wallet/wallet",
             "style": {
                 "navigationBarTitleText": "钱包",
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/luckyBagRecord",
+            "style": {
+                "navigationBarTitleText": "福袋记录",
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/luckyBag",
+            "style": {
+                "navigationBarTitleText": "福气袋",
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/wallet/luckyBagWithdrawal",
+            "style": {
+                "navigationBarTitleText": "福气值提现",
+                "navigationStyle": "custom",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        
+        {
+            "path": "pages/wallet/redPackageRecord",
+            "style": {
+                "navigationBarTitleText": "红包记录",
                 "navigationStyle": "custom",
                 "h5": {
                     "titleNView": false

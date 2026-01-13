@@ -14,8 +14,11 @@
             <view class="name">
               {{item.channel === 1?'苹果支付':item.channel === 2?'支付宝支付':'微信支付'}}
             </view>
-            <view class="time">
-              {{item.pay_time>0?getDateTime(item.pay_time*1000):''}}
+            <view class="time" v-if="item.pay_time>0">
+              {{getDateTime(item.pay_time*1000)}}
+            </view>
+            <view class="time" v-else>
+              {{item.status!=2&&'支付失败'}}
             </view>
           </view>
         </view>

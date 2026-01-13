@@ -1,5 +1,4 @@
 let ApiUrl = '';
-console.log(process.env.M_NODE_ENV,'process.env.M_NODE_ENV is')
   
 if (!process.env.M_NODE_ENV || process.env.M_NODE_ENV === 'test'||process.env.M_NODE_ENV === 'dev') {
   // 测试环境

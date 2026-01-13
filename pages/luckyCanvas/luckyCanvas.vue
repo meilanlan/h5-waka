@@ -1,5 +1,6 @@
 <template>
   <view class="wrapper">
+    <myCustomNavbar backIcon="../../static/image/btn_back_white.png" :navStyle="{background:'rgba(255,255,255,0)',color:'#ffffff'}" title="" @backPage="backPage"></myCustomNavbar>
     <image class="bg" src="/static/image/lucky-bg.jpg" mode="aspectFill"></image>
     <!-- <view class="lucky-wheel-bg"></view> -->
     <view class="aperture">
@@ -22,7 +23,9 @@
       @start="turntableStart"
       @end="endCallBack"
     ></lucky-wheel>
-    <view :class="['lucky-btn',removeAnm&&'no-animation','scaleAnimation','lucky-btn-'+data.status]" @click="turntableStart"></view>
+    <view class="lucky-btn-box">
+      <view :class="['lucky-btn',removeAnm&&'no-animation','scaleAnimation','lucky-btn-'+data.status]" @click="turntableStart"></view>
+    </view>
     <view class="rule-box" @click="openRule">
       <view>活</view>
       <view>动</view>
@@ -58,13 +61,14 @@
   </view>
 </template>
 <script setup>
-  import { reactive, toRefs, ref, nextTick } from 'vue';
+  import { reactive, toRefs, ref, nextTick,onMounted } from 'vue';
   import {onLoad} from '@dcloudio/uni-app'
   import LuckyWheel from '@/components/lucky-canvas_v0.0.10_4/components/@lucky-canvas/uni/lucky-wheel.vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import ruleX from './components/rule-x.vue'
   import resultX from './components/result-x.vue'
   import {checkAwardStApi,awardTakeApi} from '@/service/robotAccount/index.js'
+  import myCustomNavbar from '@/components/myCustomNavbar.vue'
 
   let prizes = [
     { id: 3,action:{id:'',trace_id:'',param:''},award_type: 3,award_use_status:0,title: 'VIP体验卡3个月',icon: new URL('@/static/image/lucky/1.png', import.meta.url).href,fonts: [{ text: '', top: '10%'}],imgs:[{src: new URL('@/static/image/lucky/awaid1-bg.png', import.meta.url).href,award_desc:'',width: '174rpx',height: '218rpx'}]},
@@ -94,6 +98,15 @@
   const startAnm = ref(false)
   const endAnm = ref(false)
   const myLucky = ref()
+  
+  onMounted(()=>{
+    const appPage = document.getElementById('app');
+    appPage.style.paddingTop = 0;
+  })
+  
+  function backPage() {
+    window.client.closeWebview()
+  }
   
   function toAppPage(){
     window.client.JSAction({
@@ -192,11 +205,16 @@
 <style lang="scss" scoped>
   .wrapper {
     min-height: 100vh;
+    // height: 100vh;
+    // overflow-y: auto;
     background-color: #4375FF;
     position: relative;
     .bg {
       width: 100%;
       height: 1206rpx;
+      // position: fixed;
+      // top: 0;
+      // left: 0;
     }
     .lucky-wheel-bg {
       position: absolute;
@@ -288,9 +306,15 @@
         }
       }
     }
-    
+    .lucky-btn-box {
+      // position: fixed;
+      // top: 1082rpx;
+      // left: 50%;
+      // transform: translateX(-50%);
+      // width: 100%;
+    }
     .lucky-btn {
-      position: relative;
+      // margin: 0 auto;
       margin: -124rpx auto 0;
       width: 508rpx;
       height: 190rpx;
@@ -311,6 +335,8 @@
       }
     }
     .wrapper-show {
+      // position: fixed;
+      // top: 1282rpx;
       margin: 0 auto;
       padding: 42rpx 32rpx;
       width: 702rpx;

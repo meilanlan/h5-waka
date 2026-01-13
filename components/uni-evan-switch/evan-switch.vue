@@ -60,7 +60,7 @@
 			value: {
 				immediate: true,
 				handler(value) {
-          console.log(value, 'value')
+          // console.log(value, 'value')
 					this.currentValue = value
 				}
 			}

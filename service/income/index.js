@@ -114,7 +114,17 @@ const contractYunzhanghuApi = (data, success, fail) => {
     fail: fail
   })
 }
-
+// 嗨币结算列表
+const hiCoinLogApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/profit/hi_coin_exchange_log',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
 
 export {
@@ -127,5 +137,6 @@ export {
   withdrawalsCreateApi,
   yunzhanghuVerifyApi,
   idCardVerifyPreApi,
-  contractYunzhanghuApi
+  contractYunzhanghuApi,
+  hiCoinLogApi
 }

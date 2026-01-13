@@ -1,6 +1,6 @@
 <template>
   <view class="list-content">
-    <view class="list-box">
+    <view class="list-box" v-if="userRole === 1">
       <view class="title-box">
         <view class="left">
           <image src="@/static/image/set/t-9.png" mode=""></image>
@@ -20,11 +20,11 @@
           插件开关
         </view>
         <view class="right" @click="switchShow('isShowSwitch')">
-          <image :class="['t-arrow', isShowSwitch===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
-          {{isShowSwitch===true?'收起':'打开'}}
+          <image :class="['t-arrow', showObj.isShowSwitch===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
+          {{showObj.isShowSwitch===true?'收起':'打开'}}
         </view>
       </view>
-      <view :class="['switch-box', isShowSwitch===true?'show':'hide']">
+      <view :class="['switch-box', showObj.isShowSwitch===true?'show':'hide']">
         <view class="switch-list" v-for="(item, index) in cmdData.main_list" :key="item.cmd_id">
           <text space="nbsp" decode="true">{{item.cmd_name}}</text>
           <!-- <uni-even-switch v-model="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch> -->
@@ -41,11 +41,11 @@
           娱乐插件开关
         </view>
         <view class="right" @click="switchShow('isShowPlay')">
-          <image :class="['t-arrow', isShowPlay===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
-          {{isShowPlay===true?'收起':'打开'}}
+          <image :class="['t-arrow', showObj.isShowPlay===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
+          {{showObj.isShowPlay===true?'收起':'打开'}}
         </view>
       </view>
-      <view :class="['switch-box', isShowPlay===true?'show':'hide']">
+      <view :class="['switch-box', showObj.isShowPlay===true?'show':'hide']">
         <view class="switch-list" v-for="(item, index) in cmdData.joy_list" :key="item.cmd_id">
           <text space="nbsp" decode="true">{{item.cmd_name}}</text> <uni-even-switch :value="item.cmd_is_open" :size="20" :extraData="index" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforePlayChange"></uni-even-switch>
         </view>
@@ -162,7 +162,7 @@
       <view class="btn" @click="saveLoveing">保存</view>
     </view>
     
-    <!-- 打劫概率/获取金币范围 -->
+    <!-- 打劫概率/获取金币范围 7 -->
     <view class="list-box">
       <view class="title-box">
         <view class="left">
@@ -273,7 +273,7 @@
     </view>
     
     <!-- 送礼成功提示文案 -->
-    <view class="list-box">
+    <!-- <view class="list-box">
       <view class="title-box">
         <view class="left">
           <image src="@/static/image/set/t-8.png" mode=""></image>
@@ -292,7 +292,7 @@
       <text class="tips"><text>【$礼物$】，</text>快答谢吧！</text>
       <text class="tips">（举例新增）开开心心的收到了你的礼物</text>
       <view class="btn" @click="saveSendGift">保存</view>
-    </view>
+    </view> -->
     
     <!-- 送礼成功提示文案 -->
     <view class="list-box">
@@ -355,22 +355,22 @@
           贵族头衔
         </view>
         <view class="right" @click="switchShow('isShowNoble')">
-          <image :class="['t-arrow', isShowNoble===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
-          {{isShowNoble===true?'收起':'打开'}}
+          <image :class="['t-arrow', showObj.isShowNoble===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
+          {{showObj.isShowNoble===true?'收起':'打开'}}
         </view>
       </view>
-      <view :class="['switch-box', isShowNoble===true?'show':'hide']">
+      <view :class="['switch-box', showObj.isShowNoble===true?'show':'hide']">
         <view class="noble-list" v-for="(item,i) in newNobleInfo.title_list" :key="'name-'+i">
           <view class="noble-inpt"><input type="text" v-model="item.name" placeholder="头衔名称" placeholder-style="color:#C5CCD5" @input="watchInpt($event, i)"></view>
-          <view class="noble-bg-box" @click="openNoble(i)">
+          <!-- <view class="noble-bg-box" @click="openNoble(i)">
             <image v-if="item.res_id*1 === -1" src="../../../static/image/noble-bg.png" class="noble-bg"></image>
             <view class="empty" v-else-if="item.url === 'no' || item.res_id==='no' ||item.res_id*1===0 ">
               <image class="cur-noble-1" src="@/static/image/set/un-use.png"></image>
             </view>
             <image class="cur-noble" v-else :src="item.url"></image>
-          </view>
-          <view :class="['save', !item.name&&'gray']" @click="saveNoble(item, i)"><image src="@/static/image/set/save.png"></image></view>
-          <view :class="['delect', item.id==''&&newNobleInfo.title_list.length<=1?'gray':'']" @click="delectNoble(item,i)">
+          </view> -->
+          <view :class="['save', !item.name&&'gray']" @click="saveNoble(item, i, 1)"><image src="@/static/image/set/save.png"></image></view>
+          <view :class="['delect', item.id==''&&newNobleInfo.title_list.length<=1?'gray':'']" @click="delectNoble(item,i,0)">
             <image src="@/static/image/set/delect.png"></image>
           </view>
         </view>
@@ -387,11 +387,11 @@
           金币礼物
         </view>
         <view class="right" @click="switchShow('isShowGift')">
-          <image :class="['t-arrow', isShowGift===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
-          {{isShowGift===true?'收起':'打开'}}
+          <image :class="['t-arrow', showObj.isShowGift===false?'hide':'']" src="@/static/image/set/t-arrow.png" mode=""></image>
+          {{showObj.isShowGift===true?'收起':'打开'}}
         </view>
       </view>
-      <view :class="['switch-box', isShowGift===true?'show':'hide']">
+      <view :class="['switch-box', showObj.isShowGift===true?'show':'hide']">
         <view class="gift-wrapper">
           <view class="title">
             <text class="box">名称</text>
@@ -408,8 +408,9 @@
             <view class="box box-3">
               <input type="digit" v-model="item.charm" @input="watchGift($event, i)">
             </view>
-            <view :class="['hands save', (!item.name||item.coin==''||item.charm=='')?'gray':'']" @click="saveGift(item, i)"><image src="@/static/image/set/save.png"></image></view>
-            <view :class="['hands delect',item.id==''&&newGiftInfo.coin_gift_list.length<=1&&'gray']" @click="delGift(item, i)"><image src="@/static/image/set/delect.png"></image></view>
+            <view :class="['hands save', (item.id===-2||!item.name||item.coin==''||item.charm=='')?'gray':'']" @click="saveGift(item, i, 1)"><image src="@/static/image/set/save.png"></image></view>
+            <view :class="['hands delect',(item.id===-2||newGiftInfo.coin_gift_list.length<=1)&&'gray']" @click="delGift(item, i, 0)"><image src="@/static/image/set/delect.png"></image></view>
+            
           </view>
         </view>
         <view :class="['draw-btn', giftFlag===false&&'gray']" @click="addGift">
@@ -434,7 +435,7 @@
       <view class="btn" @click="saveBg">保存</view>
     </view> -->
     
-    <!-- 群背景定制图 -->
+    <!-- 群推广配置 -->
     <!-- <view class="list-box">
       <view class="title-box">
         <view class="left">
@@ -500,8 +501,8 @@
     
   </view>
 </template>
-
-<script>
+<script setup>
+  import {ref,reactive,watch} from 'vue'
   import UniEvenSwitch from '@/components/uni-evan-switch/evan-switch.vue'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
   import {groupPawData, 
@@ -513,1050 +514,1111 @@
           giftEditData,
           giftDelData,
           groupResData} from'@/service/robotAccount/index.js'
-  export default {
-    props: {
-      robotInfo: {
-        type: Object,
-        default: ()=>{}
-      },
-      group_id: {
-        type: String,
-        default: () => {}
-      },
-      cmdData: {
-        type: Object,
-        default: () => {
-          return {
-            joy_list: [],
-            main_list: []
-          }
-        }
-      },
-      timerMsg: {
-        type: Object,
-        default: () => {
-          return {
-            data: '',
-            data_type: 4,
-          }
-        }
-      },
-      sendGift: {
-        type: Object,
-        default: () => {
-          return {
-            data: '',
-            data_type: 5,
-          }
-        }
-      },
-      signInfo: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 6,
-            obtain_max: '',
-            obtain_min: ''
-          }
-        }
-      },
-      lootInfo: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 7,
-            lose_max: '',
-            lose_min: '',
-            obtain_max: '',
-            obtain_min: '',
-            success_ratio: ''
-          }
-        }
-      },
-      groupTopBg: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 8,
-            group_top_bg: ''
-          }
-        }
-      },
-      groupTopAd: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 9,
-            group_top_ad: '',
-            group_top_ad_jump_url: ''
-          }
-        }
-      },
-      groupword: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 11,
-            list: []
-          }
-        }
-      },
-      coinRate: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 13,
-            coin_rate: 0
-          }
-        }
-      },
-      propose: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 15,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0
-          }
-        }
-      },
-      loveing: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 14,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0
-          }
-        }
-      },
-      force: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 0,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0
-          }
-        }
-      },
-      businessList: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 0,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0,
-            business_config_list: []
-          }
-        }
-      },
-      preLife: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 20,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0,
-            business_config_list: [],
-            coin: 0
-          }
-        }
-      },
-      happlyInfo: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 21,
-            force_coin_max: 0,
-            force_coin_min: 0,
-            force_rate: 0,
-            love_max: 0,
-            love_min: 0,
-            req_marriage_charm: 0,
-            business_config_list: [],
-            coin: 0
-          }
-        }
-      },
-      nobleInfo:{
-        type: Object,
-        default: () => {
-          return {
-            data_type: 23,
-            title_list: []
-          }
-        }
-      },
-      giftInfo: {
-        type: Object,
-        default: () => {
-          return {
-            data_type: 24,
-            list: []
-          }
+          
+  const props = defineProps({
+    group_id: {
+      type: String,
+      default: () => {}
+    },
+    userRole: Number,
+    authCode: String,
+    cmdData: {
+      type: Object,
+      default: () => {
+        return {
+          joy_list: [],
+          main_list: []
         }
       }
-      
     },
-    components: {UniEvenSwitch,uniPopup},
-    data () {
-      return {
-        isShowSwitch: true,
-        isShowPlay: true,
-        isShowNoble: true,
-        isShowGift: true,
-        paw: '',
-        againPaw: '',
-        initType: '',
-        emptyFlag: false,
-        giftFlag: false,
-        newGroupWord: {
+    timerMsg: {
+      type: Object,
+      default: () => {
+        return {
+          data: '',
+          data_type: 4,
+        }
+      }
+    },
+    sendGift: {
+      type: Object,
+      default: () => {
+        return {
+          data: '',
+          data_type: 5,
+        }
+      }
+    },
+    signInfo: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 6,
+          obtain_max: '',
+          obtain_min: ''
+        }
+      }
+    },
+    lootInfo: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 7,
+          lose_max: '',
+          lose_min: '',
+          obtain_max: '',
+          obtain_min: '',
+          success_ratio: ''
+        }
+      }
+    },
+    groupTopBg: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 8,
+          group_top_bg: ''
+        }
+      }
+    },
+    groupTopAd: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 9,
+          group_top_ad: '',
+          group_top_ad_jump_url: ''
+        }
+      }
+    },
+    groupword: {
+      type: Object,
+      default: () => {
+        return {
           data_type: 11,
           list: []
-        },
-        newNobleInfo:{
+        }
+      }
+    },
+    coinRate: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 13,
+          coin_rate: 0
+        }
+      }
+    },
+    propose: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 15,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0
+        }
+      }
+    },
+    loveing: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 14,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0
+        }
+      }
+    },
+    force: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 0,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0
+        }
+      }
+    },
+    businessList: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 0,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0,
+          business_config_list: []
+        }
+      }
+    },
+    preLife: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 20,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0,
+          business_config_list: [],
+          coin: 0
+        }
+      }
+    },
+    happlyInfo: {
+      type: Object,
+      default: () => {
+        return {
+          data_type: 21,
+          force_coin_max: 0,
+          force_coin_min: 0,
+          force_rate: 0,
+          love_max: 0,
+          love_min: 0,
+          req_marriage_charm: 0,
+          business_config_list: [],
+          coin: 0
+        }
+      }
+    },
+    nobleInfo:{
+      type: Object,
+      default: () => {
+        return {
           data_type: 23,
           title_list: []
-        },
-        newGiftInfo: {
+        }
+      }
+    },
+    giftInfo: {
+      type: Object,
+      default: () => {
+        return {
           data_type: 24,
-          coin_gift_list: []
-        },
-        nobleBgList: [],
-        newNobleList: [],
-        newNobleInfoIndex: 0
-      }
-    },
-    watch: {
-      groupword: {
-      	immediate: true,
-      	handler(value) {
-          this.newGroupWord = JSON.parse(JSON.stringify(value))
-      	}
-      },
-      nobleInfo:{
-        immediate: true,
-        handler(value) {
-          let arr = [...value.title_list, ...this.newNobleInfo.title_list]
-          let newArr = []
-          let obj = {}
-          for(var i=0;i<arr.length;i++){
-            if (!arr[i].id=='') {
-              if(!obj[arr[i].id]) {
-                newArr.push(arr[i]);
-                obj[arr[i].id] = true
-              }
-            } else {
-              newArr.push(arr[i]);
-              obj[arr[i].id] = true
-            }
-            
-          }
-          this.newNobleInfo.title_list = newArr
-        }
-      },
-      giftInfo:{
-        immediate: true,
-        handler(value) {
-          console.log(value,'value',this.newGiftInfo.coin_gift_list)
-          let arr = [...value.coin_gift_list, ...this.newGiftInfo.coin_gift_list]
-          let newArr = []
-          let obj = {}
-          for(var i=0;i<arr.length;i++){
-            if (!arr[i].id=='') {
-              if(!obj[arr[i].id]) {
-                newArr.push(arr[i]);
-                obj[arr[i].id] = true
-              }
-            } else {
-              newArr.push(arr[i]);
-              obj[arr[i].id] = true
-            }
-            
-          }
-          this.newGiftInfo.coin_gift_list = newArr
-          // this.newGiftInfo = JSON.parse(JSON.stringify(value))
-        }
-      },
-      'newNobleInfo.title_list': {
-        immediate: true,
-        handler(value) {
-          this.getEmptyFlag(value)
-        }
-      },
-      'newGiftInfo.coin_gift_list': {
-        immediate: true,
-        handler(value) {
-          this.getGiftFlag(value)
+          list: []
         }
       }
-    },
-    methods: {
-      sureNoble(){
-        this.$refs.chooseNobleBgPopup.close()
-        this.newNobleInfo.title_list = JSON.parse(JSON.stringify(this.newNobleList))
-      },
-      checkNoble(item){
-        this.newNobleList[this.newNobleInfoIndex]['res_id'] = item.res_id
-        this.newNobleList[this.newNobleInfoIndex]['url'] = item.url
-      },
-      openNoble(i){
-        this.newNobleInfoIndex = i
-        this.newNobleList = JSON.parse(JSON.stringify(this.newNobleInfo.title_list))
+    }
+  })
+  
+  const emit = defineEmits(['updateConfig','updateGroupInfo','setDefaultData','updateAdminToken']) 
+  // const isShowSwitch = ref(true)
+  // const isShowPlay = ref(true)
+  // const isShowNoble = ref(true)
+  // const isShowGift = ref(true)
+  const showObj = reactive({
+    isShowSwitch: true,
+    isShowPlay: true,
+    isShowNoble: true,
+    isShowGift: true,
+  })
+  const paw = ref('')
+  const againPaw = ref('')
+  const initType = ref('')
+  const emptyFlag = ref(false)
+  const giftFlag = ref(false)
+  const newGroupWord = reactive({
+     data_type:11,
+     list: []
+  })
+  const newNobleInfo = reactive({
+     data_type:23,
+     title_list: []
+  })
+  const newGiftInfo = reactive({
+     data_type:24,
+     coin_gift_list: []
+  })
+  const nobleBgList = ref([])
+  const newNobleList = ref([])
+  const newNobleInfoIndex = ref(0)
+  const chooseNobleBgPopup = ref()
+  const makesurePopup = ref()
+  
+
+  const mergeAndDeduplicate = (source, target, key) => {
+    const combined = [...source[key], ...target[key]];
+    const unique = {};
+    const result = combined.filter(item => {
+      if (key === 'title_list'&&!unique[item.id]) {
+        unique[item.id] = true;
+        return true;
+      }
+      return false;
+    });
+    target[key] = result;
+  };
+  
+
+  // watch([props.groupword, props.nobleInfo, props.giftInfo], ([g, n, gi]) => {
+  //   newGroupWord.value = { ...g };
+  //   console.log(n, 'nnnn')
+  //   mergeAndDeduplicate(n, newNobleInfo, 'title_list');
+  //   mergeAndDeduplicate(gi, newGiftInfo, 'coin_gift_list');
+  // }, { immediate: true, deep: true });
+ 
+  // watch(props.groupword, (g) => {
+  //   newGroupWord.value = { ...g };
+  // }, { immediate: true });
+  watch(() => props.groupword, (newVal) => {
+    newGroupWord.list = newVal.list
+  }, { immediate: true});
+  
+  // 使用函数形式监听props.nobleInfo
+  watch(() => props.nobleInfo, (newVal) => {
+    // mergeAndDeduplicate(newVal, newNobleInfo, 'title_list');
+    const combined = [...newVal['title_list'], ...newNobleInfo['title_list']];
+    const unique = {};
+    const result = combined.filter(item => {
+      if (!unique[item.id]) {
+        unique[item.id] = true;
+        return true;
+      }
+      return false;
+    });
+    newNobleInfo['title_list'] = result;
+  }, { immediate: true});
+  
+  watch(() => props.giftInfo, (value) => {
+    let arr = value.coin_gift_list
+    let newArr = []
+    for(var i=0;i<arr.length;i++){
+      newArr.push(arr[i])
+    }
+    newGiftInfo.coin_gift_list = newArr
+  }, { immediate: true});
+
+
+  watch(newNobleInfo, (value) => {
+    getEmptyFlag(value.title_list);
+  }, { immediate: true });
+
+  watch(newGiftInfo, (value) => {
+    getGiftFlag(value.coin_gift_list);
+  }, { immediate: true });
+
+  function sureNoble(){
+    chooseNobleBgPopup.value.close()
+    newNobleInfo.title_list = JSON.parse(JSON.stringify(newNobleList.value))
+  }
+  function checkNoble(item){
+    newNobleList.value[newNobleInfoIndex.value]['res_id'] = item.res_id
+    newNobleList.value[newNobleInfoIndex.value]['url'] = item.url
+  }
+  function openNoble(i){
+    newNobleInfoIndex.value = i
+    newNobleList.value = JSON.parse(JSON.stringify(newNobleInfo.title_list))
+    uni.showLoading()
+    chooseNobleBgPopup.value.open()
+    groupResData({res_type: 3},res => {
+      if (res.code === 0) {
+          res.data.forEach(item => (item['isPlay'] = false));
+          nobleBgList.value = res.data || []
+        uni.hideLoading()
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        uni.hideLoading()
+      }
+    })
+  }
+  function saveGift(item, i, st){
+    if(item.id) {
+      if (item.name && item.coin != '' && item.charm != '') {
         uni.showLoading()
-        this.$refs.chooseNobleBgPopup.open()
-        groupResData({res_type: 3},res => {
+        let params = {
+          id: item.id===-1?'':item.id,
+          title: item.name,
+          group_id: props.group_id,
+          auth_code: props.authCode,
+          status: st,
+          price: item.charm,
+          score: item.coin
+        }
+        giftEditData(params, res => {
           if (res.code === 0) {
-              res.data.forEach(item => (item['isPlay'] = false));
-              this.nobleBgList = res.data || []
-            uni.hideLoading()
-          } else if (res.code === -20001) {
-            this.$emit('updateAdminToken')
-            this.$refs.chooseEmojiPopup.close()
-            uni.hideLoading()
-          } else if (res.code != -10002){
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
-            uni.hideLoading()
-          } else {
-            uni.hideLoading()
-          }
-        })
-      },
-      saveGift(item, i){
-        if (item.name && item.coin != '' && item.charm != '') {
-          uni.showLoading()
-          let params = {
-            id: item.id,
-            name: item.name,
-            coin: item.coin,
-            charm: item.charm
-          }
-          giftEditData(params, res => {
-            if (res.code === 0) {
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              this.$emit('updateConfig')
-              this.newGiftInfo.coin_gift_list.splice(i, 1)
-              uni.hideLoading()
-            } else if (res.code === -20001) {
-              this.$emit('updateAdminToken')
-              uni.hideLoading()
-            } else if (res.code != -10002){
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              uni.hideLoading()
+            if(st === 1) {
+              emit('updateConfig')
+              newGiftInfo.coin_gift_list.splice(i, 1)
             } else {
-              uni.hideLoading()
-            }
-          })
-        }
-      },
-      addGift(){
-        if(this.giftFlag === true) {
-          let obj = {id: '', name: '', coin: '', charm: ''}
-          this.newGiftInfo.coin_gift_list.push(obj)
-        }
-      },
-      delGift(item,i){
-        if (this.newGiftInfo.coin_gift_list.length>0) {
-          if (item.id != '') {
-            uni.showLoading()
-            giftDelData({id: this.newGiftInfo.coin_gift_list[i].id}, res => {
-              if (res.code === 0) {
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none',
-                  duration: 2000,
-                });
-                this.newGiftInfo.coin_gift_list.splice(i, 1)
-                this.giftInfo.coin_gift_list.splice(i, 1)
-                if (this.newGiftInfo.coin_gift_list.length<=0) {
-                  this.newGiftInfo.coin_gift_list.push({id: '', name: '', coin: '', charm: ''})
-                  this.giftInfo.coin_gift_list.push({id: '', name: '', coin: '', charm: ''})
-                }
-                uni.hideLoading()
-              } else if (res.code === -20001) {
-                this.$emit('updateAdminToken')
-                uni.hideLoading()
-              } else {
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none'
-                });
-                uni.hideLoading()
+              newGiftInfo.coin_gift_list.splice(i, 1)
+              props.giftInfo.coin_gift_list.splice(i, 1)
+              if (newGiftInfo.coin_gift_list.length<=0) {
+                newGiftInfo.coin_gift_list.push({id: -1, name: '', coin: '', charm: ''})
+                props.giftInfo.coin_gift_list.push({id: -1, name: '', coin: '', charm: ''})
               }
-            })
-          } else if (item.id == '' && this.newGiftInfo.coin_gift_list.length>1) {
-            this.newGiftInfo.coin_gift_list.splice(i, 1)
-          }
-          
-        }
-      },
-      watchGift(e, i){
-        this.getGiftFlag(this.newGiftInfo.coin_gift_list)
-      },
-      getGiftFlag(value) {
-        let emptyNum = 0
-        for(var i = 0; i<value.length;i++){
-          if (!value[i].name || value[i].coin == '' || value[i].charm == '') {
-            this.giftFlag = false
-          } else {
-            emptyNum = emptyNum+1
-          }
-        }
-        if (emptyNum === value.length) {
-          this.giftFlag = true
-        }
-      },
-      getEmptyFlag(value){
-        let emptyNum = 0
-        for(var i = 0; i<value.length;i++){
-          if (!value[i].name) {
-            this.emptyFlag = false
-          } else {
-            emptyNum = emptyNum+1
-          }
-        }
-        if (emptyNum === value.length) {
-          this.emptyFlag = true
-        }
-      },
-      watchInpt(e, i) {
-        this.getEmptyFlag(this.newNobleInfo.title_list)
-      },
-      delectNoble(item, i){
-        if (this.newNobleInfo.title_list.length>0) {
-          if (item.id != '') {
-            uni.showLoading()
-            nobleNameDelData({id: this.newNobleInfo.title_list[i].id}, res => {
-              if (res.code === 0) {
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none',
-                  duration: 2000,
-                });
-                this.newNobleInfo.title_list.splice(i, 1)
-                this.nobleInfo.title_list.splice(i, 1)
-                if (this.newNobleInfo.title_list.length<=0) {
-                  this.newNobleInfo.title_list.push({id: '', name: '', res_id: -1})
-                  this.nobleInfo.title_list.push({id: '', name: '',res_id: -1})
-                }
-                uni.hideLoading()
-              } else if (res.code === -20001) {
-                this.$emit('updateAdminToken')
-                uni.hideLoading()
-              } else {
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none'
-                });
-                uni.hideLoading()
-              }
-            })
-          } else if (item.id == '' && this.newNobleInfo.title_list.length>1) {
-            this.newNobleInfo.title_list.splice(i, 1)
-          }
-          
-        }
-      },
-      addNoble(){
-        if(this.emptyFlag === true) {
-          let obj = {id: '', name: '', res_id: -1}
-          this.newNobleInfo.title_list.push(obj)
-        }
-      },
-      saveNoble(item, i){
-        if (item.name) {
-          uni.showLoading()
-          let params = {
-            id: item.id,
-            name: item.name,
-            res_id: !item.res_id?'-1':item.res_id*1
-          }
-          console.log(params.res_id, '------', item.res_id)
-          nobleNameData(params, res => {
-            if (res.code === 0) {
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              this.newNobleInfo.title_list.splice(i, 1)
-              this.$emit('updateConfig')
-              uni.hideLoading()
-            } else if (res.code === -20001) {
-              this.$emit('updateAdminToken')
-              uni.hideLoading()
-            } else if (res.code != -10002){
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              uni.hideLoading()
-            } else {
-              uni.hideLoading()
             }
-          })
-        }
-        
-      },
-      setConfig(param, updateConfig, updateGroupInfo) {
-        //UpdateConfig: true 更新updateConfig 配置方法  false 不更新updateConfig方法
-        //updateGroupInfo: true 更新updateGroupInfo 群信息方法  false 不更新updateGroupInfo方法
-        groupSetConfigData(param, res => {
-          if (res.code === 0) {
+            
+            uni.hideLoading()
+          } else if (res.code === 100401) {
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
-            // updateConfig === true && this.$emit('updateConfig')
-            updateGroupInfo === true && this.$emit('updateGroupInfo')
-            if (updateConfig === true) {
-              this.$emit('updateConfig')
-            } else {
-              this.groupword.list.push({title: param.title, content: param.content})
-            }
-            uni.hideLoading()
-          } else if (res.code === -20001) {
-            this.$emit('updateAdminToken')
-            uni.hideLoading()
-          } else if (res.code != -10002){
-            uni.showToast({
-              title: res.msg,
-              icon: 'none'
-            });
+            emit('updateAdminToken')
             uni.hideLoading()
           } else {
-            uni.hideLoading()
-          }
-        })
-      },
-      saveSendBusiness() {
-        let rate = []
-        this.businessList.business_config_list.forEach(item => {
-          rate.push(item.rate)
-        })
-        let params = {
-            type: 17,
-            business_rate: rate.join(','),
-            group_id: this.robotInfo.group_id
-        }
-        this.setConfig(params, true, false)
-      },
-      addWord() {
-        let obj = {
-          title: '',
-          content: ''
-        }
-        this.newGroupWord.list.push(obj)
-      },
-      delectWord(item, index) {
-        // console.log(index, 'index',this.groupword.list[index].title)
-        if (index<1 && !this.groupword.list[index].title) {
-          this.newGroupWord.list[index].title = ''
-          this.newGroupWord.list[index].content = ''
-          return false
-        }else if(index+1>this.groupword.list.length){
-            this.newGroupWord.list.splice(index, 1)
-            uni.hideLoading()
-            return false
-        }
-        uni.showLoading()
-        
-        groupWordDelData({title: item.title, group_id: this.group_id}, res => {
-          if (res.code === 0) {
-            uni.showToast({
-              title: res.msg,
-              icon: 'none'
-            });
-            // this.$emit('updateConfig')
-            this.newGroupWord.list.splice(index, 1)
-            this.groupword.list.splice(index, 1)
-            if (this.groupword.list.length<=0) {
-              this.groupword.list = [{title: '', content: ''}]
-              this.newGroupWord.list = [{title: '', content: ''}]
-            }
-            uni.hideLoading()
-          } else if (res.code === -20001) {
-            this.$emit('updateAdminToken')
-            uni.hideLoading()
-          } else if (res.code != -10002){
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
             uni.hideLoading()
-          } else {
-            uni.hideLoading()
           }
         })
-      },
-      saveWord(item) {
-        if (!item.title) {
-          uni.showToast({
-            title: "请输入指令问题",
-            icon: 'none'
-          });
-          return false
-        } else if (!item.content) {
-          uni.showToast({
-            title: "请输入答案",
-            icon: 'none'
-          });
-          return false
-        }
-        let params = {
-          type: 11,
-          title: item.title,
-          content: item.content,
-          group_id: this.robotInfo.group_id
-        }
-        // this.setConfig(params)
-        this.setConfig(params, true, false)
-      },
-      closeSurePopup() {
-        this.$refs.makesurePopup.close()
-        this.$emit('setDefaultData', this.initType)
-      },
-      initData(type) {
-        this.initType = type
-        this.$refs.makesurePopup.open()
-      },
-      watchBusiness(e, i) {
-        (this.businessList.business_config_list[i].rate===''||this.businessList.business_config_list[i].rate<0)&&(this.businessList.business_config_list[i].rate=0)
-        this.businessList.business_config_list[i].rate>100&&(this.businessList.business_config_list[i].rate=100)
-      },
-      watchForceRatio() {
-        this.force.force_rate<10&&(this.force.force_rate=10)
-        this.force.force_rate>70&&(this.force.force_rate=70)
-      },
-      watchCoinRate() {
-        this.coinRate.coin_rate<0&&(this.coinRate.coin_rate=0)
-        this.coinRate.coin_rate>10000000&&(this.coinRate.coin_rate=9999999)
-      },
-      watchRatio() {
-        this.lootInfo.success_ratio<0 && (this.lootInfo.success_ratio=0)
-        this.lootInfo.success_ratio>100 && (this.lootInfo.success_ratio=100)
-      },
-      watchObtainMin() {
-        this.lootInfo.obtain_min<0 && (this.lootInfo.obtain_min=1)
-        if (this.lootInfo.obtain_min&&this.lootInfo.obtain_max) {
-          if(this.lootInfo.obtain_min>=this.lootInfo.obtain_max) {
-            this.lootInfo.obtain_min = (this.lootInfo.obtain_max-1)
-          }
-          this.lootInfo.obtain_min = this.lootInfo.obtain_min * 1
-        }
-      },
-      watchObtainMax() {
-        this.lootInfo.obtain_max<0 && (this.lootInfo.obtain_max=1)
-        if (this.lootInfo.obtain_min&&this.lootInfo.obtain_max) {
-          if (this.lootInfo.obtain_max<=this.lootInfo.obtain_min) {
-            this.lootInfo.obtain_max = (this.lootInfo.obtain_min+1)
-          }
-          this.lootInfo.obtain_max = this.lootInfo.obtain_max * 1
-        }
-      },
-      watchLoserMin() {
-        this.lootInfo.lose_min<0 && (this.lootInfo.lose_min=1)
-        if (this.lootInfo.lose_min&&this.lootInfo.lose_max) {
-          if(this.lootInfo.lose_min>=this.lootInfo.lose_max) {
-            this.lootInfo.lose_min = (this.lootInfo.lose_max-1)
-          }
-          this.lootInfo.lose_min = this.lootInfo.lose_min * 1
-        }
-      },
-      watchForceMin() {
-        this.force.force_coin_min<0 && (this.force.force_coin_min=1)
-        if (this.force.force_coin_min&&this.force.force_coin_max) {
-          if(this.force.force_coin_min>=this.force.force_coin_max) {
-            this.force.force_coin_min = (this.force.force_coin_max-1)
-          }
-          this.force.force_coin_min = this.force.force_coin_min * 1
-        }
-      },
-      watchForceMax() {
-        this.force.force_coin_max<0 && (this.force.force_coin_max=1)
-        if (this.force.force_coin_min&&this.force.force_coin_max) {
-          if (this.force.force_coin_max<=this.force.force_coin_min) {
-            this.force.force_coin_max = (this.force.force_coin_min+1)
-          }
-          this.force.lose_max = this.force.lose_max * 1
-        }
-      },
-      watchLoserMax() {
-        this.lootInfo.lose_max<0 && (this.lootInfo.lose_max=1)
-        if (this.lootInfo.lose_min&&this.lootInfo.lose_max) {
-          if (this.lootInfo.lose_max<=this.lootInfo.lose_min) {
-            this.lootInfo.lose_max = (this.lootInfo.lose_min+1)
-          }
-          this.lootInfo.lose_max = this.lootInfo.lose_max * 1
-        }
-      },
-      saveLoot() {
+      }
+    }
+    
+  }
+  function addGift(){
+    if(giftFlag.value === true) {
+      let obj = {id: -1, name: '', coin: '', charm: ''}
+      newGiftInfo.coin_gift_list.push(obj)
+    }
+  }
+  function delGift(item,i,st){
+    if (item.id&&newGiftInfo.coin_gift_list.length>0) {
+      if (item.id != -1) {
         uni.showLoading()
-        let param = {
-          type: 7,
-          success_ratio: this.lootInfo.success_ratio,
-          obtain_min: this.lootInfo.obtain_min,
-          obtain_max: this.lootInfo.obtain_max,
-          lose_min: this.lootInfo.lose_min,
-          lose_max: this.lootInfo.lose_max,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      saveForce() {
-        uni.showLoading()
-        let param = {
-          type: 16,
-          force_rate: this.force.force_rate,
-          force_coin_min: this.force.force_coin_min,
-          force_coin_max: this.force.force_coin_max,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      saveCoin() {
-        if (this.coinRate.coin_rate == '') {
-            uni.showToast({
-              title: "请输入比例值",
-              icon: 'none'
-            });
-            return false
-        }
-        this.setConfig({type: 13,coin_rate: this.coinRate.coin_rate, group_id: this.robotInfo.group_id}, true, false)
-      },
-      watchMinNumber() {
-        this.signInfo.obtain_min<0 && (this.signInfo.obtain_min=1)
-        if (this.signInfo.obtain_min&&this.signInfo.obtain_max) {
-          if(this.signInfo.obtain_min>=this.signInfo.obtain_max) {
-            this.signInfo.obtain_min = (this.signInfo.obtain_max-1)
-          }
-          this.signInfo.obtain_min = this.signInfo.obtain_min * 1
-        }
-      },
-      watchMaxNumber() {
-        this.signInfo.obtain_max<0 && (this.signInfo.obtain_max=1)
-        if (this.signInfo.obtain_min&&this.signInfo.obtain_max) {
-          if (this.signInfo.obtain_max<=this.signInfo.obtain_min) {
-            this.signInfo.obtain_max = (this.signInfo.obtain_min+1)
-          }
-          this.signInfo.obtain_max = this.signInfo.obtain_max * 1
-        }
-      },
-      watchLifeNumber() {
-        this.preLife.coin<0 && (this.preLife.coin=0)
-        if (this.preLife.coin>1000000000) {
-          this.preLife.coin = 999999999
-        }
-      },
-      watchHapplyNumber() {
-        this.happlyInfo.coin<0 && (this.happlyInfo.coin=0)
-        if (this.happlyInfo.coin>1000000000) {
-          this.happlyInfo.coin = 999999999
-        }
-      },
-      saveSign() {
-        // if (this.signInfo.obtain_min == ''||this.signInfo.obtain_max=='') {
-        //   uni.showToast({
-        //     title: "请输入大小范围",
-        //     icon: 'none'
-        //   });
-        //   return false
-        // }
-        uni.showLoading()
-        let param = {
-          type: 6,
-          obtain_min: this.signInfo.obtain_min,
-          obtain_max: this.signInfo.obtain_max,
-          group_id: this.robotInfo.group_id
-        }
-        // this.setConfig(param)
-        this.setConfig(param, true, false)
-      },
-      savePropose() {
-        uni.showLoading()
-        if (this.propose.req_marriage_charm == '') {
-          uni.showToast({
-            title: "请输入最大值",
-            icon: 'none'
-          });
-          return false
-        }
-        let param = {
-          type: 15,
-          req_marriage_charm: this.propose.req_marriage_charm,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      savePreLife() {
-        uni.showLoading()
-        if (this.preLife.coin == '') {
-          uni.showToast({
-            title: "请输入消耗金币",
-            icon: 'none'
-          });
-          return false
-        }
-        let param = {
-          type: 20,
-          coin: this.preLife.coin,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      saveHapply() {
-        uni.showLoading()
-        if (this.happlyInfo.coin == '') {
-          uni.showToast({
-            title: "请输入消耗金币",
-            icon: 'none'
-          });
-          return false
-        }
-        let param = {
-          type: 21,
-          coin: this.happlyInfo.coin,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      saveLoveing() {
-        uni.showLoading()
-        let param = {
-          type: 14,
-          love_min: this.loveing.love_min,
-          love_max: this.loveing.love_max,
-          group_id: this.robotInfo.group_id
-        }
-        this.setConfig(param, true, false)
-      },
-      saveSendGift() {
-        if (!this.sendGift.data) {
-          uni.showToast({
-            title: "请输入自定义内容",
-            icon: 'none'
-          });
-          return false
-        }
-        uni.showLoading()
-        // this.setConfig({data_type: 5,text: this.sendGift.data})
-        this.setConfig({type: 5,text: this.sendGift.data,group_id: this.robotInfo.group_id}, true, false)
-      },
-      saveBg() {
-        uni.showLoading()
-        let path = this.groupTopBg.group_top_bg
-        let reg = /(http|https):\/\/\S*/
-        if (path && !reg.test(path)) {
-          uni.showToast({
-            title: "请输入带有http符号的链接",
-            icon: 'none'
-          });
-          return false
-        }
-        path = path?path.replace("https", "http"):path
-        // this.setConfig({data_type: 8,group_top_bg: path}, 'updateGroupInfo')
-        this.setConfig({data_type: 8,group_top_bg: path, group_id: this.group_id}, true, true)
-      },
-      saveAd() {
-        uni.showLoading()
-        let reg = /(http|https):\/\/\S*/
-        if ((this.groupTopAd.group_top_ad && !reg.test(this.groupTopAd.group_top_ad)) || (this.groupTopAd.group_top_ad_jump_url && !reg.test(this.groupTopAd.group_top_ad_jump_url))) {
-          uni.showToast({
-            title: "请输入带有http符号的链接",
-            icon: 'none'
-          });
-          return false
-        }
-        this.groupTopAd.group_top_ad = this.groupTopAd.group_top_ad?this.groupTopAd.group_top_ad.replace("https", "http"):this.groupTopAd.group_top_ad
-        this.groupTopAd.group_top_ad_jump_url = this.groupTopAd.group_top_ad_jump_url?this.groupTopAd.group_top_ad_jump_url.replace("https", "http"):this.groupTopAd.group_top_ad_jump_url
-        // this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url}, 'updateGroupInfo')
-        this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url,group_id: this.group_id}, true, true)
-      },
-      saveTimerMsg() {
-        if (!this.timerMsg.data) {
-          uni.showToast({
-            title: "请输入自定义内容",
-            icon: 'none'
-          });
-          return false
-        }
-        uni.showLoading()
-        let param = {
-          type: 4,
-          text: this.timerMsg.data,
-          group_id: this.robotInfo.group_id
-        }
-        // this.setConfig(param)
-        this.setConfig(param, true, false)
-      },
-      drawSwitch (params, e) {
-        return new Promise((resolve, reject) => {
-          groupSetCmdData(params, res => {
-            if (~~res.code === 0) {
-              setTimeout(()=>{
-                uni.showToast({
-                  title: e===true?'插件已开启':'插件已关闭',
-                  icon: 'none'
-                });
-              },300)
-              resolve()
-            } else if (res.code === -20001) {
-              uni.hideLoading()
-              this.$emit('updateAdminToken')
-            } else if (res.code != -10002){
-              uni.hideLoading()
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              reject()
-            } else {
-              uni.hideLoading()
-            }
-          })
-        })
-      },
-      beforeListChange(e,extraData) {
-        uni.showLoading()
-        let params = {
-          group_id: this.robotInfo.group_id,
-          cmd_id: this.cmdData.main_list[extraData].cmd_id,
-          cmd_open: e===true?1:0,
-          cmd_type: "",
-        }
-        return new Promise((resolve, reject) => {
-          groupSetCmdData(params, res => {
-            if (~~res.code === 0) {
-              setTimeout(()=>{
-                uni.showToast({
-                  title: e===true?'插件已开启':'插件已关闭',
-                  icon: 'none'
-                });
-              },300)
-              resolve()
-            } else if (res.code === -20001) {
-              uni.hideLoading()
-              this.$emit('updateAdminToken')
-            } else if (res.code != -10002){
-              uni.hideLoading()
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              reject()
-            } else {
-              uni.hideLoading()
-            }
-          })
-        })
-      },
-      beforePlayChange(e,extraData) {
-        uni.showLoading()
-        let params = {
-          group_id: this.robotInfo.group_id,
-          cmd_id: this.cmdData.joy_list[extraData].cmd_id,
-          cmd_open: e===true?1:0,
-          cmd_type: 'joy'
-        }
-        return new Promise((resolve, reject) => {
-          groupSetCmdData(params, res => {
-            if (~~res.code === 0) {
-              setTimeout(()=>{
-                uni.showToast({
-                  title: e===true?'插件已开启':'插件已关闭',
-                  icon: 'none'
-                });
-              },300)
-              resolve()
-            } else if (res.code === -20001) {
-              uni.hideLoading()
-              this.$emit('updateAdminToken')
-            } else if (res.code != -10002){
-              uni.hideLoading()
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-              reject()
-            } else {
-              uni.hideLoading()
-            }
-          })
-        })
-      },
-      setPaw() {
-        if(!this.paw || !this.againPaw) {
-          uni.showToast({
-            title: '请输入密码',
-            icon: 'none'
-          });
-          return false
-        } else if (this.paw !== this.againPaw) {
-          uni.showToast({
-            title: '密码不一致，请重新输入',
-            icon: 'none'
-          });
-          return false
-        }
-        uni.showLoading()
-        groupPawData({pwd: this.paw},res => {
-          if (res.code === 0) {
-            uni.showToast({
-              title: '密码设置成功',
-              duration: 1000,
-              success: () => {
-                setTimeout(() => {
-                  this.$emit('updateAdminToken')
-                }, 1200)
-              }
-            })
-          } else if (res.code === -20001) {
-            this.$emit('updateAdminToken')
-          } else if (res.code != -10002){
-            uni.showToast({
-              title: res.msg,
-              icon: 'none'
-            });
-          }
-        })
-      },
-      switchShow(data) {
-        this[data] = !this[data]
+        saveGift(item,i,st)
+        // giftDelData({id: newGiftInfo.coin_gift_list[i].id}, res => {
+        //   if (res.code === 0) {
+        //     uni.showToast({
+        //       title: res.msg,
+        //       icon: 'none',
+        //       duration: 2000,
+        //     });
+        //     newGiftInfo.coin_gift_list.splice(i, 1)
+        //     giftInfo.coin_gift_list.splice(i, 1)
+        //     if (newGiftInfo.coin_gift_list.length<=0) {
+        //       newGiftInfo.coin_gift_list.push({id: -1, name: '', coin: '', charm: ''})
+        //       giftInfo.coin_gift_list.push({id: '', name: '', coin: '', charm: ''})
+        //     }
+        //     uni.hideLoading()
+        //   } else {
+        //     uni.showToast({
+        //       title: res.msg,
+        //       icon: 'none'
+        //     });
+        //     uni.hideLoading()
+        //   }
+        // })
+      } else if (item.id == -1 && newGiftInfo.coin_gift_list.length>1) {
+        newGiftInfo.coin_gift_list.splice(i, 1)
       }
       
     }
   }
+  function watchGift(e, i){
+    getGiftFlag(newGiftInfo.coin_gift_list)
+  }
+  function getGiftFlag(value) {
+    let emptyNum = 0
+    for(var i = 0; i<value.length;i++){
+      if (!value[i].name || value[i].coin == '' || value[i].charm == '') {
+        giftFlag.value = false
+      } else {
+        emptyNum = emptyNum+1
+      }
+    }
+    if (emptyNum === value.length) {
+      giftFlag.value = true
+    }
+  }
+  function getEmptyFlag(value){
+    let emptyNum = 0
+    for(var i = 0; i<value.length;i++){
+      if (!value[i].name) {
+        emptyFlag.value = false
+      } else {
+        emptyNum = emptyNum+1
+      }
+    }
+    if (emptyNum === value.length) {
+      emptyFlag.value = true
+    }
+  }
+  function watchInpt(e, i) {
+    getEmptyFlag(newNobleInfo.title_list)
+  }
+  function delectNoble(item, i, st){
+    if (newNobleInfo.title_list.length>0) {
+      if (item.id != '') {
+        uni.showLoading()
+        saveNoble(item, i, st)
+        // nobleNameDelData({id: newNobleInfo.title_list[i].id}, res => {
+        //   if (res.code === 0) {
+        //     uni.showToast({
+        //       title: res.msg,
+        //       icon: 'none',
+        //       duration: 2000,
+        //     });
+        //     newNobleInfo.title_list.splice(i, 1)
+        //     nobleInfo.title_list.splice(i, 1)
+        //     if (newNobleInfo.title_list.length<=0) {
+        //       newNobleInfo.title_list.push({id: '', name: '', res_id: -1})
+        //       nobleInfo.title_list.push({id: '', name: '',res_id: -1})
+        //     }
+        //     uni.hideLoading()
+        //   } else {
+        //     uni.showToast({
+        //       title: res.msg,
+        //       icon: 'none'
+        //     });
+        //     uni.hideLoading()
+        //   }
+        // })
+      } else if (item.id == '' && newNobleInfo.title_list.length>1) {
+        newNobleInfo.title_list.splice(i, 1)
+      }
+      
+    }
+  }
+  function saveNoble(item, i, st){
+    if (item.name) {
+      uni.showLoading()
+      let params = {
+        id: item.id,
+        title: item.name,
+        group_id: props.group_id,
+        auth_code: props.authCode,
+        status: st, //1 正常(有 ID 更新，没 ID 创建)
+        icon: !item.res_id?'-1':item.res_id*1,
+      }
+      // console.log(params.res_id, '------', item.res_id)
+      nobleNameData(params, res => {
+        if (res.code === 0) {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          if(st===1){
+            newNobleInfo.title_list.splice(i, 1)
+            emit('updateConfig')
+          } else {
+            newNobleInfo.title_list.splice(i, 1)
+            props.nobleInfo.title_list.splice(i, 1)
+            if (newNobleInfo.title_list.length<=0) {
+              newNobleInfo.title_list.push({id: '', name: '', res_id: -1})
+              props.nobleInfo.title_list.push({id: '', name: '',res_id: -1})
+            }
+          }
+          
+          uni.hideLoading()
+        } else if (res.code === 100401) {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          emit('updateAdminToken')
+          uni.hideLoading()
+        } else {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          uni.hideLoading()
+        }
+      })
+    }
+  }
+  function addNoble(){
+    if(emptyFlag.value === true) {
+      let obj = {id: '', name: '', res_id: -1}
+      newNobleInfo.title_list.push(obj)
+    }
+  }
+  function setConfig(param, updateConfig, updateGroupInfo) {
+    //UpdateConfig: true 更新updateConfig 配置方法  false 不更新updateConfig方法
+    //updateGroupInfo: true 更新updateGroupInfo 群信息方法  false 不更新updateGroupInfo方法
+    groupSetConfigData({...param,auth_code: props.authCode}, res => {
+      if (res.code === 0) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        // updateConfig === true && this.$emit('updateConfig')
+        updateGroupInfo === true && emit('updateGroupInfo')
+        if (updateConfig === true) {
+          emit('updateConfig')
+        } else {
+          props.groupword.list.push({title: param.title, content: param.content})
+        }
+        uni.hideLoading()
+      } else if (res.code === 100401) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        emit('updateAdminToken')
+        uni.hideLoading()
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        uni.hideLoading()
+      }
+    })
+  }
+  function saveSendBusiness() {
+    let rate = []
+    props.businessList.business_config_list.forEach(item => {
+      rate.push(item.rate)
+    })
+    let params = {
+        type: 17,
+        business_rate: rate.join(','),
+        group_id: props.group_id
+    }
+    setConfig(params, true, false)
+  }
+  function addWord() {
+    let obj = {
+      id: '',
+      title: '',
+      content: ''
+    }
+    newGroupWord.list.push(obj)
+  }
+  function delectWord(item, index) {
+    console.log(item, 'item iiii')
+    console.log(index, 'item index')
+    // console.log(index, 'index',this.groupword.list[index].title)
+    // if (index<1 && !props.groupword.list[index].id) {
+    if (index<1 && !item.id) {
+      newGroupWord.list[index].id = ''
+      newGroupWord.list[index].title = ''
+      newGroupWord.list[index].content = ''
+      return false
+    }else if(index>=1 && !item.id){
+      newGroupWord.list.splice(index, 1)
+      uni.hideLoading()
+      return false
+    }
+    uni.showLoading()
+    let params = {
+      type: 11,
+      id: item.id,
+      title: item.title, 
+      group_id: props.group_id,
+      status:0
+    }
+    
+    // setConfig(params, false, false)
+    groupSetConfigData({...params,auth_code: props.authCode}, res => {
+      if (res.code === 0) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        newGroupWord.list.splice(index, 1)
+        // props.groupword.list.splice(index, 1)
+        if (props.groupword.list.length<=0) {
+          // props.groupword.list = [{id: '',title: '', content: ''}]
+          newGroupWord.list = [{id: '',title: '', content: ''}]
+        }
+        
+        uni.hideLoading()
+      } else if (res.code === 100401) {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        emit('updateAdminToken')
+        uni.hideLoading()
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        uni.hideLoading()
+      }
+    })
+    
+    // groupWordDelData({title: item.title, group_id: props.group_id}, res => {
+    //   if (res.code === 0) {
+    //     uni.showToast({
+    //       title: res.msg,
+    //       icon: 'none'
+    //     });
+    //     // this.$emit('updateConfig')
+    //     newGroupWord.list.splice(index, 1)
+    //     props.groupword.list.splice(index, 1)
+    //     if (props.groupword.list.length<=0) {
+    //       props.groupword.list = [{title: '', content: ''}]
+    //       newGroupWord.list = [{title: '', content: ''}]
+    //     }
+    //     uni.hideLoading()
+    //   } else {
+    //     uni.showToast({
+    //       title: res.msg,
+    //       icon: 'none'
+    //     });
+    //     uni.hideLoading()
+    //   }
+    // })
+  }
+  function saveWord(item) {
+    if (!item.title) {
+      uni.showToast({
+        title: "请输入指令问题",
+        icon: 'none'
+      });
+      return false
+    } else if (!item.content) {
+      uni.showToast({
+        title: "请输入答案",
+        icon: 'none'
+      });
+      return false
+    }
+    let params = {
+      type: 11,
+      title: item.title,
+      content: item.content,
+      group_id: props.group_id
+    }
+    // this.setConfig(params)
+    setConfig(params, true, false)
+  }
+  function closeSurePopup() { 
+    makesurePopup.value.close()
+    emit('setDefaultData', initType.value)
+  }
+  function initData(type) {
+    initType.value = type
+    makesurePopup.value.open()
+  }
+  function watchBusiness(e, i) {
+    (props.businessList.business_config_list[i].rate===''||props.businessList.business_config_list[i].rate<0)&&(props.businessList.business_config_list[i].rate=0)
+    props.businessList.business_config_list[i].rate>100&&(props.businessList.business_config_list[i].rate=100)
+  }
+  function watchForceRatio() {
+    props.force.force_rate<10&&(props.force.force_rate=10)
+    props.force.force_rate>70&&(props.force.force_rate=70)
+  }
+  function watchCoinRate() {
+    props.coinRate.coin_rate<0&&(props.coinRate.coin_rate=0)
+    props.coinRate.coin_rate>10000000&&(props.coinRate.coin_rate=9999999)
+  }
+  function watchRatio() {
+    props.lootInfo.success_ratio<0 && (props.lootInfo.success_ratio=0)
+    props.lootInfo.success_ratio>100 && (props.lootInfo.success_ratio=100)
+  }
+  function watchObtainMin() {
+    props.lootInfo.obtain_min<0 && (props.lootInfo.obtain_min=1)
+    if (props.lootInfo.obtain_min&&props.lootInfo.obtain_max) {
+      if(props.lootInfo.obtain_min>=props.lootInfo.obtain_max) {
+        props.lootInfo.obtain_min = (props.lootInfo.obtain_max-1)
+      }
+      props.lootInfo.obtain_min = props.lootInfo.obtain_min * 1
+    }
+  }
+  function watchObtainMax() {
+    props.lootInfo.obtain_max<0 && (props.lootInfo.obtain_max=1)
+    if (props.lootInfo.obtain_min&&props.lootInfo.obtain_max) {
+      if (props.lootInfo.obtain_max<=props.lootInfo.obtain_min) {
+        props.lootInfo.obtain_max = (props.lootInfo.obtain_min+1)
+      }
+      props.lootInfo.obtain_max = props.lootInfo.obtain_max * 1
+    }
+  }
+  function watchLoserMin() {
+    props.lootInfo.lose_min<0 && (props.lootInfo.lose_min=1)
+    if (props.lootInfo.lose_min&&props.lootInfo.lose_max) {
+      if(props.lootInfo.lose_min>=props.lootInfo.lose_max) {
+        props.lootInfo.lose_min = (props.lootInfo.lose_max-1)
+      }
+      props.lootInfo.lose_min = props.lootInfo.lose_min * 1
+    }
+  }
+  function watchForceMin() {
+    props.force.force_coin_min<0 && (props.force.force_coin_min=1)
+    if (props.force.force_coin_min&&props.force.force_coin_max) {
+      if(props.force.force_coin_min>=props.force.force_coin_max) {
+        props.force.force_coin_min = (props.force.force_coin_max-1)
+      }
+      props.force.force_coin_min = props.force.force_coin_min * 1
+    }
+  }
+  function watchForceMax() {
+    props.force.force_coin_max<0 && (props.force.force_coin_max=1)
+    if (props.force.force_coin_min&&props.force.force_coin_max) {
+      if (props.force.force_coin_max<=props.force.force_coin_min) {
+        props.force.force_coin_max = (props.force.force_coin_min+1)
+      }
+      props.force.lose_max = props.force.lose_max * 1
+    }
+  }
+  function watchLoserMax() {
+    props.lootInfo.lose_max<0 && (props.lootInfo.lose_max=1)
+    if (props.lootInfo.lose_min&&props.lootInfo.lose_max) {
+      if (props.lootInfo.lose_max<=props.lootInfo.lose_min) {
+        props.lootInfo.lose_max = (props.lootInfo.lose_min+1)
+      }
+      props.lootInfo.lose_max = props.lootInfo.lose_max * 1
+    }
+  }
+  function saveLoot() {
+    uni.showLoading()
+    let param = {
+      type: 7,
+      success_ratio: props.lootInfo.success_ratio,
+      obtain_min: props.lootInfo.obtain_min,
+      obtain_max: props.lootInfo.obtain_max,
+      lose_min: props.lootInfo.lose_min,
+      lose_max: props.lootInfo.lose_max,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function saveForce() {
+    uni.showLoading()
+    let param = {
+      type: 16,
+      force_rate: props.force.force_rate,
+      force_coin_min: props.force.force_coin_min,
+      force_coin_max: props.force.force_coin_max,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function saveCoin() {
+    if (props.coinRate.coin_rate == '') {
+        uni.showToast({
+          title: "请输入比例值",
+          icon: 'none'
+        });
+        return false
+    }
+    setConfig({type: 13,coin_rate: props.coinRate.coin_rate, group_id: props.group_id}, true, false)
+  }
+  function watchMinNumber() {
+    props.signInfo.obtain_min<0 && (props.signInfo.obtain_min=1)
+    if (props.signInfo.obtain_min&&props.signInfo.obtain_max) {
+      if(props.signInfo.obtain_min>=props.signInfo.obtain_max) {
+        props.signInfo.obtain_min = (props.signInfo.obtain_max-1)
+      }
+      props.signInfo.obtain_min = props.signInfo.obtain_min * 1
+    }
+  }
+  function watchMaxNumber() {
+    props.signInfo.obtain_max<0 && (props.signInfo.obtain_max=1)
+    if (props.signInfo.obtain_min&&props.signInfo.obtain_max) {
+      if (props.signInfo.obtain_max<=props.signInfo.obtain_min) {
+        props.signInfo.obtain_max = (props.signInfo.obtain_min+1)
+      }
+      props.signInfo.obtain_max = props.signInfo.obtain_max * 1
+    }
+  }
+  function watchLifeNumber() {
+    props.preLife.coin<0 && (props.preLife.coin=0)
+    if (props.preLife.coin>1000000000) {
+      props.preLife.coin = 999999999
+    }
+  }
+  function watchHapplyNumber() {
+    props.happlyInfo.coin<0 && (props.happlyInfo.coin=0)
+    if (props.happlyInfo.coin>1000000000) {
+      props.happlyInfo.coin = 999999999
+    }
+  }
+  function saveSign() {
+    // if (this.signInfo.obtain_min == ''||this.signInfo.obtain_max=='') {
+    //   uni.showToast({
+    //     title: "请输入大小范围",
+    //     icon: 'none'
+    //   });
+    //   return false
+    // }
+    uni.showLoading()
+    let param = {
+      type: 6,
+      obtain_min: props.signInfo.obtain_min,
+      obtain_max: props.signInfo.obtain_max,
+      group_id: props.group_id
+    }
+    // this.setConfig(param)
+    setConfig(param, true, false)
+  }
+  function savePropose() {
+    uni.showLoading()
+    if (props.propose.req_marriage_charm == '') {
+      uni.showToast({
+        title: "请输入最大值",
+        icon: 'none'
+      });
+      return false
+    }
+    let param = {
+      type: 15,
+      req_marriage_charm: props.propose.req_marriage_charm,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function savePreLife() {
+    uni.showLoading()
+    if (props.preLife.coin == '') {
+      uni.showToast({
+        title: "请输入消耗金币",
+        icon: 'none'
+      });
+      return false
+    }
+    let param = {
+      type: 20,
+      coin: props.preLife.coin,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function saveHapply() {
+    uni.showLoading()
+    if (props.happlyInfo.coin == '') {
+      uni.showToast({
+        title: "请输入消耗金币",
+        icon: 'none'
+      });
+      return false
+    }
+    let param = {
+      type: 21,
+      coin: props.happlyInfo.coin,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function saveLoveing() {
+    uni.showLoading()
+    let param = {
+      type: 14,
+      love_min: props.loveing.love_min,
+      love_max: props.loveing.love_max,
+      group_id: props.group_id
+    }
+    setConfig(param, true, false)
+  }
+  function saveSendGift() {
+    if (!props.sendGift.data) {
+      uni.showToast({
+        title: "请输入自定义内容",
+        icon: 'none'
+      });
+      return false
+    }
+    uni.showLoading()
+    // this.setConfig({data_type: 5,text: this.sendGift.data})
+    setConfig({type: 5,text: props.sendGift.data,group_id: props.group_id}, true, false)
+  }
+  function saveBg() {
+    uni.showLoading()
+    let path = props.groupTopBg.group_top_bg
+    let reg = /(http|https):\/\/\S*/
+    if (path && !reg.test(path)) {
+      uni.showToast({
+        title: "请输入带有http符号的链接",
+        icon: 'none'
+      });
+      return false
+    }
+    path = path?path.replace("https", "http"):path
+    // this.setConfig({data_type: 8,group_top_bg: path}, 'updateGroupInfo')
+    setConfig({data_type: 8,group_top_bg: path, group_id: props.group_id}, true, true)
+  }
+  function saveAd() {
+    uni.showLoading()
+    let reg = /(http|https):\/\/\S*/
+    if ((props.groupTopAd.group_top_ad && !reg.test(props.groupTopAd.group_top_ad)) || (props.groupTopAd.group_top_ad_jump_url && !reg.test(props.groupTopAd.group_top_ad_jump_url))) {
+      uni.showToast({
+        title: "请输入带有http符号的链接",
+        icon: 'none'
+      });
+      return false
+    }
+    props.groupTopAd.group_top_ad = props.groupTopAd.group_top_ad?props.groupTopAd.group_top_ad.replace("https", "http"):props.groupTopAd.group_top_ad
+    props.groupTopAd.group_top_ad_jump_url = props.groupTopAd.group_top_ad_jump_url?props.groupTopAd.group_top_ad_jump_url.replace("https", "http"):props.groupTopAd.group_top_ad_jump_url
+    // this.setConfig({data_type: 9,group_top_ad: this.groupTopAd.group_top_ad,group_top_ad_jump_url:this.groupTopAd.group_top_ad_jump_url}, 'updateGroupInfo')
+    setConfig({data_type: 9,group_top_ad: props.groupTopAd.group_top_ad,group_top_ad_jump_url:props.groupTopAd.group_top_ad_jump_url,group_id: props.group_id}, true, true)
+  }
+  function saveTimerMsg() {
+    if (!props.timerMsg.data) {
+      uni.showToast({
+        title: "请输入自定义内容",
+        icon: 'none'
+      });
+      return false
+    }
+    uni.showLoading()
+    let param = {
+      type: 4,
+      text: props.timerMsg.data,
+      group_id: props.group_id
+    }
+    // this.setConfig(param)
+    setConfig(param, true, false)
+  }
+  function drawSwitch (params, e) {
+    return new Promise((resolve, reject) => {
+      groupSetCmdData(params, res => {
+        if (~~res.code === 0) {
+          setTimeout(()=>{
+            uni.showToast({
+              title: e===true?'插件已开启':'插件已关闭',
+              icon: 'none'
+            });
+          },300)
+          resolve()
+        } else {
+          uni.hideLoading()
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          reject()
+        }
+      })
+    })
+  }
+  function beforeListChange(e,extraData) {
+    uni.showLoading()
+    let params = {
+      group_id: props.group_id,
+      auth_code: props.authCode,
+      cmd_id: props.cmdData.main_list[extraData].cmd_id,
+      cmd_open: e===true?1:0,
+      cmd_type: "",
+    }
+    return new Promise((resolve, reject) => {
+      groupSetCmdData(params, res => {
+        if (~~res.code === 0) {
+          setTimeout(()=>{
+            uni.showToast({
+              title: e===true?'插件已开启':'插件已关闭',
+              icon: 'none'
+            });
+          },300)
+          resolve()
+        } else if (res.code === 100401) {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          emit('updateAdminToken')
+          uni.hideLoading()
+        } else {
+          uni.hideLoading()
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          reject()
+        }
+      })
+    })
+  }
+  function beforePlayChange(e,extraData) {
+    uni.showLoading()
+    let params = {
+      group_id: props.group_id,
+      auth_code: props.authCode,
+      cmd_id: props.cmdData.joy_list[extraData].cmd_id,
+      cmd_open: e===true?1:0,
+      cmd_type: 'joy'
+    }
+    return new Promise((resolve, reject) => {
+      groupSetCmdData(params, res => {
+        if (~~res.code === 0) {
+          setTimeout(()=>{
+            uni.showToast({
+              title: e===true?'插件已开启':'插件已关闭',
+              icon: 'none'
+            });
+          },300)
+          resolve()
+        } else if (res.code === 100401) {
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          emit('updateAdminToken')
+          uni.hideLoading()
+        } else {
+          uni.hideLoading()
+          uni.showToast({
+            title: res.msg,
+            icon: 'none'
+          });
+          reject()
+        }
+      })
+    })
+  }
+  function setPaw() {
+    if(!paw.value || !againPaw.value) {
+      uni.showToast({
+        title: '请输入密码',
+        icon: 'none'
+      });
+      return false
+    } else if (paw.value !== againPaw.value) {
+      uni.showToast({
+        title: '密码不一致，请重新输入',
+        icon: 'none'
+      });
+      return false
+    }
+    uni.showLoading()
+    groupPawData({group_id: props.group_id,pwd: paw.value},res => {
+      if (res.code === 0) {
+        uni.showToast({
+          title: '密码设置成功',
+          duration: 1000,
+          success: () => {
+            setTimeout(() => {
+              this.$emit('updateAdminToken')
+            }, 1200)
+          }
+        })
+      } else{
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+      }
+    })
+  }
+  function switchShow(data) {
+    showObj[data] = !showObj[data] 
+  }
+  
+  
+  
+  
 </script>
-
 <style scoped lang="scss">
   .list-content {
     padding: 0 30rpx 40rpx;
@@ -1663,7 +1725,8 @@
             flex-shrink: 0;
           }
           .noble-inpt {
-            width: 380rpx;
+            // width: 380rpx;
+            width: 460rpx;
             height: 80rpx;
             background: #F4F5F7;
             border-radius: 8rpx;

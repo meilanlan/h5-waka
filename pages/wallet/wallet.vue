@@ -3,13 +3,13 @@
     <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="我的钱包" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-cont">
       <view class="wrapper-cont-components" v-if="infoFlag">
-        <myWallet :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="{group_id:0}"></myWallet>
-        <view class="bill" @click="toPage('/pages/wallet/rechargeDetail')">
+        <myWallet :source="'user'" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="{group_id:0}" @updateProfile="getUserProfile"></myWallet>
+       <!-- <view class="bill" @click="toPage('/pages/wallet/rechargeDetail')">
           <view class="left">
             <image src="@/static/image/recharge.png"></image>充值明细
           </view>
           <image class="right" src="@/static/image/next.png"></image>
-        </view>
+        </view> -->
         <!-- <view class="bill" @click="toPage('/pages/wallet/renewal')">
           <view class="left">
             <image src="@/static/image/renewal.png"></image>续订管理
@@ -35,14 +35,13 @@
   function backPage() {
     window.client.closeWebview()
   }
-  function toPage(url){
-    uni.navigateTo({
-    	url: url+'?show_title=0'
-    });
-  }
+  // function toPage(url){
+  //   uni.navigateTo({
+  //   	url: url+'?show_title=0'
+  //   });
+  // }
   
   function getUserProfile(){
-    console.log('come in')
     uni.showLoading()
     
     userProfileApi({group_id: 0,channel:window.isiOS?'ios':'android'}, res => {

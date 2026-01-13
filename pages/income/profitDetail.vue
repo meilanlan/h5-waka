@@ -71,7 +71,6 @@
     uni.navigateBack()
   }
   function changeTime() {
-    console.log('范围选择', range.value)
     pageInfo.page_id = 1
     getDetail(groupsList.value[teamObj.curTeamIndex].group_id)
   }
@@ -98,7 +97,7 @@
     myProfitGroupsApi({},res=>{
       if (~~res.code === 0) {
         groupsList.value = [...defaultAllProfit,...res.data.items]
-        console.log(groupsList.value, 'groupsList.value is')
+        // console.log(groupsList.value, 'groupsList.value is')
         teamObj.curTeamIndex = groupsList.value.findIndex(item=>item.group_id===(urlGroupId.value*1))
       }else {
         uni.showToast({

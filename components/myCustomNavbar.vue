@@ -15,13 +15,15 @@
         <view ref="top" v-if="props.showBack===true" @click="handleBack" class="return-btn">
           <image :src="props.backIcon?props.backIcon:defaultBackIcon"></image>
         </view>
+        <!-- 自定义左侧区域 -->
+        <slot name="leftTitle"></slot>
         <!-- 居中标题 -->
         <view class="nav-title">{{ title }}</view>
         <!-- 右侧操作区 -->
         <!-- <view class="nav-right" v-if="showRightIcon"> -->
-        <view class="nav-right">
+        <!-- <view class="nav-right">
           <slot></slot>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>

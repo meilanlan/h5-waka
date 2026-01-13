@@ -569,6 +569,10 @@ if (window.inAPP) {
                     "JSPayResultCallBack",
                     JSPayResultCallBack
                 );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSNoticeResultCallBack",
+                    JSNoticeResultCallBack
+                );
                 //window.WKWebViewJavascriptBridge.registerHandler('JSOrderVipCallBack', JSOrderVipCallBack);
                 // -------------执行所有已经注册了的callback-----------------
                 window.WKWebViewJavascriptBridge.callHandler(
@@ -612,6 +616,12 @@ window.JSPayResultCallBack = function (res) {
   // ios返回的res是object类型   安卓返回的res是string 需要JSON.parse转一下
   if (typeof window.pay_result_after === "function") {
       window.pay_result_after(res);
+  }
+};
+// 客户端通知h5更新数据
+window.JSNoticeResultCallBack = function(res){
+  if (typeof window.pay_result_after === "function") {
+      window.notice_result_callback(res);
   }
 };
 

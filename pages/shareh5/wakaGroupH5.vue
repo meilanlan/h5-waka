@@ -10,7 +10,7 @@
           <view class="tex">这就是你想要的超级社群</view>
         </view>
       </view>
-      <view class="right">
+      <view class="right" @click="openApp">
         打开看看
       </view>
     </view>
@@ -19,7 +19,7 @@
       <view class="tex1">仅社区成员可查看</view>
       <view class="tex2">已是成员？打开App查看</view>
     </view>
-    <view class="download-btn">
+    <view class="download-btn" @click="openApp">
       <view class="logo">
         <image src="/static/image/logo.jpg" mode=""></image>
       </view>
@@ -45,15 +45,68 @@
       <image class="logo-share" src="/static/image/logo-share.jpg"></image>
     </template> -->
     
-    
-    
+    <uni-popup ref="expPopup" type="top">
+      <image src="/static/image/share-exp.png" class="share-img"></image>
+    </uni-popup>
   </view>
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive,onMounted} from 'vue'
+  import {onLoad} from '@dcloudio/uni-app'
+  import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
+  import {jumpApp} from '@/unit/common.js'
   
   const groupType = ref(1)
+  const appInfo = reactive({
+    moment_id: '',
+    type: ''
+  })
+  const expPopup = ref()
+  
+  function isWeixinBrowser() {
+      var ua = navigator.userAgent.toLowerCase();
+      return ua.indexOf('micromessenger') !== -1;
+  }
+  
+  function openApp(){
+    if (isWeixinBrowser()) {
+      //微信浏览器内
+      expPopup.value.open()
+    } else {
+      let param = {
+        iosAppUrl: `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`,
+        androidAppUrl: `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`,
+      }
+      jumpApp(param)
+      // let iosAppUrl= `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
+      // let androidAppUrl = `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
+      // let downloadIos = 'https://apps.apple.com/cn/app/whack/id6752324554'
+      // let downloadAnd = 'https://www.whackgroup.com/#/'
+      // window.location = window.isiOS?iosAppUrl:androidAppUrl;
+      // var clickedAt = +new Date;
+      // console.log(clickedAt,'clickedAt is')
+      //  setTimeout(function(){
+      //    console.log(window.document.webkitHidden,'oooo')
+      //     !window.document.webkitHidden && setTimeout(function(){ 
+      //            if (+new Date - clickedAt < 2000){  
+      //               console.log('come in download')
+      //               window.location = window.isiOS?downloadIos:downloadAnd;  
+      //            }  
+      //     }, 500);       
+      //  }, 500) 
+    }
+  }
+  
+  onLoad(option=>{
+    appInfo.moment_id = option.moment_id*1
+    appInfo.type = option.type*1
+  })
+  
+  onMounted(()=>{
+    const appPage = document.getElementById('app');
+    appPage.style.paddingTop = 0;
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -254,9 +307,12 @@
         border: 2rpx solid #ffffff;
         overflow: hidden;
         margin-right: 12rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         image {
-          width: 48rpx;
-          height: 48rpx;
+          width: 54rpx;
+          height: 54rpx;
         }
       }
     }
@@ -268,5 +324,12 @@
       width: 330rpx;
       height: 72rpx;
     }
+  }
+  .share-img {
+    position: absolute;
+    top: 32rpx;
+    right: 32rpx;
+    width: 430rpx;
+    height: 304rpx;
   }
 </style>

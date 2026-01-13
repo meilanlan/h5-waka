@@ -122,7 +122,7 @@
       
     </view>
    
-    <view class="item-box">
+    <!-- <view class="item-box">
       <view class="list list1">
         <image class="icon" src="@/static/image/set/d-8.png"></image>
         <view class="right">
@@ -144,7 +144,7 @@
           查看 <image src="../../../static/image/ic_arrow.png" mode=""></image>
         </view>
       </view>
-    </view>
+    </view> -->
     
   </view>
 </template>
@@ -155,7 +155,7 @@
       info: {
         type: Object,
         default: () => {}
-      }
+      },
     },
     data() {
       return {

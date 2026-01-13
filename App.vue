@@ -4,7 +4,6 @@
   onMounted(()=>{
     // ios获取系统状态栏高度
     const systemInfo = uni.getSystemInfoSync()
-    console.log(systemInfo, 'systemInfo is')
     const statusBarHeight = systemInfo.safeAreaInsets?.top || systemInfo.statusBarHeight || '44'
     let funDataIos = { hide: 1 };
     let funDataAn = JSON.stringify({
@@ -15,11 +14,11 @@
    const appPage = document.getElementById('app');
    if(window.isiOS) {
      appPage.style.paddingTop = `${statusBarHeight}px`;
-     console.log(statusBarHeight, '---statusBarHeight---')
+     // console.log(statusBarHeight, '---statusBarHeight---')
      uni.setStorageSync('paddingTop',statusBarHeight)
    }
    window.client.JSNavigationBar((response) => {
-     console.log(response, '安全区域是多少')
+     // console.log(response, '安全区域是多少')
      if (!window.isiOS) {
        appPage.style.paddingTop = `${response}px`;
        uni.setStorageSync('paddingTop',response)

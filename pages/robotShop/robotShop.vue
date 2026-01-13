@@ -14,12 +14,17 @@
   
   const isiOS = ref(window.isiOS)
   const groupInfo = reactive({group_id:0})
+  const page = ref(0)
   const spaceRobotData = reactive(({data:{
     robot_list: [],
     order_list: []
   }}))
   function backPage() {
-    window.client.closeWebview()
+    if(page.value===1){
+      uni.navigateBack()
+    } else {
+      window.client.closeWebview()
+    }
   }
   function getSpaceRobot(){
     uni.showLoading()
@@ -37,6 +42,7 @@
     })
   }
   onLoad(option=>{
+    page.value = option.page*1||0
     uni.showLoading()
     provide('parentGroupInfo', {group_id:0})
     nextTick(()=>{

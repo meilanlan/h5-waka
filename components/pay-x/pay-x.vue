@@ -87,19 +87,17 @@
                 prodId: props.haib.list[curIndex.value].t_prod_id,
                 orderId: res.data.sn,
               },(respon)=>{
-                console.log(respon, 'oooios')
-                if(!respon) {
-                  uni.showToast({
-                    title: '充值失败，请重新再试',
-                    icon: 'none'
-                  });
-                } else {
-                  emit('updateInfo')
-                  uni.showToast({
-                    title: '充值成功',
-                    icon: 'none'
-                  });
-                }
+                // if(!respon) {
+                //   uni.showToast({
+                //     title: '充值失败，请重新再试',
+                //     icon: 'none'
+                //   });
+                // } else {
+                //   uni.showToast({
+                //     title: '充值成功',
+                //     icon: 'none'
+                //   });
+                // }
               })
             payLock.value = false
           }else {
@@ -127,15 +125,19 @@
   
   window.pay_result_after = (res)=>{
     // 唤起支付后，获取客户端返回的结果信息
+    // let respon = JSON.parse(res)
+    // uni.showToast({
+    //   title: respon.isSuccess?'充值成功':'充值失败，请重新再试',
+    //   icon: 'none'
+    // });
+  }
+  window.notice_result_callback = (res)=>{
+    // 客户端通知h5更新页面数据
     let respon = JSON.parse(res)
-    if (respon.isSuccess){
-       emit('updateInfo')
+    // console.log(respon, 'notice_result_callback')
+    if(respon.type===1){
+      emit('updateInfo')
     }
-    
-    uni.showToast({
-      title: respon.isSuccess?'充值成功':'充值失败，请重新再试',
-      icon: 'none'
-    });
   }
   
   function radioChange(){

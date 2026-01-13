@@ -4,7 +4,7 @@
     <view class="tit">活动规则</view>
     <image class="close" src="/static/image/close-1.png" @click="closePopup"></image>
     <view class="rule-cont">
-      <view>一、活动时间： 即日起至2025年10月30日结束，活动时间如有调整平台运营将第一时间发布通知，请及时留意。 </view>
+      <view>一、活动时间： 即日起至2026年03月01日结束，活动时间如有调整平台运营将第一时间发布通知，请及时留意。 </view>
       <view>二、活动规则：</view>
       <view>1、本次活动仅为首次注册APP的用户提供福利，每一位新用户都有一次免费获得福利的机会，领取奖品后请前往我的背包查看或使用奖品，新手福利不得交易和转交他人使用。</view>
       <view>2、参与方式为免费，抽奖完毕后会在页面中显示抽奖结果，请您留意，并及时使用。 </view>

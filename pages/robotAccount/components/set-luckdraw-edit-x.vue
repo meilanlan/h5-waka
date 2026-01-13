@@ -110,9 +110,8 @@
         this.resultList.forEach((item,i) =>{
           (item.id===this.addDataNew.lottery_type)&&(this.curResultIndex=i)
         })
-        console.log(12)
       }
-      console.log(this.addDataNew.lottery_type, 'tutu',this.addData.lottery_type)
+      // console.log(this.addDataNew.lottery_type, 'tutu',this.addData.lottery_type)
     },
     methods: {
       saveAll() {
@@ -125,40 +124,35 @@
         }
         uni.showLoading()
         this.addDataNew.lottery_type = this.resultList[this.curResultIndex].id
-        console.log('ioio', this.resultList[this.curResultIndex].id)
-        if (this.type === 1) {
-          lotteryAddData(this.addDataNew, res => {
-            if (res.code === 0) {
-              this.drawData(res)
-            } else if (res.code === -20001) {
-              this.$emit('clearAdminToken')
-            } else {
-              if (res.code != -10002){
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none'
-                });
-              }
-            }
-              uni.hideLoading()
-            })
-        } else {
-          lotteryEditData(this.addDataNew, res => {
-            if (res.code === 0) {
-              this.drawData(res)
-            } else if (res.code === -20001) {
-              this.$emit('clearAdminToken')
-            } else {
-              if (res.code != -10002){
-                uni.showToast({
-                  title: res.msg,
-                  icon: 'none'
-                });
-              }
-            }
-            uni.hideLoading()
-          })
+        let param = {
+          lottery_id: this.addDataNew.lottery_id,
+          group_id: this.addDataNew.group_id,
+          auth_code: this.addDataNew.auth_code,
+          status: this.addDataNew.status, //新增
+          lottery_name: this.addDataNew.lottery_name,
+          l_type: this.addDataNew.lottery_type,
+          l_award: this.addDataNew.award,
+          l_total: this.addDataNew.lottery_num,
+          l_rate: this.addDataNew.lottery_rate,
+          l_maxnum_uday: this.addDataNew.day_limit,
         }
+        lotteryAddData(param, res => {
+          if (res.code === 0) {
+            this.drawData(res)
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
+            this.$emit('clearAdminToken')
+          } else {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
+          }
+          uni.hideLoading()
+        })
       },
       drawData(res){
         this.$emit('updateData')
@@ -167,14 +161,20 @@
           title: res.msg,
           icon: 'none'
         });
-        this.addDataNew = {
-          lottery_name: '',
-          lottery_type: 0,
-          award: 0,
-          lottery_rate: 0,
-          lottery_num: 0,
-          day_limit: 0
-        }
+        // this.addDataNew = {
+        //   lottery_name: '',
+        //   lottery_type: 0,
+        //   award: 0,
+        //   lottery_rate: 0,
+        //   lottery_num: 0,
+        //   day_limit: 0
+        // }
+        this.addDataNew.lottery_name = ''
+        this.addDataNew.lottery_type = 0
+        this.addDataNew.award = 0
+        this.addDataNew.lottery_rate = 0
+        this.addDataNew.lottery_num = 0
+        this.addDataNew.day_limit = 0
         this.curResultIndex = 0
         this.type != 1 && this.$emit('closePopup')
       },

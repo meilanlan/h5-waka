@@ -27,10 +27,16 @@
             </view>
           </view>
         </view>
+        <view class="expired" v-if="curTabCompont===0&&(userInfo.data.user.vip_endtime>0&&userInfo.data.user.vip_endtime<curTimestamp)">
+          <image src="/static/image/notice.png"></image>会员已过期
+        </view>
+        <view class="expired" v-if="curTabCompont===1&&(userInfo.data.user.svip_endtime>0&&userInfo.data.user.svip_endtime<curTimestamp)">
+          <image src="/static/image/notice.png"></image>会员已过期
+        </view>
       </view>
       <image class="bg" src="../../static/image/bg_wxq_2.jpg" mode=""></image>
       <view class="wrapper-cont">
-        <vipCenterX :vip="userInfo.data.vip" @checkTab="checkTab"></vipCenterX>
+        <vipCenterX :vip="userInfo.data.vip" @checkTab="checkTab" @updateInfo="updateInfo"></vipCenterX>
       </view>
     </template>
   </view>
@@ -44,6 +50,7 @@
   import myCustomNavbar from '@/components/myCustomNavbar.vue'
   // import {getDate} from '@/components/uni-datetime-picker/components/uni-datetime-picker/util.js'
   
+  const curTimestamp = Math.floor(Date.now() / 1000);
   const boyHeadimg = new URL("@/static/image/boy.png", import.meta.url).href
   const girlHeadimg = new URL("@/static/image/girl.png", import.meta.url).href
   const infoFlag = ref(false)
@@ -51,6 +58,7 @@
   const curTabCompont = ref(0)
   const gender = ref()
   provide('parentGroupInfo',{group_id: 0})
+ 
   
   function backPage() {
     window.client.closeWebview()
@@ -65,6 +73,10 @@
   }
   function checkTab(i){
     curTabCompont.value = i || 0
+  }
+  
+  function updateInfo(){
+    getUserProfile()
   }
   
   function getUserProfile(){
@@ -110,7 +122,7 @@
       display: block;
       width: 686rpx;
       height: 272rpx;
-      margin: 0 auto;
+      margin: 14rpx auto 0;
       border-radius: 24rpx;
       // position: absolute;
       // top: 0;
@@ -126,7 +138,7 @@
       border-radius: 0;
       height: auto;
       padding: 18rpx 32rpx;
-      margin-bottom: 14rpx;
+      margin-bottom: 0;
       .headimg {
         width: 112rpx;
         height: 112rpx;
@@ -145,6 +157,7 @@
             color: #22C0FF;
           }
         }
+       
         .time {
           display: inline-block;
           margin-top: 15rpx;
@@ -159,6 +172,23 @@
         .cv {
           margin-left: 8rpx;
         }
+      }
+    }
+    .expired {
+      display: flex;
+      align-items: center;
+      padding: 0 24rpx;
+      margin: 0 auto 20rpx;
+      height: 44rpx;
+      width: 686rpx;
+      color: #22C0FF;
+      background-color: rgba(34, 192, 255, 0.1);
+      font-size: 24rpx;
+      border-radius: 20rpx;
+      image {
+        margin-right: 12rpx;
+        width: 32rpx;
+        height: 32rpx;
       }
     }
   }

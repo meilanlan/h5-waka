@@ -16,7 +16,7 @@
   })
   const emit = defineEmits(['closePopup','toApp'])
   
-  console.log(props.curAwaid, 'curAwaid is')
+  // console.log(props.curAwaid, 'curAwaid is')
   function closePopup(){
     emit('closePopup')
   }

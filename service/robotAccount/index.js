@@ -165,7 +165,8 @@ const groupLoginData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupLoginApi,
+    // url: groupLoginApi,
+    url: '/h5/group/check_admin_pwd',
     data: data,
     success: success,
     fail: fail
@@ -177,7 +178,8 @@ const groupPawData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupPawApi,
+    // url: groupPawApi,
+    url: '/h5/group/update_admin_pwd',
     data: data,
     success: success,
     fail: fail
@@ -297,7 +299,8 @@ const groupResData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupResApi,
+    // url: groupResApi,
+    url: '/h5/group/group_res_list',
     data: data,
     success: success,
     fail: fail
@@ -333,7 +336,8 @@ const groupWordDelData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupWordDelApi,
+    url: '/h5/group/group_wrod_del',
+    // url: groupWordDelApi,
     data: data,
     success: success,
     fail: fail
@@ -345,7 +349,8 @@ const groupData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupDataApi,
+    // url: groupDataApi,
+    url: '/h5/space/user_data_edit',
     data: data,
     success: success,
     fail: fail
@@ -377,7 +382,8 @@ const lotteryConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryConfigApi,
+    // url: lotteryConfigApi,
+    url: '/h5/space/lottery_config_get',
     data: data,
     success: success,
     fail: fail
@@ -389,7 +395,8 @@ const lotteryDelData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryDelApi,
+    // url: lotteryDelApi,
+    url: '/h5/space/lottery_del',
     data: data,
     success: success,
     fail: fail
@@ -401,7 +408,8 @@ const lotterySetData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotterySetApi,
+    // url: lotterySetApi,
+    url: '/h5/space/lottery_config_set',
     data: data,
     success: success,
     fail: fail
@@ -413,7 +421,8 @@ const lotteryAddData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryAddApi,
+    // url: lotteryAddApi,
+    url: '/h5/space/lottery_edit',
     data: data,
     success: success,
     fail: fail
@@ -425,7 +434,8 @@ const lotteryLogData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryLogApi,
+    // url: lotteryLogApi,
+    url: '/h5/space/lottery_log',
     data: data,
     success: success,
     fail: fail
@@ -533,7 +543,8 @@ const nobleNameData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: nobleNameApi,
+    url: '/h5/group/update_noble_title',
+    // url: nobleNameApi,
     data: data,
     success: success,
     fail: fail
@@ -557,7 +568,8 @@ const giftEditData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: giftEditApi,
+    // url: giftEditApi,
+    url: '/h5/group/update_gift',
     data: data,
     success: success,
     fail: fail
@@ -792,7 +804,6 @@ const glxGroupQueryApi = (data, success, fail) => {
 
 //数据同步
 const glxGroupSyncApi = (data, success, fail) => {
-  console.log(1)
   ajax({
     noAuth: true,
     adminSet: true,
@@ -806,6 +817,16 @@ const glxGroupSyncApi = (data, success, fail) => {
   })
 }
 
+const operationLogApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/operation_log',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
 export {
   robotDetailData,
@@ -871,5 +892,6 @@ export {
   robotBindGroupApi,
   createOrderApi,
   glxGroupSyncApi,
-  glxGroupQueryApi
+  glxGroupQueryApi,
+  operationLogApi
 }

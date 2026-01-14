@@ -21,17 +21,17 @@
         <view class="info">
           <view class="left">
             <image src="../../../static/image/icon_lucky.png" mode=""></image>
-            <text>{{props.haib.banlance}}</text>
+            <text>{{luckyBag.banlance}}</text>
           </view>
-          <view class="right" @click="openPayHi">去提现</view>
+          <view class="right" @click="toPage('/pages/wallet/luckyBagWathdrawal?show_title=0')">去提现</view>
         </view>
         <view class="wallet-bottom">
-          <view class="box">
+          <view class="box" @click="toPage('/pages/wallet/luckyBagRecord?show_title=0&id=1')">
             <!-- <view class="num">{{props.wallet.energy}}</view> -->
             <view class="text">收到福袋</view>
           </view>
           <view class="line"></view>
-          <view class="box">
+          <view class="box" @click="toPage('/pages/wallet/luckyBagRecord?show_title=0&id=2')">
             <!-- <view class="num">{{props.wallet.yuanqi}}</view> -->
             <view class="text">发出福袋</view>
           </view>
@@ -47,14 +47,14 @@
         <view class="info">
           <view class="left">
             <image src="../../../static/image/icon-red.png" mode=""></image>
-            <text>{{props.haib.banlance}}</text>
+            <text>{{redPackage.balance}}</text>
           </view>
           <!-- <view class="right" @click="openPayHi">去充值</view> -->
         </view>
         <view class="wallet-bottom wallet-bottom-1">
-          <view class="box" @click="toPage('/pages/wallet/rechargeDetail?show_title=0')">收到红包</view>
+          <view class="box" @click="toPage('/pages/wallet/redPackageRecord?show_title=0&id=1')">收到红包</view>
           <view class="line"></view>
-          <view class="box" @click="toPage(`/pages/wallet/myBill?accountId=1&group_id=${props.robotInfo.group_id}&show_title=0`)">发出红包</view>
+          <view class="box" @click="toPage('/pages/wallet/redPackageRecord?show_title=0&id=2')">发出红包</view>
         </view>
       </view>
     </template>
@@ -95,7 +95,9 @@
     source: String,
     wallet: Object,
     haib: Object,
-    robotInfo: Object
+    robotInfo: Object,
+    luckyBag: Object,
+    redPackage: Object,
   })
   const emit = defineEmits(['updateProfile'])
   function openPayHi(){

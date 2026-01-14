@@ -21,9 +21,9 @@
         <view class="nav-title">{{ title }}</view>
         <!-- 右侧操作区 -->
         <!-- <view class="nav-right" v-if="showRightIcon"> -->
-        <!-- <view class="nav-right">
+        <view class="nav-right">
           <slot></slot>
-        </view> -->
+        </view>
       </view>
     </view>
   </view>

@@ -15,7 +15,7 @@
         <image :src="infoData.user.head_img || defaultimg" mode=""></image>
         {{infoData.user.nick_name}} 邀请你加入
       </view>
-      <button class="invite-btn" @click="openApp" :disabled="btnDisabled">接受邀请</button>
+      <button class="invite-btn" @click="openApp">接受邀请</button>
     </view>
     <image class="logo-share" src="/static/image/logo-share.png"></image>
     

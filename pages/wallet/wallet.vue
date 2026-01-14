@@ -3,7 +3,7 @@
     <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="我的钱包" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-cont">
       <view class="wrapper-cont-components" v-if="infoFlag">
-        <myWallet :source="'user'" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="{group_id:0}" @updateProfile="getUserProfile"></myWallet>
+        <myWallet :source="'user'" :luckyBag="userInfo.data.lucky_bag" :redPackage="userInfo.data.red_package" :haib="userInfo.data.haib" :wallet="userInfo.data.wallet" :robotInfo="{group_id:0}" @updateProfile="getUserProfile"></myWallet>
        <!-- <view class="bill" @click="toPage('/pages/wallet/rechargeDetail')">
           <view class="left">
             <image src="@/static/image/recharge.png"></image>充值明细

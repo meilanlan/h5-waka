@@ -44,10 +44,46 @@ const useRewardApi = (data, success, fail) => {
     fail: fail
   })
 }
+//红包提现记录
+const alipayRpStatApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/alipay_rp/stat',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//提现信息
+const luckyWithdrawalsInfoApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/withdrawals/info',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//提现
+const luckyWithdrawalsApplyApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/withdrawals/apply',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
 export {
   rechargeOrderApi,
   luckyBagStatApi,
   rewardBagListApi,
-  useRewardApi
+  useRewardApi,
+  alipayRpStatApi,
+  luckyWithdrawalsInfoApi,
+  luckyWithdrawalsApplyApi
 }

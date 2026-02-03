@@ -2,7 +2,10 @@ const trim = (str) => { // 去除字符串前后所有空
   return str.replace(/(^\s*)|(\s*$)/g, ""); 
 }
 // 千分位数字
-const formatNumber = (num) => Number(num).toLocaleString('en-US');
+const formatNumber = (num) => {
+  if(!num) return 0
+  return Number(num).toLocaleString('en-US')
+};
 
 const processParams = (obj) => { // 去除空的参数
   let param = {};

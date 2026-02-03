@@ -23,7 +23,7 @@
 
 <script setup>
   import {ref, nextTick, reactive,provide} from 'vue'
-  import {onLoad} from '@dcloudio/uni-app'
+  import {onShow} from '@dcloudio/uni-app'
   import myWallet from '../robotAccount/components/my-wallet.vue'
   import {userProfileApi} from '@/service/robotAccount/index.js'
   import myCustomNavbar from '../../components/myCustomNavbar.vue'
@@ -58,13 +58,15 @@
       }
     })
   }
-  onLoad(option=>{
+ 
+  onShow(()=>{
     nextTick(()=>{
         window.client.getUserinfo((res) => {
             getUserProfile()
         });
     })
   })
+  
   
 </script>
 

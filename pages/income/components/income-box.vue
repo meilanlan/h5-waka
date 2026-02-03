@@ -39,7 +39,7 @@
         <slot name="profitDetailSlot"></slot>
       </templat>
       <!-- 提现记录 -->
-      <tradeDetail :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :rangeObject="rangeObject" v-else></tradeDetail>
+      <tradeDetail :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :type='1' :rangeObject="rangeObject" v-else></tradeDetail>
     </view>
   </view>
 </template>

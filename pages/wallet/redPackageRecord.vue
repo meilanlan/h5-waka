@@ -8,8 +8,8 @@
     >
       <template v-slot:leftTitle>
         <view class="tab-box">
-          <view :class="['box',curTab===item&&'active']" v-for="item in 2" :key="'box-'+item" @click="switchTab(item)">{{item===1?'收到的红包':'发出的红包'}}</view>
-          <view class="line" :style="{left: curTab===1?'50rpx':'240rpx'}"></view>
+          <view :class="['box',curTab===item.id&&'active']" v-for="item in tabList" :key="'box-'+item" @click="switchTab(item)">{{item.title}}</view>
+          <view class="line" :style="{left: curTab===2?'50rpx':'240rpx'}"></view>
         </view>
       </template>
         <view class="timer-box">
@@ -21,16 +21,16 @@
         </view>
     </myCustomNavbar>
     <view class="total-data">
-      <image src="/static/logo.png" class="headimg"></image>
-      <view class="nickname">晚风惬意共{{curTab===1?'收到':'发出'}}</view>
-      <view class="price">200.00</view>
-      <view class="exp" v-if="curTab===2">发出红包：5个</view>
+      <image :src="listInfo.data.user.head_img" class="headimg" mode="aspectFill"></image>
+      <view class="nickname">{{listInfo.data.user.nick_name}}{{curTab===2?'共收到':'共发出'}}</view>
+      <view class="price">{{listInfo.data.total_amount||0}}</view>
+      <view class="exp" v-if="curTab===1">发出红包：{{listInfo.data.total_send_num||0}}个</view>
       <template v-else>
         <view class="exp-2">已存入支付宝余额</view>
         <view class="exp-box">
-          <view class="box">收到红包：2</view>
+          <view class="box">收到红包：{{listInfo.data.receive_num||0}}</view>
           <view class="line"></view>
-          <view class="box">手气最佳：1</view>
+          <view class="box">手气最佳：{{listInfo.data.receive_best_num||0}}</view>
         </view>
       </template>
       <!-- <view class="withdraw">去提现</view> -->
@@ -38,25 +38,30 @@
     </view>
     <view class="list-box" v-if="listStyle.listHeight" :style="{height: `calc(100vh - ${listStyle.listHeight}rpx)`}">
       <scroll-view scroll-y="true" class="scrollBox" @scrolltolower="onReachBottom">
-        <view class="box" v-for="item in 20" :key="'list-'+item">
+        <view class="box" v-for="(item,index) in listInfo.data.list" :key="'list-'+index">
           <view class="left">
             <view class="user">
-              <image src="/static/logo.png" class="headimg"></image>
+              <image :src="item.user.head_img" class="headimg"></image>
               <view class="user-box">
-                <view class="val1">晚风惬意</view>
-                <view class="val2">10-22 | 庆祝今天公会战胜利</view>
+                <view class="val1">{{item.user.nick_name}}</view>
+                <view class="val2">{{getDate(item.timestamp*1000)}} | {{item.msg}}</view>
               </view>
             </view>
           </view>
           <view class="right">
-            <view class="val1 val1-1">12.00元</view>
-            <view class="zan" v-if="curTab===1">
-              <image src="/static/image/zan.png"></image>
-              手气最佳
-            </view>
-            <view class="val2 val2-2" v-else>已领取 10/12</view>
-            
+            <view class="val1 val1-1">{{item.receive_amount?item.receive_amount.toFixed(2):'0.00'}}元</view>
+            <template v-if="curTab===2">
+              <view class="zan" v-if="item.receive_is_best">
+                <image src="/static/image/zan.png"></image>
+                手气最佳
+              </view>
+            </template>
+            <view class="val2 val2-2" v-else>{{item.status===0?'已领取':item.status===2?'已领完':'已过期'}} {{item.receive_num||0}}/{{item.total_num}}</view>
           </view>
+        </view>
+        <view class="no-data" v-if="!listInfo.data.list.length">
+          <image src="@/static/image/no-data.png"></image>
+          <view>暂无数据</view>
         </view>
       </scroll-view>
     </view>
@@ -65,16 +70,30 @@
 </template>
 
 <script setup>
-  import {ref,reactive, onMounted} from 'vue'
+  import {ref,reactive,nextTick} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import myCustomNavbar from '../../components/myCustomNavbar.vue'
   import navbarBgImg from '@/static/image/redbag-tit.png'
   import yearPicker from '@/components/year-picker.vue'
+  import {alipayRpStatApi} from '@/service/wallet/index.js'
+  import {formatNumber} from '@/unit/common.js'
+  import {getDate} from '@/components/uni-datetime-picker/components/uni-datetime-picker/util.js'
   
-  const curTab = ref(1)
+  const tabList = ref([{id:2, title: '收到的红包'},{id:1, title: '发出的红包'},])
+  const curTab = ref(2)
+  const prePage = ref(0)
+  const listInfo = reactive({data:{
+    user: {},
+    list: []
+  }})
   const year = ref(new Date().getFullYear())
   const listStyle = reactive({
     listHeight: ""
+  })
+  const pageInfo = reactive({
+    page_id:1,
+    page_size:20,
+    total: 0
   })
   
   function getElementHeight(selector){
@@ -95,31 +114,75 @@
   function calcListHeight(){
     listStyle.listHeight = getElementHeight('.total-data');
   };
-  onMounted(()=>{
-    setTimeout(() => {
-      calcListHeight()
-    }, 100);
-  })
+
   onLoad(option=>{
-    curTab.value = (option.id||1)*1
+    curTab.value = (option.id||2)*1
+    prePage.value = (option.prePage||0)*1
+    nextTick(()=>{
+        window.client.getUserinfo((res) => {
+            console.log(res, "resresres");
+            getList()
+        });
+    })
   })
-  function onReachBottom(){
-    // if(groups.value.length<searchInfo.total) {
-    //   // getMyProfitGroups()
-    // }
+  function getList(){
+    uni.showLoading()
+    let params = {
+      type: curTab.value,
+      year:year.value,
+      page_id: pageInfo.page_id,
+      page_size: pageInfo.page_size
+    }
+    alipayRpStatApi(params,res=>{
+      if (~~res.code === 0) {
+        if(res.data) {
+          if(pageInfo.page_id === 1) {
+            listInfo.data = res.data
+            // listInfo.user = res.data.user
+            // listInfo.list = res.data.list||[]
+            pageInfo.total = res.data.total
+          } else {
+            listInfo.data.list = [...listInfo.data.list,...res.data.list]
+          }
+          pageInfo.page_id++
+        }
+        setTimeout(() => {
+          calcListHeight()
+        }, 100);
+      }else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+      }
+      uni.hideLoading()
+    })
   }
   
-  const handleYearConfirm = (year) => {
-    calcListHeight()
-    year.value = year
+  function onReachBottom(){
+    if(listInfo.data.list.length<pageInfo.total) {
+      getList()
+    }
+  }
+  
+  const handleYearConfirm = (y) => {
+    year.value = y
+    pageInfo.page_id = 1
+    getList()
   }
   
   function switchTab(item){
-    curTab.value = item
+    pageInfo.page_id = 1
+    curTab.value = item.id
+    getList()
   }
   
   function backPage() {
-    uni.navigateBack()
+    if(prePage.value){
+      uni.navigateBack()
+    } else {
+      window.client.closeWebview()
+    }
   }
 </script>
 
@@ -306,5 +369,8 @@
         }
       }
     }
+  }
+  .no-data {
+    margin-top: 0;
   }
 </style>

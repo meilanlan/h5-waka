@@ -3,7 +3,7 @@
     <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="福气值结算" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-box">
       <view class="info">
-        <image class="headimg" :src="withdrawalsInfo.data.user.head_img||gender"></image>
+        <image class="headimg" :src="withdrawalsInfo.data.user.head_img||gender" mode="aspectFill"></image>
         <view class="">
           <view class="name">
             {{withdrawalsInfo.data.user.nick_name}}
@@ -16,15 +16,16 @@
       
       <view class="wathdrawal-box">
         <view class="top-box">
-          <view class="text1">可提现:¥{{withdrawalsInfo.data.hi_dou||0}}</view>
+          <!-- <view class="text1">可提现:¥{{calculateTax(withdrawalsInfo.data.fortune, withdrawalsInfo.data.ratio)}}</view> -->
+          <view class="text1">可提现:¥{{withdrawalsInfo.data.rw_fortune}}</view>
           <view class="inpt-box">
-            <text v-if="num">¥</text><input class="uni-input" v-model="num" />
+            <text v-if="num">¥</text><input class="uni-input" type="number" v-model="num" placeholder="请输入提现金额" placeholder-style="color:#C5CCD5;fontSize:36rpx;fontWeight:normal" @input="handleInputOnlyInt" />
             <view class="all" @click="allWathdrawal">全部提现</view>
           </view>
           <view class="foot-box">
             <view class="box">
               <view class="price">
-                {{formatNumber(withdrawalsInfo.data.hi_dou)}}
+                {{formatNumber(withdrawalsInfo.data.fortune)}}
               </view>
               <view class="text">
                 福气值
@@ -32,10 +33,10 @@
             </view>
             <view class="box">
               <view class="price">
-                ¥{{formatNumber(withdrawalsInfo.data.total_hi_dou)}}
+                ¥{{formatNumber(withdrawalsInfo.data.cmw_fortune)}}
               </view>
               <view class="text">
-                累计提现
+                本月累计提现
               </view>
             </view>
           </view>
@@ -47,6 +48,7 @@
       <view :class="['btn',num>0&&'active']" @click="submitWathdrawal">
         提现
       </view>
+      <tradeDetail ref="tradeDetailRef" v-if="withdrawalsInfo.data.user.user_id" :boxstyle="{backgroundColor: '#F0F3F8'}" :rangeObject="rangeObject" :type="2"></tradeDetail>
     </view>
     <uni-popup ref="surePopup" type="bottom" :safe-area="false" background-color="#ffffff">
       <view class="common-popup">
@@ -57,16 +59,24 @@
             <text class="left">提现金额</text>
             <view>
               <view class="price">¥{{formatNumber(num)}}</view>
-              <view class="exp">需2010点福气值：{{calculateTax(num, withdrawalsInfo.data.fee_ratio)}}元</view>
+              <view class="exp">需{{num*withdrawalsInfo.data.ratio}}点福气值</view>
             </view>
           </view>
-          <view class="list">
-            <text class="left">提现账号</text>
-            <view class="right">
+          <view class="list list-1">
+            <text class="left">提现方式</text>
+            <!-- <view class="right">
               <image src="/static/image/zfb.png" class="zfb"></image>
               <text>{{maskPhoneNumber(withdrawalsInfo.data.user.alipay_id)}}</text>
+            </view> -->
+            <view class="methods">
+              <view :class="['methods-box', methodType===item&&'active']" v-for="item in 2" :key="item" @click="switchMethod(item)">
+                <image src="/static/image/zfb.png" v-if="item===1"></image>
+                <image src="/static/image/wx-2.png" v-else></image>
+                {{item===1?'支付宝':'微信'}}
+              </view>
             </view>
           </view>
+          
           <view class="text2 text3">提现须知：</view>
           <view class="text2"><text>1、</text>最小提现金额为1元人民币；</view>
           <view class="text2"><text>2、</text>提现需要同意平台授权个人支付宝或微信账号;</view>
@@ -80,7 +90,7 @@
       <view class="makesure-popup">
         <view class="tit">完成提现</view>
         <view class="exp">
-          提现申请已提交，资金将在5个工作日内到账，请在支付宝账户内查询，如有问题可联系平台客服咨询。
+          提现申请已提交，资金将在5个工作日内到账，请在{{methodType===1?'支付宝账户':'微信账户'}}内查询，如有问题可联系平台客服咨询。
         </view>
         <view class="sure" @click="makesurePopup.close()">
           确定
@@ -95,22 +105,70 @@
   import {onLoad,onShow} from '@dcloudio/uni-app'
   import myCustomNavbar from '@/components/myCustomNavbar.vue'
   import {withdrawalsInfoApi,withdrawalsCreateApi,yunzhanghuVerifyApi,idCardVerifyPreApi,contractYunzhanghuApi} from '@/service/income/index.js'
-  import {formatNumber} from '@/unit/common.js'
+  import {luckyWithdrawalsInfoApi,luckyWithdrawalsApplyApi} from '@/service/wallet/index.js'
+  import {formatNumber,maskPhoneNumber,getRecentWeekRange,getRecentMonthRange,getRecentThreeMonthsRange} from '@/unit/common.js'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
-  import {maskPhoneNumber} from '@/unit/common.js'
+  import tradeDetail from '../income/components/trade-detail.vue'
+  const rangeObject = {
+    0: {start_time: '2025-01-01 00:00:00',end_time: ''},
+    1: {start_time: getRecentWeekRange().start+' 00:00:00',end_time: getRecentWeekRange().end+' 23:59:59'},
+    2: {start_time: getRecentMonthRange().start+' 00:00:00',end_time: getRecentMonthRange().end+' 23:59:59'},
+    3: {start_time: getRecentThreeMonthsRange().start+' 00:00:00',end_time: getRecentThreeMonthsRange().end+' 23:59:59'},
+  }
   
   const boyHeadimg = new URL("@/static/image/boy.png", import.meta.url).href
   const girlHeadimg = new URL("@/static/image/girl.png", import.meta.url).href
-  
+  const tradeDetailRef = ref(null)
   const num = ref('')
   const surePopup = ref()
   const makesurePopup = ref()
   const group_id = ref('')
+  const prePage = ref('wallet')
+  const methodType = ref(1)
   const withdrawalsInfo = reactive({
     data:{user:{}}
   })
   const payLock = ref(false)
   const gender = ref(window.userinfo?.user.gender===1?boyHeadimg:girlHeadimg)
+  
+  function switchMethod(item){
+    methodType.value = item
+  }
+  // 提示防抖定时器（避免连续输入小数点时多次弹窗）
+  let toastTimer = null
+  function handleInputOnlyInt() {
+      // 核心逻辑：过滤掉所有非数字字符，只保留0-9
+      num.value = num.value.replace(/[^0-9.]/g, '');
+      if (num.value.includes('.')) {
+          // 防抖处理：3秒内只提示一次，避免频繁弹窗
+          if (!toastTimer) {
+            uni.showToast({
+              title: '必须输入整数金额',
+              icon: 'none', // 提示类型为纯文字，更友好
+              duration: 2000 // 提示显示2秒
+            });
+            
+            // 设置防抖定时器，3秒后重置
+            toastTimer = setTimeout(() => {
+              toastTimer = null;
+            }, 3000);
+          }
+        } else {
+          // 3. 仅当无小数点时，处理0开头的多位数（保持原有逻辑）
+          if (num.value.length > 1 && num.value.startsWith('0')) {
+            num.value = num.value.replace(/^0+/, '');
+            // 处理过滤后为空的情况（比如只输入0时保留0）
+            if (!num.value) num.value = '';
+          }
+        }
+        
+      // 可选：去除0开头的多位数（比如输入0123自动变成123，提现金额通常不需要0开头）
+      // if (num.value.length > 1 && num.value.startsWith('0')) {
+      //   num.value = num.value.replace(/^0+/, '');
+      //   // 处理过滤后为空的情况（比如只输入0时保留0）
+      //   if (!num.value) num.value = '';
+      // }
+  }
   
   function openPage(){
     uni.navigateTo({
@@ -119,11 +177,12 @@
   }
   
   function calculateTax(amount, taxRate) {
-      // 方法1：转换为整数计算
-      const precision = 1000;
-      const result = (amount * precision * taxRate) / precision;
-      // 方法2：四舍五入显示
-      return Number(result.toFixed(2));
+    if(!amount) return 0
+    // 方法1：转换为整数计算
+    const precision = 1000;
+    const result = (amount * precision / taxRate) / precision;
+    // 方法2：四舍五入显示
+    return Number(result.toFixed(2));
   }
   
   
@@ -148,32 +207,51 @@
   }
   
   function submitWathdrawal(){
-    surePopup.value.open()
-    if (!withdrawalsInfo.data.user.verified){
-      //唤起客户端真人认证
-      window.client.JSAction({
-        id: 112
-      })
+    if(!num.value) {
+      return false
+    } else if(num.value.includes('.')) {
+        uni.showToast({
+          title: '必须输入整数金额',
+          icon: 'none', // 提示类型为纯文字，更友好
+          duration: 2000 // 提示显示2秒
+        });
+        return false
+    } else if(withdrawalsInfo.data.cmw_fortune>=500) {
+      uni.showToast({
+        title: '本月提现已超额',
+        icon: 'none'
+      });
+      return false
+    } else if(num.value>withdrawalsInfo.data.cmrw_fortune){
+      uni.showToast({
+        title: '金额大于可提现金额',
+        icon: 'none'
+      });
       return false
     }
     surePopup.value.open()
   }
-  function makesureWathdrawal(){
+  function withdrawalsApply(){
     if(num.value>0&&payLock.value===false){
       uni.showLoading()
       payLock.value = true
       let param = {
         amount: num.value,
-        channel: 'alipay',
-        card_no: withdrawalsInfo.data.user.alipay_id
+        channel: methodType.value===1?'alipay':'wechat',
       }
-      withdrawalsCreateApi(param,res=>{
+      luckyWithdrawalsApplyApi(param,res=>{
         payLock.value = false
         if (~~res.code === 0) {
-          withdrawalsInfo.data.hi_dou = withdrawalsInfo.data.hi_dou*1 - num.value*1
+          getWithdrawalsInfo()
+          // withdrawalsInfo.data.fortune = withdrawalsInfo.data.fortune*1 - (num.value*1*withdrawalsInfo.data.ratio)
           num.value = ''
           surePopup.value.close()
           makesurePopup.value.open()
+          if (tradeDetailRef.value) {
+              tradeDetailRef.value.updateList()
+          } else {
+            console.warn('子组件实例未找到')
+          }
         } else if(~~res.code === -2){
           //唤起客户端真人认证
           window.client.JSAction({
@@ -193,6 +271,34 @@
         }
         uni.hideLoading()
       })
+    }
+  }
+  function makesureWathdrawal(){
+    if(methodType.value===1&&!withdrawalsInfo.data.user.alipay_id){
+      window.client.JSBindAlipayJSAction({},(respon)=>{
+        if(respon) {
+          getWithdrawalsInfo()
+          withdrawalsApply()
+        }
+      })
+      return false
+    } else if(methodType.value===2&&!withdrawalsInfo.data.user.wechat_id) {
+      window.client.JSBindWechatJSAction({},(respon)=>{
+        if(respon) {
+          getWithdrawalsInfo()
+          withdrawalsApply()
+        }
+      })
+      return false
+    }
+    withdrawalsApply()
+  }
+  window.notice_result_callback = (res)=>{
+    // 客户端通知h5更新页面数据
+    let respon = JSON.parse(res)
+    if(respon.type===1){
+      getWithdrawalsInfo()
+      withdrawalsApply()
     }
   }
   
@@ -222,26 +328,18 @@
   }
   
   function allWathdrawal(){
-    if(withdrawalsInfo.data.hi_dou>0){
-      num.value = withdrawalsInfo.data.hi_dou
+    if(withdrawalsInfo.data.cmrw_fortune>0){
+      num.value = (withdrawalsInfo.data.rw_fortune+'').split('.')[0]
     }
   }
   
   function backPage(){
-    if (group_id.value==0){
-      uni.navigateTo({
-        url:'/pages/income/income?show_title=0'
-      })
-    } else {
-      uni.navigateTo({
-        url:`/pages/robotAccount/robotDetail?show_title=0&group_id=${group_id.value}&pid=5`
-      })
-    }
+    uni.navigateBack()
   }
   
   function getWithdrawalsInfo(){
     uni.showLoading()
-    withdrawalsInfoApi({},res=>{
+    luckyWithdrawalsInfoApi({},res=>{
       if (~~res.code === 0) {
         withdrawalsInfo.data = res.data
       }else {
@@ -253,21 +351,13 @@
       uni.hideLoading()
     })
   }
-  onShow(()=>{
+  onLoad((option)=>{
+    prePage.value = option.prePage || 'wallet'
     nextTick(()=>{
         window.client.getUserinfo((res) => {
-            console.log(res, "resresres");
             getWithdrawalsInfo()
         });
     })
-  })
-  onLoad((option)=>{
-    if(option.params) {
-      let params = JSON.parse(option.params)
-      group_id.value = params.group_id
-    } else {
-      group_id.value = option.group_id || 0
-    }
   })
 </script>
 
@@ -410,6 +500,7 @@
   }
   .btn {
     margin-top: 48rpx;
+    margin-bottom: 36rpx;
     width: 100%;
     height: 96rpx;
     line-height: 96rpx;
@@ -491,7 +582,39 @@
             line-height: 40rpx;
           }
         }
-        
+        &.list-1 {
+          padding: 30rpx 32rpx;
+          height: auto;
+          display: block;
+          .methods{
+            margin-top: 16rpx;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .methods-box {
+              width: 301rpx;
+              height: 80rpx;
+              background: #F0F3F8;
+              border-radius: 16rpx;
+              border: 2rpx solid #F0F3F8;
+              font-weight: 400;
+              font-size: 32rpx;
+              color: #000000;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              &.active {
+                background: rgba(2,169,241,0.1);
+                border-color: #22C0FF;
+              }
+            }
+            image {
+              margin-right: 16rpx;
+              width: 48rpx;
+              height: 48rpx;
+            }
+          }
+        }
       }
       
       .sure-btn {

@@ -12,7 +12,7 @@
             <view class="name">{{item.desc}}</view>
             <view class="time">{{getDateTime(item.created_at*1000)}}</view>
           </view>
-          <view class="right">¥{{item.amount}}</view>
+          <view class="right">¥{{item.amount.toFixed(2)}}</view>
         </view>
         <view class="no-data" v-if="!list.length">
           <image src="@/static/image/no-data.png"></image>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-  import {ref,reactive} from 'vue'
+  import {ref,reactive,defineExpose} from 'vue'
   import {profitWithdrawalsApi} from '@/service/income/index.js'
   import {getDateTime} from '@/components/uni-datetime-picker/components/uni-datetime-picker/util.js'
   
@@ -41,6 +41,10 @@
     boxstyle:{
       type: Object,
       default:()=>{}
+    },
+    type: {
+      type: Number,
+      default:1
     }
   })
   const loading = ref(false)
@@ -52,9 +56,17 @@
     total: 0
   })
   
+  function updateList(){
+    searchInfo.page_id = 1;
+    getList()
+  }
+  defineExpose({
+    updateList
+  })
+  
   function onReachBottom(){
     if(list.value.length<searchInfo.total) {
-      getMyProfitGroups()
+      getList()
     }
   }
   
@@ -66,6 +78,7 @@
   function getList(){
     uni.showLoading()
     let params = {
+      type: props.type, //1:嗨币提现记录 2:福气值提现
       page_id: searchInfo.page_id,
       ...props.rangeObject[curTimeIndex.value]
     }

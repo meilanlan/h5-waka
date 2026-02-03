@@ -134,8 +134,8 @@
   window.notice_result_callback = (res)=>{
     // 客户端通知h5更新页面数据
     let respon = JSON.parse(res)
-    // console.log(respon, 'notice_result_callback')
     if(respon.type===1){
+      console.log('update')
       emit('updateInfo')
     }
   }

@@ -8,12 +8,12 @@
     >
       <template v-slot:leftTitle>
         <view class="tab-box">
-          <view :class="['box',curTab===item&&'active']" v-for="item in 2" :key="'box-'+item" @click="switchTab(item)">{{item===1?'收到的福袋':'发出的福袋'}}</view>
-          <view class="line" :style="{left: curTab===1?'50rpx':'240rpx'}"></view>
+          <view :class="['box',curTab===item.id&&'active']" v-for="item in tabList" :key="'box-'+item" @click="switchTab(item)">{{item.title}}</view>
+          <view class="line" :style="{left: curTab===2?'50rpx':'240rpx'}"></view>
         </view>
       </template>
         <view class="timer-box">
-          <year-picker
+          <yearPicker
             :default-year="year"
             :min-year="2000"
             :max-year="year"
@@ -21,42 +21,50 @@
         </view>
     </myCustomNavbar>
     <view class="total-data">
-      <image :src="listInfo.user.head_img" class="headimg" mode="aspectFill"></image>
-      <view class="nickname">{{listInfo.user.nick_name}}{{curTab===1?'收到':'发出'}}</view>
-      <view class="price">{{listInfo.user.total_amount}}</view>
-      <view class="exp" v-if="curTab===2">发出福袋：{{listInfo.user.receive_num}}个</view>
+      <image :src="listInfo.data.user.head_img" class="headimg" mode="aspectFill"></image>
+      <view class="nickname">{{listInfo.data.user.nick_name}}{{curTab===2?'共收到':'共发出'}}</view>
+      <view class="price">{{formatNumber(listInfo.data.total_amount)}}</view>
+      <!-- <view class="price">{{listInfo.data.total_amount.toFixed(2)}}</view> -->
+      <view class="exp" v-if="curTab===1">发出福袋：{{listInfo.data.total_send_num||0}}个</view>
       <template v-else>
         <view class="exp-box">
-          <view class="box">收到福袋：{{listInfo.user.receive_num}}</view>
+          <view class="box">收到福袋：{{listInfo.data.receive_num||0}}</view>
           <view class="line"></view>
-          <view class="box">手气最佳：{{listInfo.user.receive_best_num}}</view>
+          <view class="box">手气最佳：{{listInfo.data.receive_best_num||0}}</view>
         </view>
-        <view class="withdraw">去提现</view>
+        <view class="withdraw" @click="toWathdrawal">去提现</view>
       </template>
-      <view class="exp exp-1">发出福袋记录</view>
+      <view class="exp exp-1">{{curTab===2?'收到':'发出'}}福袋记录</view>
     </view>
     <view class="list-box" v-if="listStyle.listHeight" :style="{height: `calc(100vh - ${listStyle.listHeight}rpx)`}">
       <scroll-view scroll-y="true" class="scrollBox" @scrolltolower="onReachBottom">
-        <view class="box" v-for="(item,index) in listInfo.list" :key="'list-'+index">
+        <view class="box" v-for="(item,index) in listInfo.data.list" :key="'list-'+index">
           <view class="left">
             <view class="user">
-              <image src="/static/logo.png" class="headimg"></image>
+              <image :src="item.user.head_img" class="headimg" mode="aspectFill"></image>
               <view class="user-box">
-                <view class="val1">定时福袋-普通</view>
-                <view class="val2">10-22 | 庆祝今天公会战胜利</view>
+                <view class="val1" v-if="curTab===2">{{item.user.nick_name}}</view>
+                <view class="val1" v-else>{{item.type===1?'新人福袋':item.type===2?'锦鲤福袋':'定时福袋'}}{{item.sub_type===1?'-拼手气':item.sub_type===2?'-普通':''}}</view>
+                <view class="val2">{{getDate(item.timestamp*1000)}} | {{item.msg}}</view>
               </view>
             </view>
           </view>
           <view class="right">
-            <view class="val1">福气值：30.00</view>
-            <view class="zan" v-if="curTab===1">
+            <template v-if="curTab===2">
+              <view class="val1 val1-1" v-if="item.receive_award_type===3">{{item.receive_award_name}}：{{item.receive_award_desc}}</view>
+              <view class="val1 val1-1" v-else>{{item.receive_award_name}}：{{item.receive_amount.toFixed(2)}}</view>
+            </template>
+            <view class="val1 val1-1" v-else>福气值：{{item.send_amount?item.send_amount.toFixed(2):'0.00'}}</view>
+            
+            <view class="zan" v-if="curTab===2&&item.receive_is_best">
               <image src="/static/image/zan.png"></image>
               手气最佳
             </view>
-            <view class="val2 val2-2" v-else>已领取 10/12</view>
+            <view class="val2 val2-2" v-else-if="curTab===1">{{item.status===0?'已领取':item.status===2?'已领完':'已过期'}}{{item.receive_num||0}}/{{item.total_num}}</view>
+            
           </view>
         </view>
-        <view class="no-data" v-if="!listInfo.list.length">
+        <view class="no-data" v-if="!listInfo.data.list.length">
           <image src="@/static/image/no-data.png"></image>
           <view>暂无数据</view>
         </view>
@@ -67,18 +75,26 @@
 </template>
 
 <script setup>
-  import {ref,reactive, onMounted} from 'vue'
+  import {ref,reactive,nextTick} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   import myCustomNavbar from '../../components/myCustomNavbar.vue'
   import navbarBgImg from '@/static/image/luckybag-tit.png'
   import yearPicker from '@/components/year-picker.vue'
   import {luckyBagStatApi} from '@/service/wallet/index.js'
+  import {formatNumber} from '@/unit/common.js'
+  import {getDate} from '@/components/uni-datetime-picker/components/uni-datetime-picker/util.js'
   
-  const curTab = ref(1)
-  const listInfo = reactive({
-    user: {total_amount:0,receive_num:0,receive_best_num:0},
+  const tabList = ref([{id:2, title: '收到的福袋'},{id:1, title: '发出的福袋'},])
+  const curTab = ref(2)
+  const prePage = ref(0)
+  const listInfo = reactive({data:{
+    user: {},
+    total_amount:0,
+    receive_num:0,
+    receive_best_num:0,
+    receive_best_num:0,
     list: []
-  })
+  }})
   const year = ref(new Date().getFullYear())
   const listStyle = reactive({
     listHeight: ""
@@ -88,6 +104,12 @@
     page_size:20,
     total: 0
   })
+  
+  function toWathdrawal(){
+    uni.navigateTo({
+      url:'/pages/wallet/luckyBagWathdrawal?show_title=0&prePage=record'
+    })
+  }
   
   function getElementHeight(selector){
     const el = document.querySelector(selector);
@@ -107,14 +129,16 @@
   function calcListHeight(){
     listStyle.listHeight = getElementHeight('.total-data');
   };
-  // onMounted(()=>{
-  //   setTimeout(() => {
-  //     calcListHeight()
-  //   }, 100);
-  // })
+
   onLoad(option=>{
-    curTab.value = (option.id||1)*1
-    getList()
+    curTab.value = (option.id||2)*1
+    prePage.value = (option.prePage||0)*1
+    nextTick(()=>{
+        window.client.getUserinfo((res) => {
+            console.log(res, "resresres");
+            getList()
+        });
+    })
   })
   
   function getList(){
@@ -129,11 +153,10 @@
       if (~~res.code === 0) {
         if(res.data) {
           if(pageInfo.page_id === 1) {
-            listInfo.user = res.data.user
-            listInfo.list = res.data.list||[]
+            listInfo.data = res.data
             pageInfo.total = res.data.total
           } else {
-            listInfo.list = [...listInfo.list,...res.data.list]
+            listInfo.data.list = [...listInfo.data.list,...res.data.list]
           }
           pageInfo.page_id++
         }
@@ -151,7 +174,7 @@
   }
   
   function onReachBottom(){
-    if(listInfo.list.length<pageInfo.total) {
+    if(listInfo.data.list.length<pageInfo.total) {
       getList()
     }
   }
@@ -164,12 +187,16 @@
   
   function switchTab(item){
     pageInfo.page_id = 1
-    curTab.value = item
+    curTab.value = item.id
     getList()
   }
   
   function backPage() {
-    uni.navigateBack()
+    if(prePage.value){
+      uni.navigateBack()
+    } else {
+      window.client.closeWebview()
+    }
   }
 </script>
 
@@ -318,6 +345,9 @@
         font-size: 24rpx;
         color: #000000;
         line-height: 32rpx;
+        &.val1-1 {
+          text-align: right;
+        }
       }
       .val2 {
         margin-top: 8rpx;

@@ -27,12 +27,14 @@
 </template>
 
 <script setup>
-  import {ref,reactive, onMounted} from 'vue'
+  import {ref,reactive,nextTick} from 'vue'
+  import {onLoad} from '@dcloudio/uni-app'
   import myCustomNavbar from '../../components/myCustomNavbar.vue'
   import {rewardBagListApi,useRewardApi} from '@/service/wallet/index.js'
   import {getDateTime} from '@/components/uni-datetime-picker/components/uni-datetime-picker/util.js'
   
   const list = ref([])
+  const prePage = ref(0)
   const pageInfo = reactive({
     page_id:1,
     page_size:20,
@@ -59,7 +61,15 @@
     }
   }
   
-  getList()
+  onLoad(option=>{
+    prePage.value = (option.prePage||0)*1
+    nextTick(()=>{
+        window.client.getUserinfo((res) => {
+            console.log(res, "resresres");
+            getList()
+        });
+    })
+  })
   
   function getList(){
     uni.showLoading()
@@ -94,7 +104,11 @@
   }
   
   function backPage() {
-    window.client.closeWebview()
+    if(prePage.value){
+      uni.navigateBack()
+    } else {
+      window.client.closeWebview()
+    }
   }
   
 </script>

@@ -197,6 +197,50 @@ window.client = {
         h5Toast("请在客户端开启支付");
       }
     },
+    // 唤起客户端支付宝授权
+    JSBindAlipayJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSBindAlipay",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSBindAlipay(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启授权");
+      }
+    },
+    // 唤起客户端微信授权
+    JSBindWechatJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSBindWechat",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSBindWechat(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启授权");
+      }
+    },
     
     // 唤起app端播放
     JSOpenVideoPlay(param) {
@@ -573,6 +617,15 @@ if (window.inAPP) {
                     "JSNoticeResultCallBack",
                     JSNoticeResultCallBack
                 );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSBindAlipay",
+                    JSBindAlipay
+                );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSBindWechat",
+                    JSBindWechat
+                );
+                
                 //window.WKWebViewJavascriptBridge.registerHandler('JSOrderVipCallBack', JSOrderVipCallBack);
                 // -------------执行所有已经注册了的callback-----------------
                 window.WKWebViewJavascriptBridge.callHandler(
@@ -620,7 +673,7 @@ window.JSPayResultCallBack = function (res) {
 };
 // 客户端通知h5更新数据
 window.JSNoticeResultCallBack = function(res){
-  if (typeof window.pay_result_after === "function") {
+  if (typeof window.notice_result_callback === "function") {
       window.notice_result_callback(res);
   }
 };

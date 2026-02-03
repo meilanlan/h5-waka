@@ -5,7 +5,7 @@
       
     </view>
   </view> -->
-  <uni-popup ref="yearPickerPopup" type="bottom" @maskClick="closePicker">
+  <uni-popup ref="yearPickerPopup" :safe-area="false" background-color="#ffffff" type="bottom" @maskClick="closePicker">
     <view class="year-picker-content" @click.stop>
       <view class="picker-header">
         <view class="picker-btn cancel-btn" @click="closePicker">取消</view>
@@ -171,7 +171,7 @@ const confirmYear = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* font-size: 32rpx; */
+  font-size: 28rpx;
   /* line-height: 100rpx; */
   text-align: center;
   color: #333333;

@@ -116,7 +116,16 @@
         {
             "path": "pages/agreements/luckyBagExplain",
             "style": {
-                "navigationBarTitleText": "使用说明",
+                "navigationBarTitleText": "福袋功能使用说明",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/agreements/luckyBagAgreement",
+            "style": {
+                "navigationBarTitleText": "福袋协议",
                 "h5": {
                     "titleNView": false
                 }

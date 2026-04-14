@@ -119,17 +119,9 @@ function maskPhoneNumber(phoneNumber) {
 }
 
 function jumpApp(param){
-  // let  iosAppUrl= `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
-  // let androidAppUrl = `whackapp://moment?id=${appInfo.moment_id}&type=${appInfo.type}`
-  let downloadIos = 'https://apps.apple.com/cn/app/whack/id6752324554'
-  let downloadAnd = 'https://www.whackgroup.com/#/'
-  console.log('UPDATE!')
-  
-  // 配置参数（需替换为你的APP实际信息）
+  uni.showLoading({mask:true})
   const config = {
-      // APP的URL Scheme（需与APP开发时配置一致，如：myapp://home）
-      scheme: window.isiOS?param.iosAppUrl:param.androidAppUrl, // 可携带参数
-      // 下载链接（分iOS/Android）
+      scheme: window.isiOS?param.iosAppUrl:param.androidAppUrl,
       downloadUrl: {
           ios: "https://apps.apple.com/cn/app/whack/id6752324554", // App Store链接
           android: "https://www.whackgroup.com/#/", // 应用宝/官网链接
@@ -138,37 +130,77 @@ function jumpApp(param){
       timeout: 500 // 唤起检测延迟（毫秒，建议300-500）
   };
   
-  // 核心逻辑：唤起APP或跳转下载
-  const ua = navigator.userAgent;
-  const isIOS = /iPhone|iPad|iPod/i.test(ua);
-  const isAndroid = /Android/i.test(ua);
-  const isWeChat = /MicroMessenger/i.test(ua);
-
-  // 记录唤起前的时间戳
-  const startTime = Date.now();
-  window.location.href = config.scheme;
-
-  // 检测唤起是否成功：若500ms内页面未隐藏（进入后台），则跳转下载
-  setTimeout(() => {
-    // console.log('计时开始')
-      const endTime = Date.now();
-      // console.log(document.hidden, 'document.hidden')
-      // console.log(endTime,'----',startTime, '----', endTime - startTime)
-      // 若时间差小于1000ms（未唤起成功），且页面可见，则跳转下载
-      // && endTime - startTime < 1000
-      if (!document.hidden) {
-        // console.log('打开下载页面')
-          const downloadLink = window.isiOS 
-              ? config.downloadUrl.ios 
-              : !window.isiOS 
-                  ? config.downloadUrl.android 
-                  : config.downloadUrl.fallback;
-          // console.log(downloadLink, 'downloadLink')
-          window.location.href = downloadLink;
+  // 1. 精准判断设备和环境
+    let isAppOpened = false;
+  
+    const handleVisibilityChange = () => {
+      uni.hideLoading()
+      if (document.hidden) {
+        isAppOpened = true;
       }
-  }, config.timeout);
-
+    };
+    const handlePageHide = (e) => {
+      isAppOpened = true;
+    };
+    // 先注册监听，再执行任何唤起逻辑
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handlePageHide);
+    // 额外监听pageshow（防止页面返回时的状态异常）
+    window.addEventListener('pageshow', () => {
+      console.log('pageshow触发，页面回到前台');
+    });
+  
+    try {
+      if (window.isiOS) {
+        const aLink = document.createElement('a');
+        aLink.href = config.scheme;
+        aLink.style.display = 'none';
+        aLink.target = '_blank';
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink);
+        uni.hideLoading()
+      } else {
+        window.location.href = config.scheme;
+        
+        setTimeout(() => {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          window.removeEventListener('pagehide', handlePageHide);
+          window.removeEventListener('pageshow', () => {});
+          
+          // 仅当未唤起且页面未隐藏时，才跳转App Store
+          if (!isAppOpened && !document.hidden) {
+            // console.log('唤起失败，跳转App Store');
+            const downloadLink = window.isiOS
+                        ? config.downloadUrl.ios 
+                        : !window.isiOS 
+                            ? config.downloadUrl.android 
+                            : config.downloadUrl.fallback;
+            window.location.href = downloadLink;
+            uni.hideLoading()
+          }
+        }, 1000);
+      }
+    } catch (e) {
+      // console.error('唤起APP异常:', e);
+      isAppOpened = false;
+    }
 }
+
+function downloadApp(){
+  let downloadUrl = {
+      ios: "https://apps.apple.com/cn/app/whack/id6752324554", // App Store链接
+      android: "https://www.whackgroup.com/#/", // 应用宝/官网链接
+      fallback: "https://www.whackgroup.com/#/" // 通用下载页（兜底）
+  }
+  const downloadLink = window.isiOS
+              ? downloadUrl.ios 
+              : !isiOS 
+                  ? downloadUrl.android 
+                  : downloadUrl.fallback;
+  window.location.href = downloadLink;
+}
+
 
 export {
   trim,
@@ -182,5 +214,6 @@ export {
   getRecentThreeMonthsRange,
   formatNumber,
   maskPhoneNumber,
-  jumpApp
+  jumpApp,
+  downloadApp
 }

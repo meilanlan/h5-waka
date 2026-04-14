@@ -114,14 +114,14 @@
   function getElementHeight(selector){
     const el = document.querySelector(selector);
       if (!el) {
-        console.error(`未找到选择器为 ${selector} 的元素`);
+        // console.error(`未找到选择器为 ${selector} 的元素`);
         return 0; // 兜底默认值
       }
       // 获取计算样式的高度（带单位），转成纯数字（关键：去掉px单位）
       const heightStr = getComputedStyle(el).height;
       // 处理特殊情况：height为auto/0的场景
       const heightNum = parseFloat(heightStr)*2 + 252;
-      console.log(`元素 ${selector} 高度：`, heightNum, 'px');
+      // console.log(`元素 ${selector} 高度：`, heightNum, 'px');
       return heightNum;
   }
   
@@ -135,7 +135,7 @@
     prePage.value = (option.prePage||0)*1
     nextTick(()=>{
         window.client.getUserinfo((res) => {
-            console.log(res, "resresres");
+            // console.log(res, "resresres");
             getList()
         });
     })
@@ -153,6 +153,7 @@
       if (~~res.code === 0) {
         if(res.data) {
           if(pageInfo.page_id === 1) {
+            res.data.list = res.data.list||[]
             listInfo.data = res.data
             pageInfo.total = res.data.total
           } else {

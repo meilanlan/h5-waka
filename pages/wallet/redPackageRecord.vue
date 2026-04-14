@@ -23,10 +23,10 @@
     <view class="total-data">
       <image :src="listInfo.data.user.head_img" class="headimg" mode="aspectFill"></image>
       <view class="nickname">{{listInfo.data.user.nick_name}}{{curTab===2?'共收到':'共发出'}}</view>
-      <view class="price">{{listInfo.data.total_amount||0}}</view>
+      <view class="price">{{(listInfo.data.total_amount/100)||0}}</view>
       <view class="exp" v-if="curTab===1">发出红包：{{listInfo.data.total_send_num||0}}个</view>
       <template v-else>
-        <view class="exp-2">已存入支付宝余额</view>
+        <view class="exp-2" v-if="listInfo.data.total_amount&&listInfo.data.total_amount>0">已存入支付宝余额</view>
         <view class="exp-box">
           <view class="box">收到红包：{{listInfo.data.receive_num||0}}</view>
           <view class="line"></view>
@@ -99,14 +99,14 @@
   function getElementHeight(selector){
     const el = document.querySelector(selector);
       if (!el) {
-        console.error(`未找到选择器为 ${selector} 的元素`);
+        // console.error(`未找到选择器为 ${selector} 的元素`);
         return 0; // 兜底默认值
       }
       // 获取计算样式的高度（带单位），转成纯数字（关键：去掉px单位）
       const heightStr = getComputedStyle(el).height;
       // 处理特殊情况：height为auto/0的场景
       const heightNum = parseFloat(heightStr)*2 + 252;
-      console.log(`元素 ${selector} 高度：`, heightNum, 'px');
+      // console.log(`元素 ${selector} 高度：`, heightNum, 'px');
       return heightNum;
   }
   
@@ -120,7 +120,7 @@
     prePage.value = (option.prePage||0)*1
     nextTick(()=>{
         window.client.getUserinfo((res) => {
-            console.log(res, "resresres");
+            // console.log(res, "resresres");
             getList()
         });
     })
@@ -137,9 +137,8 @@
       if (~~res.code === 0) {
         if(res.data) {
           if(pageInfo.page_id === 1) {
+            res.data.list = res.data.list||[]
             listInfo.data = res.data
-            // listInfo.user = res.data.user
-            // listInfo.list = res.data.list||[]
             pageInfo.total = res.data.total
           } else {
             listInfo.data.list = [...listInfo.data.list,...res.data.list]

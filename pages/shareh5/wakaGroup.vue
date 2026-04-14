@@ -15,10 +15,10 @@
         <image :src="infoData.user.head_img || defaultimg" mode=""></image>
         {{infoData.user.nick_name}} 邀请你加入
       </view>
-      <button class="invite-btn" @click="openApp">接受邀请</button>
+      <button class="invite-btn invite-btn-1" @click="openApp">接受邀请</button>
+      <view class="invite-btn invite-btn-2" @click="toDownloadApp">下载Whack App</view>
     </view>
     <image class="logo-share" src="/static/image/logo-share.png"></image>
-    
     
     <uni-popup ref="expPopup" type="top">
       <image src="/static/image/share-exp.png" class="share-img"></image>
@@ -33,7 +33,7 @@
   import {shareGroupApi} from '@/service/robotAccount/index.js'
   import defaultimg from '../../static/image/logo.jpg'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
-  import {jumpApp} from '@/unit/common.js'
+  import {jumpApp,downloadApp} from '@/unit/common.js'
   
   const opt = reactive({
     group_id: '',
@@ -59,17 +59,24 @@
       return ua.indexOf('micromessenger') !== -1;
   }
   
-  // H5非微信：唤起+计时兜底
   function openApp(){
     if (isWeixinBrowser()) {
       //微信浏览器内
       expPopup.value.open()
     } else {
       let param = {
+        // iosUniversalLink: `https://h5test-app.whackgroup.com/#/pages/shareh5/shareTransferPage?group_id=${opt.group_id}`,
         iosAppUrl: `whackapp://group-invite?group_id=${opt.group_id}`,
         androidAppUrl: `whackapp://group-invite?group_id=${opt.group_id}`,
       }
       jumpApp(param)
+    }
+  }
+  function toDownloadApp(){
+    if (isWeixinBrowser()) {
+      expPopup.value.open()
+    } else {
+      downloadApp()
     }
   }
   
@@ -114,7 +121,7 @@
     // justify-content: center;
     // align-items: center;
     .bg {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
@@ -171,7 +178,7 @@
       }
     }
     .contener-body {
-      position: absolute;
+      position: fixed;
       top: 352rpx;
       left: 50%;
       transform: translateX(-50%);
@@ -203,16 +210,15 @@
         line-height: 44rpx;
       }
       &-2 {
-        top: 240rpx;
+        top: 120rpx;
         width: 630rpx;
-        height: 888rpx;
+        height: 940rpx;
         background: #FFFFFF;
         padding-top: 0;
         overflow: hidden;
         .group-bg {
           width: 100%;
           height: 386rpx;
-          
         }
         .headimg-box {
           position: relative;
@@ -250,7 +256,7 @@
           }
         }
         .invite {
-          margin-top: 82rpx;
+          margin-top: 42rpx;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -266,15 +272,22 @@
           }
         }
         .invite-btn {
-          margin: 40rpx auto 0;
+          margin: 16rpx auto 0;
           width: 550rpx;
           height: 86rpx;
-          background: #22C0FF;
           border-radius: 16rpx;
           font-weight: 600;
           font-size: 32rpx;
-          color: #FFFFFF;
           line-height: 86rpx;
+          &.invite-btn-1 {
+            color: #FFFFFF;
+            background: #22C0FF;
+          }
+          &.invite-btn-2 {
+            margin: 40rpx auto 0;
+            border: 1px solid #22C0FF;
+            color: #22C0FF;
+          }
         }
         
       }
@@ -308,7 +321,7 @@
       }
     }
     .logo-share {
-      position: absolute;
+      position: fixed;
       bottom: 104rpx;
       left: 50%;
       transform: translateX(-50%);

@@ -307,6 +307,8 @@
       }
     }
     .lucky-btn-box {
+      position: relative;
+      z-index: 99;
       // position: fixed;
       // top: 1082rpx;
       // left: 50%;

@@ -43,7 +43,7 @@
         </view>
       </view>
       <view class="exp1">
-        每月1日可以发起提现，提交后5个工作日到帐
+        提交后1-5个工作日到账
       </view>
       <view :class="['btn',num>0&&'active']" @click="submitWathdrawal">
         提现
@@ -334,7 +334,11 @@
   }
   
   function backPage(){
-    uni.navigateBack()
+    if(!prePage.value){
+      window.client.closeWebview()
+    } else {
+      uni.navigateBack()
+    }
   }
   
   function getWithdrawalsInfo(){
@@ -342,6 +346,9 @@
     luckyWithdrawalsInfoApi({},res=>{
       if (~~res.code === 0) {
         withdrawalsInfo.data = res.data
+        if(!prePage.value) {
+          allWathdrawal()
+        }
       }else {
         uni.showToast({
           title: res.msg,
@@ -352,7 +359,7 @@
     })
   }
   onLoad((option)=>{
-    prePage.value = option.prePage || 'wallet'
+    prePage.value = option.prePage || ''
     nextTick(()=>{
         window.client.getUserinfo((res) => {
             getWithdrawalsInfo()

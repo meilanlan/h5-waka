@@ -31,17 +31,31 @@
                 </view>
                 ID:{{robotInfo.data.group_id}}
               </view>
-              <view class="ing ing-1" v-for="item in robotInfo.data.robot_list" :key="item.robot_id">
-                <template v-if="item.robot_id === 10000">
-                  {{item.robot_name}}机器人
-                  <view class="exp-time" v-if="getExpTime(item.expiration_time)===true">
-                    有效期：{{item.expiration_time.split(' ')[0]}}
-                  </view>
-                  <view class="exp-time" v-else>
-                    已过期：{{item.expiration_time.split(' ')[0]}} <text @click="toShop">立即续费</text>
-                  </view>
-                </template>
-              </view>
+              <template v-if="robotInfo.data.robot_list&&robotInfo.data.robot_list.length">
+                <view class="ing ing-1">
+                  <template v-if="robotInfo.data.robot_list[0].robot_id === 10000">
+                    {{robotInfo.data.robot_list[0].robot_name}}机器人
+                    <view class="exp-time" v-if="getExpTime(robotInfo.data.robot_list[0].expiration_time)===true">
+                      有效期：{{robotInfo.data.robot_list[0].expiration_time.split(' ')[0]}}
+                    </view>
+                    <view class="exp-time" v-else>
+                      已过期：{{robotInfo.data.robot_list[0].expiration_time.split(' ')[0]}} <text @click="toShop">立即续费</text>
+                    </view>
+                  </template>
+                </view>
+                <!-- <view class="ing ing-1" v-for="item in robotInfo.data.robot_list" :key="item.robot_id">
+                  <template v-if="item.robot_id === 10000">
+                    {{item.robot_name}}机器人
+                    <view class="exp-time" v-if="getExpTime(item.expiration_time)===true">
+                      有效期：{{item.expiration_time.split(' ')[0]}}
+                    </view>
+                    <view class="exp-time" v-else>
+                      已过期：{{item.expiration_time.split(' ')[0]}} <text @click="toShop">立即续费</text>
+                    </view>
+                  </template>
+                </view> -->
+              </template>
+              
               <!-- <view>
                 已过期：2024-10：10 立即续费
               </view> -->
@@ -262,7 +276,7 @@
 <style lang="scss" scoped>
   .content {
     padding-top: 88rpx;
-    min-height: 100vh;
+    // min-height: 100vh;
     .top {
       width: 100vw;
       position: relative;

@@ -7,11 +7,12 @@
       <view class="headimg-box">
         <image :src="userInfo.data.head_img||defaultimg" mode="aspectFill"></image>
       </view>
-      <view class="name">晚风惬意王者战队</view>
+      <view class="name">{{userInfo.data.nick_name}}</view>
       <view class="invite">
-        邀请你加入{{userInfo.data.nick_name}}成为好友
+        邀请你加入Whack成为好友
       </view>
-      <view class="invite-btn" @click="openApp">接受邀请</view>
+      <view class="invite-btn invite-btn-1" @click="openApp">接受邀请</view>
+      <view class="invite-btn invite-btn-2" @click="toDownloadApp">下载Whack App</view>
     </view>
     <image class="logo-share" src="/static/image/logo-share.png"></image>
     
@@ -27,7 +28,7 @@
   import {shareUserApi} from '@/service/robotAccount/index.js'
   import defaultimg from '../../static/image/logo.jpg'
   import uniPopup from '@/components/uni-popup/components/uni-popup/uni-popup.vue'
-  import {jumpApp} from '@/unit/common.js'
+  import {jumpApp,downloadApp} from '@/unit/common.js'
   
   const groupType = ref(1)
   const userId = ref()
@@ -44,10 +45,19 @@
       expPopup.value.open()
     } else {
       let param = {
+        // iosUniversalLink: `https://h5test-app.whackgroup.com/share/shareTransferPage.html?user_id=${userId.value}`,
         iosAppUrl: `whackapp://userpage?user_id=${userId.value}`,
         androidAppUrl: `whackapp://userpage?user_id=${userId.value}`,
       }
       jumpApp(param)
+    }
+  }
+  
+  function toDownloadApp(){
+    if (isWeixinBrowser()) {
+      expPopup.value.open()
+    } else {
+      downloadApp()
     }
   }
   
@@ -82,16 +92,21 @@
     width: 100vw;
     height: 100vh;
     position: relative;
+    // padding-top: constant(safe-area-inset-top);
+    // padding-top: env(safe-area-inset-top);
     // font-family: MiSans, MiSans;
     // display: flex;
     // justify-content: center;
     // align-items: center;
     .bg {
-      position: absolute;
+      // padding-top: constant(safe-area-inset-top);
+      // padding-top: env(safe-area-inset-top);
+      // padding-bottom: env(safe-area-inset-bottom,0);
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
     }
     .top-box {
       position: absolute;
@@ -144,7 +159,7 @@
       }
     }
     .contener-body {
-      position: absolute;
+      position: fixed;
       top: 352rpx;
       left: 50%;
       transform: translateX(-50%);
@@ -176,7 +191,7 @@
         line-height: 44rpx;
       }
       &-2 {
-        top: 244rpx;
+        top: 120rpx;
         width: 630rpx;
         height: 888rpx;
         background: #FFFFFF;
@@ -222,7 +237,7 @@
           }
         }
         .invite {
-          margin-top: 82rpx;
+          margin-top: 42rpx;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -238,15 +253,22 @@
           }
         }
         .invite-btn {
-          margin: 40rpx auto 0;
+          margin: 16rpx auto 0;
           width: 550rpx;
           height: 86rpx;
-          background: #22C0FF;
           border-radius: 16rpx;
           font-weight: 600;
           font-size: 32rpx;
-          color: #FFFFFF;
           line-height: 86rpx;
+          &.invite-btn-1 {
+            color: #FFFFFF;
+            background: #22C0FF;
+          }
+          &.invite-btn-2 {
+            margin: 40rpx auto 0;
+            border: 1px solid #22C0FF;
+            color: #22C0FF;
+          }
         }
         
       }
@@ -280,7 +302,7 @@
       }
     }
     .logo-share {
-      position: absolute;
+      position: fixed;
       bottom: 104rpx;
       left: 50%;
       transform: translateX(-50%);

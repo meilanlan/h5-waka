@@ -159,6 +159,15 @@
             }
         },
         {
+            "path": "pages/shareh5/authTransferPage",
+            "style": {
+                "navigationBarTitleText": "咓咔社群",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
             "path": "pages/admin/leaderSync",
             "style": {
                 "navigationBarTitleText": "数据同步",

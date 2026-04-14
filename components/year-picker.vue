@@ -66,7 +66,6 @@ const yearList = computed(() => {
   for (let i = minYear.value; i <= maxYear.value; i++) {
     list.push(i);
   }
-  console.log(list, 'list')
   return list;
 });
 
@@ -91,7 +90,7 @@ const openPicker = () => {
 
 // 关闭选择器
 const closePicker = () => {
-  console.log(12313)
+  // console.log(12313)
   isRotate.value = false
   showPicker.value = false;
   yearPickerPopup.value.close()

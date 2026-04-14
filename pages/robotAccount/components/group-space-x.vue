@@ -76,7 +76,7 @@
         <uni-tr v-for="(item,i) in adminInfo" :key="i">
           <uni-td :width="tableWidth3" align="left">{{item.index <= 9?'0'+item.index:item.index}}</uni-td>
           <uni-td align="center">{{item.nick_name}}</uni-td>
-          <uni-td align="right" >{{item.flag===1?'超级管理员':'普通管理员'}}{{item.flag}}</uni-td>
+          <uni-td align="right" >{{item.flag===1?'群主':item.flag===2?'超级管理员':'普通管理员'}}</uni-td>
         </uni-tr>
       </template>
     </uni-table>
@@ -236,7 +236,7 @@
               // 群成员、金币、魅力、签到
               tableData.value = res.data
               // 群管理
-              adminInfo.value = tableData.value.filter(item=>item.flag>0)
+              adminInfo.value = tableData.value.filter(item=>item.flag>0&&item.flag<=3)
               adminInfo.value.forEach((item,i)=>{
                 item.index = i + 1
               })

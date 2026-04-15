@@ -1,0 +1,132 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.content.data-v-3190821f {
+  padding: 0 80rpx;
+  font-size: 32rpx;
+  background-color: #ffffff;
+  height: 100vh;
+  position: relative;
+}
+.content .login-bg.data-v-3190821f {
+  width: 343rpx;
+  height: 457rpx;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.content .logo.data-v-3190821f {
+  width: 248rpx;
+  height: 136rpx;
+  margin: 100rpx 0 10rpx 0;
+}
+.content .text1.data-v-3190821f {
+  color: #606178;
+  font-size: 32rpx;
+  line-height: 32rpx;
+}
+.content .title.data-v-3190821f {
+  font-size: 56rpx;
+  color: #0E1B2E;
+  margin: 100rpx 0 60rpx;
+  font-weight: 500;
+}
+.content .inpt-box.data-v-3190821f {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F4F5F7;
+  height: 112rpx;
+  border-radius: 20rpx;
+  margin-bottom: 40rpx;
+  padding: 0 30rpx;
+}
+.content .inpt-box > *.data-v-3190821f {
+  flex-shrink: 0;
+}
+.content .inpt-box .text2.data-v-3190821f {
+  color: #606178;
+  margin-right: 20rpx;
+}
+.content .inpt-box .input.data-v-3190821f {
+  width: 176rpx;
+  height: 100%;
+  font-weight: 500;
+  font-size: 32rpx;
+}
+.content .inpt-box .clear.data-v-3190821f {
+  width: 48rpx;
+  height: 48rpx;
+}
+.content .inpt-box .clear image.data-v-3190821f {
+  width: 100%;
+  height: 100%;
+}
+.content .inpt-box .code-text.data-v-3190821f {
+  color: #9DA9B9;
+}
+.content .inpt-box .code-text.active.data-v-3190821f {
+  color: #1675FE;
+}
+.content .inpt-box .code-text text.data-v-3190821f {
+  color: #1675FE;
+}
+.content .inpt-box.inpt-box-1 .input.data-v-3190821f {
+  width: 376rpx;
+}
+.content .text3.data-v-3190821f {
+  display: block;
+  color: #F56C6C;
+  font-size: 24rpx;
+  margin-top: -10rpx;
+}
+.content .text4.data-v-3190821f {
+  display: block;
+  text-align: center;
+  font-size: 36rpx;
+  margin-top: 80rpx;
+  color: #1675FE;
+}
+.content .text6.data-v-3190821f {
+  position: fixed;
+  bottom: 60rpx;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: #c5ccd5;
+  font-size: 32rpx;
+}
+.content .sub-btn.data-v-3190821f {
+  margin-top: 50rpx;
+  border-radius: 20rpx;
+  background-color: #C5CCD5;
+  height: 96rpx;
+  line-height: 96rpx;
+  text-align: center;
+  color: #FFFFFF;
+}
+.content .sub-btn.active.data-v-3190821f {
+  background-color: #1675FE;
+}

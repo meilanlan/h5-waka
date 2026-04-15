@@ -1,0 +1,1 @@
+import{o,b as t,Q as e}from"./index-COzmySZu.js";import{_ as r}from"./_plugin-vue_export-helper.BCo6x5W8.js";const s=r({name:"uniBody",options:{virtualHost:!0},data:()=>({}),created(){},methods:{}},[["render",function(r,s,a,n,u,d){return o(),t("tbody",null,[e(r.$slots,"default")])}]]);export{s as u};

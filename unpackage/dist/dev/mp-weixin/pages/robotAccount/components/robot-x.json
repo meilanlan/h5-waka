@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "robot-assistant-x": "./robot-assistant-x",
+    "my-order": "./my-order"
+  }
+}

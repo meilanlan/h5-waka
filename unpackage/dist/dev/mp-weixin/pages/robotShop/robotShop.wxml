@@ -1,0 +1,1 @@
+<view class="data-v-ee037a99"><view class="{{['data-v-ee037a99', 'common-header', c]}}"><image class="back data-v-ee037a99" src="{{a}}" bindtap="{{b}}"></image><text class="data-v-ee037a99">机器人助手</text></view><view class="wrap data-v-ee037a99"><robot-assistant-x wx:if="{{d}}" class="data-v-ee037a99" u-i="ee037a99-0" bind:__l="__l" u-p="{{d}}"></robot-assistant-x></view></view>

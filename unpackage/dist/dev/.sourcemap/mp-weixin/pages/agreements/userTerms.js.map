@@ -1,0 +1,1 @@
+{"version":3,"file":"userTerms.js","sources":["pages/agreements/userTerms.vue?type=page"],"sourcesContent":["import MiniProgramPage from '/Users/meilan/workSpace/H5-Whack/H5_Waka/pages/agreements/userTerms.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

@@ -1,0 +1,1 @@
+<view class="content data-v-4c380209"><image class="bg data-v-4c380209" src="{{a}}"></image><view class="wrapper-cont data-v-4c380209"><view class="wrapper-cont-components data-v-4c380209"><my-wallet wx:if="{{b}}" class="data-v-4c380209" u-i="4c380209-0" bind:__l="__l" u-p="{{b}}"></my-wallet></view></view></view>

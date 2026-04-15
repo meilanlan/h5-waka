@@ -1,0 +1,94 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.content.data-v-ff3ae5cc {
+  position: relative;
+}
+.content .bg.data-v-ff3ae5cc {
+  width: 100%;
+  height: 460rpx;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.content .top.data-v-ff3ae5cc {
+  width: 100vw;
+  position: relative;
+}
+.content .top .common-header.data-v-ff3ae5cc {
+  justify-content: center;
+}
+.content .top .common-header text.data-v-ff3ae5cc {
+  color: #FFFFFF;
+  z-index: 10;
+}
+.content .top .robotList.data-v-ff3ae5cc {
+  margin-top: 128rpx;
+}
+.content .top .robotList .list.data-v-ff3ae5cc {
+  box-shadow: none;
+}
+.content .top .robotList .list .info .ing.data-v-ff3ae5cc {
+  margin-top: 20rpx;
+}
+.content .top .robotList .list .info .time.data-v-ff3ae5cc {
+  display: inline-block;
+  margin-top: 15rpx;
+  padding: 0 10rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4rpx;
+  text-align: center;
+  line-height: 40rpx;
+  font-size: 24rpx;
+}
+.content .top.navBar.data-v-ff3ae5cc {
+  position: relative;
+  padding-top: 88rpx;
+}
+.content .groupList.data-v-ff3ae5cc {
+  width: 100%;
+  min-height: calc(100vh - 400rpx);
+  background: #ffffff;
+  border-top-left-radius: 24rpx;
+  border-top-right-radius: 24rpx;
+  padding: 32rpx 0;
+  box-sizing: border-box;
+}
+.content .groupList.newBgColor.data-v-ff3ae5cc {
+  background: linear-gradient(to bottom, #ffffff, #F4F5F7);
+}
+.content .groupList .ad.data-v-ff3ae5cc {
+  margin-bottom: 46rpx;
+  width: 100%;
+  height: 180rpx;
+  position: relative;
+  cursor: pointer;
+}
+.content .groupList .ad image.data-v-ff3ae5cc {
+  width: 100%;
+  height: 100%;
+  border-radius: 20rpx;
+}

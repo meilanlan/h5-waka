@@ -1,0 +1,65 @@
+
+.lucky-box.data-v-16a8f7e1 {
+    /* position: relative;
+    overflow: hidden;
+    margin: 0 auto; */
+    position: absolute;
+    top: 487rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    /* width: 510rpx;
+    height: 510rpx; */
+    font-family: 'MiSans';
+    z-index: 99;
+}
+.lucky-box canvas.data-v-16a8f7e1 {
+    position: absolute;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+}
+.lucky-wheel-btn.data-v-16a8f7e1 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.lucky-imgs.data-v-16a8f7e1 {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+.my-lucky-btn.data-v-16a8f7e1 {
+    position: absolute;
+    top: 126rpx;
+    left: 126rpx;
+    width: 234rpx;
+    height: 234rpx;
+    background-color: rgba(234, 204, 255, .8);
+    border-radius: 50%;
+    filter: blur(5px); /* 边缘虚化效果*/
+    opacity: 0;
+&.active.data-v-16a8f7e1 {
+      animation: btnScaleFade-16a8f7e1 1s linear 1 forwards;
+}
+}
+@keyframes btnScaleFade-16a8f7e1 {
+0% {
+      transform: scale(1);
+      opacity: 1;
+      filter: blur(5px);
+}
+50%{
+      opacity: 0.8;
+      filter: blur(5px);
+}
+100% {
+      transform: scale(3);
+      opacity: 0;
+      filter: blur(5px);
+}
+}
+  

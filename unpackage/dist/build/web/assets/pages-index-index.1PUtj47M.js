@@ -1,0 +1,1 @@
+import{c as e,o,i as s}from"./index-COzmySZu.js";import{_ as t}from"./_plugin-vue_export-helper.BCo6x5W8.js";const r=t({},[["render",function(t,r,n,a,c,p){const i=s;return o(),e(i,{class:"content"})}],["__scopeId","data-v-3557b8c3"]]);export{r as default};

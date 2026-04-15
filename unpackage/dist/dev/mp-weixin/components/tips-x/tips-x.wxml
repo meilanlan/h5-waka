@@ -1,0 +1,1 @@
+<view class="data-v-5b0a71af"><view class="closePopPopup data-v-5b0a71af"><view class="clearText data-v-5b0a71af"><text class="data-v-5b0a71af" space="nbsp">{{a}}</text></view><view class="btn-box data-v-5b0a71af" bindtap="{{b}}">确认</view></view></view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "钱包",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "my-wallet": "../robotAccount/components/my-wallet"
+  }
+}

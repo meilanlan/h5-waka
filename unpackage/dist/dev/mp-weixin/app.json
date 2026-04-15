@@ -1,0 +1,33 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/robotAccount/robotDetail",
+    "pages/robotAccount/myBill",
+    "pages/robotAccount/profitDetail",
+    "pages/robotAccount/settlement",
+    "pages/robotAccount/wathdrawal",
+    "pages/robotAccount/taskGiftRecord",
+    "pages/robotAccount/groupAccount",
+    "pages/agreements/userTerms",
+    "pages/agreements/privacyAgreement",
+    "pages/agreements/wehi",
+    "pages/agreements/commonProblem",
+    "pages/shareh5/wakaGroup",
+    "pages/shareh5/wakaGroupH5",
+    "pages/shareh5/sharePerson",
+    "pages/admin/leaderSync",
+    "pages/admin/login",
+    "pages/vip/vipCenter",
+    "pages/wallet/wallet",
+    "pages/income/income",
+    "pages/robotShop/robotShop",
+    "pages/luckyCanvas/luckyCanvas"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "waka",
+    "navigationBarBackgroundColor": "#F4F5F7",
+    "backgroundColor": "#F4F5F7"
+  },
+  "usingComponents": {}
+}

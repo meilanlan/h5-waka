@@ -1,0 +1,11 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-table": "../../../components/uni-table/components/uni-table/uni-table",
+    "uni-td": "../../../components/uni-table/components/uni-td/uni-td",
+    "uni-th": "../../../components/uni-table/components/uni-th/uni-th",
+    "uni-tr": "../../../components/uni-table/components/uni-tr/uni-tr",
+    "uni-popup": "../../../components/uni-popup/components/uni-popup/uni-popup",
+    "uni-number-box": "../../../components/uni-number-box_1.2.1/components/uni-number-box/uni-number-box"
+  }
+}

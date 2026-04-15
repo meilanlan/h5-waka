@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "群主页",
+  "usingComponents": {
+    "tab-x": "./components/tab-x",
+    "group-space-x": "./components/group-space-x",
+    "instruction-x": "./components/instruction-x",
+    "my-home-x": "./components/my-home-x",
+    "robot-x": "./components/robot-x",
+    "group-profit-x": "./components/group-profit-x",
+    "group-set-x": "./components/group-set-x"
+  }
+}

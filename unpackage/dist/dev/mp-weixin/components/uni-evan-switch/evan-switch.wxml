@@ -1,0 +1,1 @@
+<view bindtap="{{d}}" class="{{['evan-switch', 'data-v-022c7b8a', e && 'evan-switch--disabled']}}" style="{{'width:' + f + ';' + ('height:' + g) + ';' + ('border-radius:' + h) + ';' + ('background-color:' + i)}}"><view class="evan-switch__circle data-v-022c7b8a" style="{{'width:' + a + ';' + ('height:' + b) + ';' + ('transform:' + c)}}"></view></view>

@@ -1,0 +1,11 @@
+{
+  "component": true,
+  "usingComponents": {
+    "set-member-x": "./set-member-x",
+    "set-move-x": "./set-move-x",
+    "set-data-x": "./set-data-x",
+    "set-manage-x": "./set-manage-x",
+    "set-config-x": "./set-config-x",
+    "set-luckdraw-x": "./set-luckdraw-x"
+  }
+}

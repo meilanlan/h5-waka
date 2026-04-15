@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "新人福利",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "lucky-wheel": "../../components/lucky-canvas_v0.0.10_4/components/@lucky-canvas/uni/lucky-wheel",
+    "uni-popup": "../../components/uni-popup/components/uni-popup/uni-popup",
+    "rule-x": "./components/rule-x",
+    "result-x": "./components/result-x"
+  }
+}

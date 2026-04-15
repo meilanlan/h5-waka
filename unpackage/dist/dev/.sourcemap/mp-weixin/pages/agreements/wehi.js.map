@@ -1,0 +1,1 @@
+{"version":3,"file":"wehi.js","sources":["pages/agreements/wehi.vue?type=page"],"sourcesContent":["import MiniProgramPage from '/Users/meilan/workSpace/H5-Whack/H5_Waka/pages/agreements/wehi.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "会员中心",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "vip-center-x": "../robotAccount/components/vip-center-x"
+  }
+}

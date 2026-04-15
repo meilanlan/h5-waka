@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "任务礼物记录",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-table": "../../components/uni-table/components/uni-table/uni-table",
+    "uni-thead": "../../components/uni-table/components/uni-thead/uni-thead",
+    "uni-tbody": "../../components/uni-table/components/uni-tbody/uni-tbody",
+    "uni-td": "../../components/uni-table/components/uni-td/uni-td",
+    "uni-th": "../../components/uni-table/components/uni-th/uni-th",
+    "uni-tr": "../../components/uni-table/components/uni-tr/uni-tr"
+  }
+}

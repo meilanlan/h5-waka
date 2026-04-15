@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "机器人助手",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "robot-assistant-x": "../robotAccount/components/robot-assistant-x"
+  }
+}

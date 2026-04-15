@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的收益",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-popup": "../../components/uni-popup/components/uni-popup/uni-popup",
+    "profit-agreement-x-vue": "../robotAccount/components/profit-agreement-x"
+  }
+}

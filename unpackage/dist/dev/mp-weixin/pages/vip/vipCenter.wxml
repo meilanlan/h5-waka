@@ -1,0 +1,1 @@
+<view class="wrapper data-v-1fca53fe"><image class="bg data-v-1fca53fe" src="{{a}}"></image><view class="wrapper-cont data-v-1fca53fe"><view class="wrapper-cont-components data-v-1fca53fe"><vip-center-x wx:if="{{b}}" class="data-v-1fca53fe" u-i="1fca53fe-0" bind:__l="__l" u-p="{{b}}"></vip-center-x></view></view></view>

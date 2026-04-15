@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "energy-assist-x": "./energy-assist-x",
+    "my-wallet": "./my-wallet",
+    "vip-center-x": "./vip-center-x",
+    "pay-x": "../../../components/pay-x/pay-x"
+  }
+}

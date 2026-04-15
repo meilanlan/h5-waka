@@ -15,8 +15,7 @@
         <view class="text1">使用方法：如您盲盒名称填写100金币，开盲盒结果处勾选开盲盒获得金币，后面填写100即可。</view>
       </view>
       <view class="switch-box-1">
-        <text space="nbsp" decode="true">金币/魅力自动发放（开）</text> <uni-even-switch :size="20" v-model="isOpen" extraData="0" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch>
-        <!-- <text space="nbsp">金币/魅力自动发放（开）</text> <uni-even-switch :size="20" v-model="isOpenNew" extraData="0" :contextLevel="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch> -->
+        <text space="nbsp" decode="true">金币/魅力自动发放（开）</text> <uni-even-switch :size="20" :value="isOpen" :extra-data="0" :context-level="2" activeColor="#67C23A" inactiveColor="#C1CBDB" :beforeChange="beforeListChange"></uni-even-switch>
       </view>
       <set-luckdraw-edit-x
         :type="1"
@@ -48,7 +47,7 @@
             <uni-td :width="tableWidth2" align="center">{{item.total_num || 0}}</uni-td>
             <uni-td :width="tableWidth3" align="center">{{item.user_max_num_day || 0}}</uni-td>
             <uni-td :width="tableWidth1" align="center"><image class="delect" src="@/static/image/set/edit.png" mode="" @click="editLotter(i)"></image></uni-td>
-            <uni-td :width="tableWidth1" align="center"><image class="delect" src="@/static/image/set/delect.png" mode="" @click="delectLotter(i)"></image></uni-td>
+            <uni-td :width="tableWidth1" align="center"><image class="delect" src="@/static/image/set/delect.png" mode="" @click="delectLotter(item, i)"></image></uni-td>
           </uni-tr>
         </uni-table>
       </view>
@@ -93,7 +92,7 @@
         <view class="title">编辑奖品</view>
         <scroll-view scroll-y="true" class="scroll">
           <set-luckdraw-edit-x
-            v-if="this.addData.lottery_id"
+            v-if="addData.lottery_id"
             :type="2"
             :isOpen="isOpen"
             :addData="addData"
@@ -121,6 +120,13 @@
   export default {
     // mixins: [scrollToTargetPosition],
     components: {UniEvenSwitch,uniTable,uniTd,uniTh,uniTr,SetLuckdrawEditX,uniPopup},
+    props:{
+      group_id: {
+        type: String,
+        default: () => {}
+      },
+      authCode: String
+    },
     data() {
       return {
         curIndex: 0,
@@ -146,6 +152,9 @@
         },
         isOpen: false,
         addData: {
+          group_id: '',
+          auth_code: '',
+          status: 1,
           lottery_name: '',
           lottery_type: 0,
           award: 0,
@@ -158,6 +167,8 @@
     },
     mounted() {
       uni.showLoading()
+      this.addData.group_id = this.group_id*1
+      this.addData.auth_code = this.authCode
       this.initdata()
     },
     
@@ -165,6 +176,8 @@
       beforeListChange(e,extraData) {
         uni.showLoading()
         let params = {
+          group_id: this.group_id, 
+          auth_code: this.authCode, 
           auto_add: e===true?1:0,
           data_type: this.configData.data_type,
           lottery_coin: this.configData.lottery_coin
@@ -180,9 +193,13 @@
                 });
               },300)
               resolve()
-            } else if (res.code === -20001) {
-              uni.hideLoading()
+            } else if (res.code === 100401) {
+              uni.showToast({
+                title: res.msg,
+                icon: 'none'
+              });
               this.$emit('updateAdminToken')
+              uni.hideLoading()
             } else {
               uni.hideLoading()
               uni.showToast({
@@ -197,21 +214,23 @@
       saveCoin() {
         uni.showLoading()
          // auto_add: this.isOpen===true?1:0
-        lotterySetData({data_type: this.configData.data_type, lottery_coin: this.configData.lottery_coin}, res => {
+        lotterySetData({group_id: this.group_id, auth_code: this.authCode, data_type: this.configData.data_type, lottery_coin: this.configData.lottery_coin, auto_add: this.isOpen===true?1:0,}, res => {
           if (res.code === 0) {
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
-          } else if (res.code === -20001) {
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
             this.$emit('updateAdminToken')
           } else {
-            if (res.code != -10002){
-              uni.showToast({
-                title: res.msg,
-                icon: 'none'
-              });
-            }
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
           }
           uni.hideLoading()
         })
@@ -220,8 +239,11 @@
         (this.configData.lottery_coin<0||!this.configData.lottery_coin)&&(this.configData.lottery_coin=0)
       },
       editLotter(i) {
-        console.log(this.configData.lottery_list[i].lottery_type,'type')
+        // console.log(this.configData.lottery_list[i].lottery_type,'type')
         this.addData = {
+          group_id: this.group_id*1,
+          auth_code: this.authCode,
+          status: 1,//编辑
           lottery_id: this.configData.lottery_list[i].lottery_id,
           lottery_name: this.configData.lottery_list[i].lottery_name,
           lottery_type: this.configData.lottery_list[i].lottery_type || 0,
@@ -230,57 +252,64 @@
           lottery_num: this.configData.lottery_list[i].total_num,
           day_limit: this.configData.lottery_list[i].user_max_num_day
         }
-        console.log(this.addData, 'ui')
+        // console.log(this.addData, 'ui')
         this.$refs.luckyPopup.open()
       },
-      delectLotter(i) {
+      delectLotter(item, i) {
         uni.showLoading()
-        lotteryDelData({lottery_id: this.configData.lottery_list[i].lottery_id}, res => {
+        let param = {
+          group_id: this.group_id*1,
+          auth_code: this.authCode,
+          lottery_id: item.lottery_id
+        }
+        lotteryDelData(param, res => {
           if (res.code === 0) {
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
-            // this.initdata()
             this.configData.lottery_list.splice(i, 1)
-          } else if (res.code === -20001) {
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
             this.$emit('updateAdminToken')
           } else {
             uni.showToast({
               title: res.msg,
               icon: 'none'
             });
-            // if (res.code != -10002){
-            //   uni.showToast({
-            //     title: res.msg,
-            //     icon: 'none'
-            //   });
-            // }
           }
           uni.hideLoading()
         })
       },
       initdata() {
-        lotteryConfigData({}, res => {
+        uni.showLoading()
+        lotteryConfigData({group_id: this.group_id*1,auth_code: this.authCode}, res => {
           if (res.code === 0) {
             this.isOpen = res.data[0].auto_do&&res.data[0].auto_do*1 === 1 ? true : false
             this.configData = res.data[0]
-          } else if (res.code === -20001) {
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
             this.$emit('updateAdminToken')
           } else {
-            if (res.code != -10002){
+            // if (res.code != -10002){
               uni.showToast({
                 title: res.msg,
                 icon: 'none'
               });
-            }
+            // }
           }
           uni.hideLoading()
           this.initFlag = true
         })
       },
       initRecord() {
-        lotteryLogData({}, res => {
+        lotteryLogData({group_id: this.group_id,auth_code: this.authCode}, res => {
           if (res.code === 0) {
             // if (res.data&&res.data.length > 0) {
             //   res.data.forEach((item,i) => {
@@ -289,7 +318,11 @@
             // }
             this.logData = res.data || []
             
-          } else if (res.code === -20001) {
+          } else if (res.code === 100401) {
+            uni.showToast({
+              title: res.msg,
+              icon: 'none'
+            });
             this.$emit('updateAdminToken')
           } else {
             if (res.code != -10002){
@@ -464,11 +497,23 @@
   .tableList1 {
     margin-top: -70rpx;
   }
+  // 弹窗的商场样式
   .robotMallPopup {
+    width: 100vw;
+    height: calc(100vh - 120px);
+    padding: 40rpx 28rpx;
+    background-color: #ffffff;
+    border-top-left-radius: 30rpx;
+    border-top-right-radius: 30rpx;
     background: linear-gradient(180deg, #FFFFFF 0%, #F4F5F7 100%);
     .title {
+      font-size: 36rpx;
+      font-weight: 500;
       padding-bottom: 20rpx;
       border-bottom: 1px solid rgba(197, 204, 213, .4);
+    }
+    .scroll {
+      height: 96%;
     }
   }
 .wrapper1 {

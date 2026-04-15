@@ -1,13 +1,13 @@
 {
-  "hash": "72c79952",
-  "configHash": "45766f11",
-  "lockfileHash": "bac84fbb",
-  "browserHash": "11253b70",
+  "hash": "e0558bcc",
+  "configHash": "ad9e871e",
+  "lockfileHash": "ef45c329",
+  "browserHash": "21919f28",
   "optimized": {
     "qs": {
       "src": "../../../../../node_modules/qs/lib/index.js",
       "file": "qs.js",
-      "fileHash": "d4a40f75",
+      "fileHash": "bd79a8d9",
       "needsInterop": true
     }
   },

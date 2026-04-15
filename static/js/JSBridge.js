@@ -19,7 +19,7 @@ var u = navigator.userAgent,
     urlUid = methods.getParam("HTTP_USER_UID") || 0,
     urlToken =
         methods.getParam("HTTP_USER_TOKEN") ||
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDc2MTY1NzksImlhdCI6MTcwNDkzODE3OSwicGxhdCI6NCwidXNlcklkIjoxMDAwMDB9.wWSabU9yk2CI1LB2gQ15_EwHjl_UHLFPmKAirIeH0aM",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzIzNTY2MjksImlhdCI6MTczMTQ5MjYyOSwicGxhdCI6MSwidXNlcklkIjoxMDAwMDAwN30.GVcQHy6Eiyg4AXXuc1V2f-3cyspIvCJ3vRdWz52u7rU",
     urlAnchor = methods.getParam("anchor_pfid") || 0,
     urlLiveId = methods.getParam("live_id") || 0,
     data4app,
@@ -175,6 +175,73 @@ window.client = {
             if (typeof callback === "function") callback(anres);
         }
     },
+    // 唤起客户端支付：购买机器人套餐
+    BuyRobotJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSPay",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSPay(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启支付");
+      }
+    },
+    // 唤起客户端支付宝授权
+    JSBindAlipayJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSBindAlipay",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSBindAlipay(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启授权");
+      }
+    },
+    // 唤起客户端微信授权
+    JSBindWechatJSAction(paramData, callback) {
+      if (window.inAPP) {
+        if (isiOS) {
+            window.WKWebViewJavascriptBridge.callHandler(
+                "JSBindWechat",
+                paramData,
+                function (cre) {
+                    //clientReturn
+                    if (typeof callback === "function") callback(cre);
+                }
+            );
+        } else {
+            var jsPayCallBack = window.WKWebViewJavascriptBridge.JSBindWechat(
+                JSON.stringify(paramData)
+            );
+            if (typeof callback === "function") callback(jsPayCallBack);
+        }
+      }else{
+        h5Toast("请在客户端开启授权");
+      }
+    },
+    
     // 唤起app端播放
     JSOpenVideoPlay(param) {
         if (window.inAPP) {
@@ -542,6 +609,23 @@ if (window.inAPP) {
                     "JSWeb3WalletVerifyCallback",
                     JSWeb3WalletVerifyCallback
                 );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSPayResultCallBack",
+                    JSPayResultCallBack
+                );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSNoticeResultCallBack",
+                    JSNoticeResultCallBack
+                );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSBindAlipay",
+                    JSBindAlipay
+                );
+                window.WKWebViewJavascriptBridge.registerHandler(
+                    "JSBindWechat",
+                    JSBindWechat
+                );
+                
                 //window.WKWebViewJavascriptBridge.registerHandler('JSOrderVipCallBack', JSOrderVipCallBack);
                 // -------------执行所有已经注册了的callback-----------------
                 window.WKWebViewJavascriptBridge.callHandler(
@@ -578,6 +662,20 @@ window.JSPhotoAlbumCallBack = function (res) {
     if (typeof window.updateImgAfter === "function") {
         window.updateImgAfter(res);
     }
+};
+
+ // 安卓支付回调函数
+window.JSPayResultCallBack = function (res) {
+  // ios返回的res是object类型   安卓返回的res是string 需要JSON.parse转一下
+  if (typeof window.pay_result_after === "function") {
+      window.pay_result_after(res);
+  }
+};
+// 客户端通知h5更新数据
+window.JSNoticeResultCallBack = function(res){
+  if (typeof window.notice_result_callback === "function") {
+      window.notice_result_callback(res);
+  }
 };
 
 window.JSShareSnapshotImageCallBack = function (res) {
@@ -630,7 +728,7 @@ window.JSUpdateData = function (res) {
         }
     }
 };
-/*window.JSBridgeAppNoticeH5 = function (res) {
+window.JSBridgeAppNoticeH5 = function (res) {
     window.localStorage.removeItem("JSBridgeAppNoticeH5");
     window.localStorage.setItem("JSBridgeAppNoticeH5", JSON.stringify(res));
     let flag = typeof window.getAppNoticeH5 === "function";
@@ -650,7 +748,7 @@ window.JSUpdateData = function (res) {
             }
         }, 40);
     }
-};*/
+};
 // 主动获取传递的参数
 window.JSWebGetPageData_toBridge = function (callback) {
     if (isiOS) {

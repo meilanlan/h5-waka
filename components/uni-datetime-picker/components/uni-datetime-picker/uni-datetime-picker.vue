@@ -135,6 +135,7 @@
 	import TimePicker from './time-picker.vue'
 	import { initVueI18n } from '@dcloudio/uni-i18n'
 	import i18nMessages from './i18n/index.js'
+  import UniIcons from '../../../uni-icons/components/uni-icons/uni-icons.vue'
   import { getDateTime, getDate, getTime, getDefaultSecond, dateCompare, checkDate, fixIosDateFormat } from './util'
 
 	export default {
@@ -144,7 +145,8 @@
 		},
 		components: {
 			Calendar,
-			TimePicker
+			TimePicker,
+      UniIcons
 		},
 		data() {
 			return {

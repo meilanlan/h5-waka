@@ -100,10 +100,19 @@ const groupDetailData = (data, success, fail) => {
   })
 }
 // 群空间
+// const groupUserData = (data, success, fail) => {
+//   ajax({
+//     noAuth: true,
+//     url: groupUserApi,
+//     data: data,
+//     success: success,
+//     fail: fail
+//   })
+// }
 const groupUserData = (data, success, fail) => {
   ajax({
     noAuth: true,
-    url: groupUserApi,
+    url: '/h5/space/data_list',
     data: data,
     success: success,
     fail: fail
@@ -156,7 +165,8 @@ const groupLoginData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupLoginApi,
+    // url: groupLoginApi,
+    url: '/h5/group/check_admin_pwd',
     data: data,
     success: success,
     fail: fail
@@ -168,7 +178,8 @@ const groupPawData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupPawApi,
+    // url: groupPawApi,
+    url: '/h5/group/update_admin_pwd',
     data: data,
     success: success,
     fail: fail
@@ -180,7 +191,7 @@ const groupSummaryData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSummaryApi,
+    url: '/h5/space/group_summary',
     data: data,
     success: success,
     fail: fail
@@ -192,7 +203,7 @@ const groupClearData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupClearApi,
+    url: '/h5/space/user_list_clean',
     data: data,
     success: success,
     fail: fail
@@ -204,7 +215,7 @@ const groupCmdData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupCmdApi,
+    url: '/h5/space/cmd_config_get',
     data: data,
     success: success,
     fail: fail
@@ -216,7 +227,7 @@ const groupSetCmdData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSetCmdApi,
+    url: '/h5/space/cmd_config_set',
     data: data,
     success: success,
     fail: fail
@@ -228,7 +239,7 @@ const groupConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupConfigApi,
+    url: '/h5/space/group_config_get',
     data: data,
     success: success,
     fail: fail
@@ -240,7 +251,7 @@ const groupSetConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupSetConfigApi,
+    url: '/h5/space/group_config_set',
     data: data,
     success: success,
     fail: fail
@@ -276,7 +287,7 @@ const groupUserDataData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupUserDataApi,
+    url: '/h5/space/user_list',
     data: data,
     success: success,
     fail: fail
@@ -288,7 +299,8 @@ const groupResData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupResApi,
+    // url: groupResApi,
+    url: '/h5/group/group_res_list',
     data: data,
     success: success,
     fail: fail
@@ -324,7 +336,8 @@ const groupWordDelData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupWordDelApi,
+    url: '/h5/group/group_wrod_del',
+    // url: groupWordDelApi,
     data: data,
     success: success,
     fail: fail
@@ -336,7 +349,8 @@ const groupData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: groupDataApi,
+    // url: groupDataApi,
+    url: '/h5/space/user_data_edit',
     data: data,
     success: success,
     fail: fail
@@ -368,7 +382,8 @@ const lotteryConfigData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryConfigApi,
+    // url: lotteryConfigApi,
+    url: '/h5/space/lottery_config_get',
     data: data,
     success: success,
     fail: fail
@@ -380,7 +395,8 @@ const lotteryDelData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryDelApi,
+    // url: lotteryDelApi,
+    url: '/h5/space/lottery_del',
     data: data,
     success: success,
     fail: fail
@@ -392,7 +408,8 @@ const lotterySetData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotterySetApi,
+    // url: lotterySetApi,
+    url: '/h5/space/lottery_config_set',
     data: data,
     success: success,
     fail: fail
@@ -404,7 +421,8 @@ const lotteryAddData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryAddApi,
+    // url: lotteryAddApi,
+    url: '/h5/space/lottery_edit',
     data: data,
     success: success,
     fail: fail
@@ -416,7 +434,8 @@ const lotteryLogData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: lotteryLogApi,
+    // url: lotteryLogApi,
+    url: '/h5/space/lottery_log',
     data: data,
     success: success,
     fail: fail
@@ -524,7 +543,8 @@ const nobleNameData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: nobleNameApi,
+    url: '/h5/group/update_noble_title',
+    // url: nobleNameApi,
     data: data,
     success: success,
     fail: fail
@@ -548,7 +568,8 @@ const giftEditData = (data, success, fail) => {
   ajax({
     noAuth: true,
     adminSet: true,
-    url: giftEditApi,
+    // url: giftEditApi,
+    url: '/h5/group/update_gift',
     data: data,
     success: success,
     fail: fail
@@ -589,7 +610,223 @@ const addYuanBaoData = (data, success, fail) => {
   })
 }
 
+// 顶部群信息的接口
+const groupInfoApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group_info',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 我的主页
+const userProfileApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/user_profile',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 机器人助手
+const spaceRobotApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/robot',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 群收益
+const groupIncomeApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/income',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 能量助力
+const groupGrowApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/group/grow',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+// 支付宝支付
+const alipayOrder = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/alipay/order',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
+//购买机器人
+/*
+data.action: 1、购买或者续费，2安装，3启用，4暂停
+*/
+const robotProdDoApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/robot/prod_do',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+//创建订单
+/*
+data.prod_type : 0:机器人 1:vip 2:svip 3:嗨币
+data.action: 1、购买或者续费，2安装，3启用，4暂停
+*/
+const createOrderApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/order/create',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+// 我的订单
+const billListApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/bill/list',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+// 个人的分享
+const shareUserApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/share/user',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//社群的分享
+const shareGroupApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/share/group',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//检查领奖状态
+const checkAwardStApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/newcomer/check_award_status',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//领奖
+const awardTakeApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/newcomer/award_take',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//机器人助手
+const ownerSuperGroupsApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/owner_super_groups',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+//机器人入驻
+const robotBindGroupApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/robot_bind_group',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
+//数据同步-查询群信息
+const glxGroupQueryApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group/glx_group_query',
+    data: data,
+    header: {
+      'Content-Type': 'application/json',
+    },
+    success: success,
+    fail: fail
+  })
+}
+
+//数据同步
+const glxGroupSyncApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/group/glx_group_sync',
+    data: data,
+    header: {
+      'Content-Type': 'application/json',
+    },
+    success: success,
+    fail: fail
+  })
+}
+
+const operationLogApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/space/operation_log',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
 
 export {
   robotDetailData,
@@ -638,5 +875,24 @@ export {
   giftEditData,
   giftDelData,
   exchangeData,
-  addYuanBaoData
+  addYuanBaoData,
+  groupInfoApi,
+  userProfileApi,
+  spaceRobotApi,
+  groupIncomeApi,
+  groupGrowApi,
+  alipayOrder,
+  billListApi,
+  shareUserApi,
+  shareGroupApi,
+  checkAwardStApi,
+  awardTakeApi,
+  robotProdDoApi,
+  ownerSuperGroupsApi,
+  robotBindGroupApi,
+  createOrderApi,
+  glxGroupSyncApi,
+  glxGroupQueryApi,
+  operationLogApi,
+  
 }

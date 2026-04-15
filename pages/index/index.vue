@@ -1,28 +1,32 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-    <image src="../../static/image/bg_wxq.jpg" mode=""></image>
-		<view class="text-area">
+		<!-- <image class="logo" src="/static/logo.png"></image>
+    <image src="../../static/image/bg_wxq.jpg" mode=""></image> -->
+		<!-- <view class="text-area">
 			<text class="title">{{title}}</text>
-		</view>
+		</view> -->
 	</view>
 </template>
-
-<script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
-	}
+<script setup>
+  
+  
 </script>
+
+// <script>
+// 	export default {
+// 		data() {
+// 			return {
+// 				title: 'Hello'
+// 			}
+// 		},
+// 		onLoad() {
+
+// 		},
+// 		methods: {
+
+// 		},
+// 	}
+// </script>
 
 <style>
 	.content {

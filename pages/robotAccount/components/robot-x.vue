@@ -5,25 +5,89 @@
         {{item===1?'机器人助手':'我的订单'}}
       </view>
     </view>
-    <!-- 机器人助手 -->
-    <robot-assistant-x v-if="curTab === 1"></robot-assistant-x>
-    <!-- 我的订单 -->
-    <my-order v-else></my-order>
+    <template v-if="flagLock===true">
+      <!-- 机器人助手 -->
+      <robot-assistant-x v-if="curTab === 1" :robot_list='spaceRobotData.data.robot_list||[]' @updateInfo="updateGroup"></robot-assistant-x>
+      <!-- 我的订单 -->
+      <my-order :order_list="spaceRobotData.data.order_list||[]" :user_robot_list="spaceRobotData.data.user_robot_list||[]" v-else></my-order>
+    </template>
+    
     
   </view>
   
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref,reactive, inject} from 'vue'
   import robotAssistantX from './robot-assistant-x.vue';
   import myOrder from './my-order.vue';
+  import {spaceRobotApi} from '@/service/robotAccount/index.js'
   
-  
+  const emit = defineEmits(['updateGroupInfo'])
   const curTab = ref(1)
+  const loading = ref(false)
+  const flagLock = ref(false)
+  const parentInfo = reactive(({data:{}}))
+  parentInfo.data = inject('parentGroupInfo')
+  const spaceRobotData = reactive(({data:{
+    robot_list: [],
+    order_list: [],
+    user_robot_list: []
+  }}))
   
   function switchTab(item){
     curTab.value = item
+  }
+  function updateGroup(){
+    getSpaceRobot()
+    emit('updateGroupInfo')
+  }
+  getSpaceRobot()
+  function getSpaceRobot(){
+    uni.showLoading()
+    
+    spaceRobotApi({group_id: parentInfo.data.group_id,channel:window.isiOS?'ios':'android'}, res => {
+      if (res.code === 0) {
+        spaceRobotData.data = res.data
+        flagLock.value = true
+        // dataSummary.data = res.data || {}
+        uni.hideLoading()
+      } 
+      // else if (res.code === -20001) {
+      //   // uni.showToast({
+      //   //   title: '登录失效，请重新登录',
+      //   //   icon: 'none'
+      //   // });
+      //   clearAdminToken()
+      //   uni.hideLoading()
+      // } 
+      else {
+        uni.showToast({
+          title: res.msg,
+          icon: 'none'
+        });
+        uni.hideLoading()
+        // if (res.code != -10002){
+        //   uni.showToast({
+        //     title: res.msg,
+        //     icon: 'none'
+        //   });
+        //   uni.hideLoading()
+        // } else {
+        //   uni.hideLoading()
+        //   // if (JSON.stringify(dataSummary.data)== "{}") {
+        //   //   uni.showLoading({
+        //   //     title: "小嗨正在努力加载中...",
+        //   //     icon: 'none'
+        //   //   })
+        //   //   setTimeout(()=>{
+        //   //     getGroupSummaryInfo()
+        //   //   },3000)
+        //   // }
+          
+        // }
+      }
+    })
   }
 </script>
 
@@ -35,7 +99,7 @@
     margin-top: 32rpx;
     background: #F0F3F8;
     border-radius: 16rpx;
-    font-family: 'MiSans';
+    // font-family: 'MiSans';
     display: flex;
     .box {
       width: 342rpx;
@@ -76,4 +140,5 @@
       
     }
   }
+  
 </style>

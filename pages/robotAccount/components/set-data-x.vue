@@ -66,7 +66,7 @@
         </view>
       </view>
       
-      <view class="list">
+      <!-- <view class="list">
         <image class="icon" src="@/static/image/set/d-6.png"></image>
         <view class="right">
           <view class="h1">本群总水晶：<text>{{info.total_crystel}}</text></view>
@@ -84,7 +84,7 @@
             <text>本群金砖冠军：<text class="text3">{{info.user_name_max_brick}}</text><text class="text4">【{{info.user_max_brick}}】</text></text>
           </view>
         </view>
-      </view>
+      </view> -->
     </view>
     
     <view class="item-box">
@@ -122,7 +122,7 @@
       
     </view>
    
-    <view class="item-box">
+    <!-- <view class="item-box">
       <view class="list list1">
         <image class="icon" src="@/static/image/set/d-8.png"></image>
         <view class="right">
@@ -144,7 +144,7 @@
           查看 <image src="../../../static/image/ic_arrow.png" mode=""></image>
         </view>
       </view>
-    </view>
+    </view> -->
     
   </view>
 </template>
@@ -155,7 +155,7 @@
       info: {
         type: Object,
         default: () => {}
-      }
+      },
     },
     data() {
       return {
@@ -222,7 +222,7 @@
           border-radius: 40rpx;
           border: 2rpx solid #EEF0F4;
           font-size: 24rpx;
-          font-family: PingFang SC-Regular, PingFang SC;
+          // font-family: MiSans, 'MiSans';
           font-weight: 400;
           color: #606178;
           text-align: center;

@@ -1,6 +1,12 @@
 const trim = (str) => { // 去除字符串前后所有空
   return str.replace(/(^\s*)|(\s*$)/g, ""); 
 }
+// 千分位数字
+const formatNumber = (num) => {
+  if(!num) return 0
+  return Number(num).toLocaleString('en-US')
+};
+
 const processParams = (obj) => { // 去除空的参数
   let param = {};
   if (obj === null || obj === undefined || obj === '') return param;
@@ -42,10 +48,172 @@ const getIsAndroid = ()=>{
   return u+'---'+isAndroid+'---'+window.native
 }
 
+function formatDate(date){
+  return [
+      date.getFullYear(),
+      (date.getMonth() + 1).toString().padStart(2, '0'),
+      date.getDate().toString().padStart(2, '0')
+    ].join('-');
+}
+
+// 获取最近三个月的起始和结束日期（含当月）
+function getRecentThreeMonthsRange() {
+  const today = new Date();
+  const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  
+  // 计算前两个月的起始日
+  const twoMonthsAgoStart = new Date(currentMonthStart);
+  twoMonthsAgoStart.setMonth(twoMonthsAgoStart.getMonth() - 2);
+  
+  // 计算当月最后一天
+  const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  
+  return {
+    start: formatDate(twoMonthsAgoStart),
+    end: formatDate(currentMonthEnd),
+    // 包含完整日期对象用于进一步计算
+    // startObj: twoMonthsAgoStart,
+    // endObj: currentMonthEnd
+  };
+}
+
+function getRecentMonthRange() {
+  //获取当月开始-结束
+  const date = new Date()
+  let start = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-01`
+  let end =  new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+  return {
+    start:start,
+    end:end
+  }
+}
+function getRecentWeekRange(){
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0-6（0是周日）
+  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // 计算与周一的差值
+  
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - diffToMonday);
+  
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  return {
+    start: formatDate(monday),
+    end: formatDate(sunday),
+    // weekStartObj: monday,
+    // weekEndObj: sunday
+  };
+}
+function getRecentDayRange() {
+  //获取当天开始结束
+  const date = new Date();
+  return formatDate(date)
+}
+
+function maskPhoneNumber(phoneNumber) {
+  if(!phoneNumber){
+    return false
+  }
+  return phoneNumber.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+}
+
+function jumpApp(param){
+  uni.showLoading({mask:true})
+  const config = {
+      scheme: window.isiOS?param.iosAppUrl:param.androidAppUrl,
+      downloadUrl: {
+          ios: "https://apps.apple.com/cn/app/whack/id6752324554", // App Store链接
+          android: "https://www.whackgroup.com/#/", // 应用宝/官网链接
+          fallback: "https://www.whackgroup.com/#/" // 通用下载页（兜底）
+      },
+      timeout: 500 // 唤起检测延迟（毫秒，建议300-500）
+  };
+  
+  // 1. 精准判断设备和环境
+    let isAppOpened = false;
+  
+    const handleVisibilityChange = () => {
+      uni.hideLoading()
+      if (document.hidden) {
+        isAppOpened = true;
+      }
+    };
+    const handlePageHide = (e) => {
+      isAppOpened = true;
+    };
+    // 先注册监听，再执行任何唤起逻辑
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handlePageHide);
+    // 额外监听pageshow（防止页面返回时的状态异常）
+    window.addEventListener('pageshow', () => {
+      console.log('pageshow触发，页面回到前台');
+    });
+  
+    try {
+      if (window.isiOS) {
+        const aLink = document.createElement('a');
+        aLink.href = config.scheme;
+        aLink.style.display = 'none';
+        aLink.target = '_blank';
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink);
+        uni.hideLoading()
+      } else {
+        window.location.href = config.scheme;
+        
+        setTimeout(() => {
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          window.removeEventListener('pagehide', handlePageHide);
+          window.removeEventListener('pageshow', () => {});
+          
+          // 仅当未唤起且页面未隐藏时，才跳转App Store
+          if (!isAppOpened && !document.hidden) {
+            // console.log('唤起失败，跳转App Store');
+            const downloadLink = window.isiOS
+                        ? config.downloadUrl.ios 
+                        : !window.isiOS 
+                            ? config.downloadUrl.android 
+                            : config.downloadUrl.fallback;
+            window.location.href = downloadLink;
+            uni.hideLoading()
+          }
+        }, 1000);
+      }
+    } catch (e) {
+      // console.error('唤起APP异常:', e);
+      isAppOpened = false;
+    }
+}
+
+function downloadApp(){
+  let downloadUrl = {
+      ios: "https://apps.apple.com/cn/app/whack/id6752324554", // App Store链接
+      android: "https://www.whackgroup.com/#/", // 应用宝/官网链接
+      fallback: "https://www.whackgroup.com/#/" // 通用下载页（兜底）
+  }
+  const downloadLink = window.isiOS
+              ? downloadUrl.ios 
+              : !isiOS 
+                  ? downloadUrl.android 
+                  : downloadUrl.fallback;
+  window.location.href = downloadLink;
+}
+
+
 export {
   trim,
   processParams,
   getUrlParam,
   getIsAndroid,
-  isInApp
+  isInApp,
+  getRecentMonthRange,
+  getRecentDayRange,
+  getRecentWeekRange,
+  getRecentThreeMonthsRange,
+  formatNumber,
+  maskPhoneNumber,
+  jumpApp,
+  downloadApp
 }

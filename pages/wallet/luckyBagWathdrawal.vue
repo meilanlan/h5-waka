@@ -19,7 +19,7 @@
           <!-- <view class="text1">可提现:¥{{calculateTax(withdrawalsInfo.data.fortune, withdrawalsInfo.data.ratio)}}</view> -->
           <view class="text1">可提现:¥{{withdrawalsInfo.data.rw_fortune}}</view>
           <view class="inpt-box">
-            <text v-if="num">¥</text><input class="uni-input" type="number" v-model="num" placeholder="请输入提现金额" placeholder-style="color:#C5CCD5;fontSize:36rpx;fontWeight:normal" @input="handleInputOnlyInt" />
+            <text v-if="num">¥</text><input class="uni-input" type="number" focus v-model="num" placeholder="请输入提现金额" placeholder-style="color:#C5CCD5;fontSize:36rpx;fontWeight:normal" @input="handleInputOnlyInt" />
             <view class="all" @click="allWathdrawal">全部提现</view>
           </view>
           <view class="foot-box">

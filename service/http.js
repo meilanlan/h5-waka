@@ -1,6 +1,7 @@
 import qs from 'qs';
 import { ApiUrl } from './env.js';
-import { processParams,getUrlParam } from '@/unit/common.js';
+// import { processParams,getUrlParam } from '@/unit/common.js';
+import {processParams,getUrlParam} from '@/unit/common.js'
 // import store from '@/store';
 
 const ajax = (opt) => {

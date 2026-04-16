@@ -54,6 +54,7 @@
 <script setup>
   import {ref,reactive,inject} from 'vue'
   import energyAssistX from './energy-assist-x.vue';
+
   import myWallet from './my-wallet.vue'
   import vipCenterX from './vip-center-x.vue';
   import payX from '../../../components/pay-x/pay-x.vue';
@@ -270,7 +271,6 @@
         }
       }
     }
-  
   }
   .pay-model {
     margin-top: 32rpx;

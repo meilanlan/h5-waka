@@ -65,6 +65,30 @@
     num.value = item.energy
   }
   
+  function inptFocus(){
+    uni.createSelectorQuery()
+    .select('.inptRef')  // 选择器或ref名称
+    .boundingClientRect(rect => {
+      if (rect) {
+        console.log(rect, 'rect is')
+        const systemInfo = uni.getSystemInfoSync();
+        const windowHeight = systemInfo.windowHeight;
+        const keyboardHeight = 300;
+        
+        const targetTop = windowHeight - keyboardHeight - rect.height - 50;
+        console.log(targetTop,'targetTop')
+        
+        if (rect.top > targetTop) {
+          uni.pageScrollTo({
+            scrollTop: uni.getSystemInfoSync().scrollTop + rect.top - targetTop,
+            duration: 300
+          });
+        }
+      }
+    })
+    .exec();  // 执行查询
+  }
+  
   function watchNum(){
     if (num.value) {
       num.value = num.value.replace(/\D/g, '');

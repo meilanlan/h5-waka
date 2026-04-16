@@ -1,14 +1,12 @@
 <template>
   <view class="content need_scroll_top_view " id="navbarHeight">
-    <myCustomNavbar 
+   <myCustomNavbar 
     :navBg="robotInfo.data.bg_img_url||navbarBgImg" 
     backIcon="../../static/image/btn_back_white.png" 
     :navBgStyle="{height: '460rpx'}" 
     :navStyle="{background: 'url('+(robotInfo.data.bg_img_url||navbarBgImg)+') no-repeat'}"
     @backPage="backPage"
-    >
-      <!-- <image class="share" src="/static/image/share.png" @click="toShare"></image> -->
-    </myCustomNavbar>
+    ></myCustomNavbar>
     <view class="top navBar">
       <view class="robotList">
         <view class="list">
@@ -107,7 +105,7 @@
   import {defineComponent, ref, reactive, provide, nextTick} from 'vue'
   import {onLoad} from '@dcloudio/uni-app'
   // import {scrollToTargetPosition} from '@/mixin/index.mixin.js'
-  import {groupDetailData,groupInfoApi,groupLoginData} from '@/service/robotAccount/index.js'
+  import {groupInfoApi,groupLoginData} from '@/service/robotAccount/index'
   import TabX from './components/tab-x.vue'
   import groupSpaceX from './components/group-space-x.vue'
   import instructionX from './components/instruction-x.vue'

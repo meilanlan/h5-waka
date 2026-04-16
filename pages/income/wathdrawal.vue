@@ -18,7 +18,7 @@
         <view class="top-box">
           <view class="text1">可提现:¥{{withdrawalsInfo.data.hi_dou||0}}</view>
           <view class="inpt-box">
-            <text v-if="num">¥</text><input class="uni-input" v-model="num" />
+            <text v-if="num">¥</text><input class="uni-input" v-model="num" focus />
             <view class="all" @click="allWathdrawal">全部提现</view>
           </view>
           <view class="foot-box">

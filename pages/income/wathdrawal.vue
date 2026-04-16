@@ -3,7 +3,7 @@
     <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="嗨豆结算" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-box">
       <view class="info">
-        <image class="headimg" :src="withdrawalsInfo.data.user.head_img||gender"></image>
+        <image class="headimg" :src="withdrawalsInfo.data.user.head_img||gender" mode="aspectFill"></image>
         <view class="">
           <view class="name">
             {{withdrawalsInfo.data.user.nick_name}}
@@ -18,7 +18,7 @@
         <view class="top-box">
           <view class="text1">可提现:¥{{withdrawalsInfo.data.hi_dou||0}}</view>
           <view class="inpt-box">
-            <text v-if="num">¥</text><input class="uni-input" v-model="num" />
+            <text v-if="num">¥</text><input class="uni-input" v-model="num" focus />
             <view class="all" @click="allWathdrawal">全部提现</view>
           </view>
           <view class="foot-box">

@@ -103,6 +103,10 @@
                     </label>
                   </radio-group>
               </view>
+              <view class="no-data" v-if="!listInfo.length">
+                <image src="@/static/image/no-data.png"></image>
+                <view>暂无其他Whack群数据</view>
+              </view>
             </scroll-view>
             
           </template>
@@ -582,5 +586,8 @@
       background: #1675FE;
       color: #FFFFFF;
     }
+  }
+  .no-data {
+    margin-top: 0;
   }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <view class="sync-box">
-    <!-- <template v-if="curSyncType===0">
+    <template v-if="curSyncType===0">
       <view class="sync-btn sync-btn-1" @click="switchSyncType(1)">微信数据同步到Whack</view>
       <view class="sync-btn sync-btn-2" @click="switchSyncType(2)">Whack群内数据同步</view>
     </template>
-    <template v-else> -->
-      <!-- <image src="/static/image/btn_back.png" class="back" @click="switchSyncType(0)"></image> -->
+    <template v-else>
+      <image src="/static/image/btn_back.png" class="back" @click="switchSyncType(0)"></image>
       <view class="list-box">
         <view class="group-list">
           <view class="left">
@@ -38,7 +38,7 @@
           <tips-x :value="errorText" @know="know"></tips-x>
         </uni-popup> -->
       </view>
-    <!-- </template> -->
+    </template>
     
     <!-- 请选择需同步的微信群 -->
     <uni-popup ref="groupPopup" type="bottom" background-color="#ffffff">
@@ -120,7 +120,7 @@
     <uni-popup ref="surePopup" type="center">
       <view class="clearSurePopup">
         <view class="clearText" v-if="curSyncType===1">
-          是否确认将 「{{sureGroupInfo.data.group_name}}」的{{sureText}}同步到 「{{robotInfo.group_name}}」？
+          是否确认将 「{{curGroupInfo.data.group_name}}」的{{sureText}}同步到 「{{robotInfo.group_name}}」？
         </view>
         <view class="clearText" v-else>
           是否确认将 「{{robotInfo.group_name}}」的{{sureText}}同步到 「{{sureGroupInfo.data.group_name}}」？
@@ -163,7 +163,7 @@
   const wxGroupId = ref()
   const configFlag = ref(false)
   const setFlag = ref(false)
-  const curSyncType = ref(1)
+  const curSyncType = ref(0)
   const listInfo = ref([])
   const pageInfo = reactive({
     page_id: 1,
@@ -255,7 +255,7 @@
     uni.showLoading()
     let param = {
       group_id: props.robotInfo.group_id,
-      // type: curSyncType.value===1?'wx':'whack',
+      type: curSyncType.value===1?'wx':'whack',
       glx_group_id: sureGroupInfo.data.group_id,
       sync_members: dataType.value.find(item=>item==='1')>=1?true: false,
       sync_config: dataType.value.find(item=>item==='2')>=1?true: false

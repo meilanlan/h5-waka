@@ -201,6 +201,39 @@ function downloadApp(){
   window.location.href = downloadLink;
 }
 
+// 安卓全局键盘遮挡
+function fixKeyboardOcclusion(e, dom) {
+  if (window.isiOS) return;
+//   if (!e?.target) return;
+  
+  // const inputEl = e.target;
+  console.log(e,'inputEl元素')
+  
+  setTimeout(() => {
+    uni.createSelectorQuery()
+      .select('.'+dom)
+      .boundingClientRect(rect => {
+        console.log(rect,'rect元素')
+        if (!rect) return;
+        
+        const systemInfo = uni.getSystemInfoSync();
+        const windowHeight = systemInfo.windowHeight;
+        const keyboardHeight = 300;
+        
+        const targetTop = windowHeight - keyboardHeight - rect.height - 50;
+        console.log(targetTop,'targetTop')
+        
+        if (rect.top > targetTop) {
+          uni.pageScrollTo({
+            scrollTop: uni.getSystemInfoSync().scrollTop + rect.top - targetTop,
+            duration: 300
+          });
+        }
+      })
+      .exec();
+  }, 300);
+}
+
 
 export {
   trim,
@@ -215,5 +248,6 @@ export {
   formatNumber,
   maskPhoneNumber,
   jumpApp,
-  downloadApp
+  downloadApp,
+  fixKeyboardOcclusion
 }

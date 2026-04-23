@@ -35,9 +35,9 @@
     </view>
    <view class="wrapper-list">
       <!-- 收益明细 -->
-      <templat v-if="tabIndex===1">
+      <template v-if="tabIndex===1">
         <slot name="profitDetailSlot"></slot>
-      </templat>
+      </template>
       <!-- 提现记录 -->
       <tradeDetail :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :type='1' :rangeObject="rangeObject" v-else></tradeDetail>
     </view>
@@ -82,7 +82,7 @@
   }
   
   function getMyProfit(){
-    myProfitApi({},res=>{
+    myProfitApi({group_id:props.group_id||''},res=>{
       if (~~res.code === 0) {
         profitData.hi_coin = res.data.hi_coin||[]
         profitData.hi_dou = res.data.hi_dou||[]

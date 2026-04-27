@@ -1,6 +1,6 @@
 <template>
   <view class="wrapper-box">
-    <view class="box" v-for="(item,index) in props.robot_list" :key="index">
+    <view class="box" v-for="(item,index) in props.robot_list" :key="index" @click="openDetailDialog(item)">
       <image class="bg" :src="item.cover_big"></image>
       <view class="robot-icon">
         <image :src="item.cover_small"></image>
@@ -19,7 +19,7 @@
         </view>
         <view class="btn-list">
           <view class="left">{{item.prod_price}}</view>
-          <view :class="['btn','btn-'+item.prod_status]" @click="openMethods(item)">{{item.prod_status===0?'获取':'已安装'}}</view>
+          <view :class="['btn','btn-'+item.prod_status]" @click.stop="openMethods(item)">{{item.prod_status===0?'获取':'已安装'}}</view>
         </view>
       </view>
     </view>
@@ -56,6 +56,37 @@
         </view>
       </view>
     </uni-popup>
+    
+    <uni-popup ref="robotDetailRef" type="center" >
+      <view class="common-popup common-popup-1">
+        <view class="wrapper-header wrapper-header-1">
+          {{curRobotInfo.data.title}}
+          <image @click="robotDetailRef.close()" class="close" src="../../../static/image/close.png"></image>
+        </view>
+        <view class="info info-detail">
+          <view v-if="curRobotInfo.data.duration>0" :class="['date-box date-box-detail','date-box-'+(curRobotInfo.data.duration===31536000?2:1)]">
+            {{timeObj[curRobotInfo.data.duration]}}
+          </view>
+          <view class="text text2">产品名：{{curRobotInfo.data.prod_name}}</view>
+          <view class="text">{{curRobotInfo.data.prod_develop}}</view>
+          <view class="text1">
+            {{curRobotInfo.data.prod_des}}
+          </view>
+          <view class="btn-list">
+            <view :class="['btn','btn-'+curRobotInfo.data.prod_status]" @click.stop="openMethods(curRobotInfo.data)">{{curRobotInfo.data.prod_status===0?'购买':'已安装'}}</view>
+          </view>
+        </view>
+        
+      </view>
+    </uni-popup>
+   <!-- <uni-popup ref="payMethodsRef" type="bottom" >
+      <view class="common-popup">
+        <view class="wrapper-header">
+          支付方式
+          <image @click="payMethodsRef.close()" class="close" src="../../../static/image/close.png"></image>
+        </view>
+      </view>
+    </uni-popup> -->
   </view>
 </template>
 
@@ -82,7 +113,13 @@
   })
   const emit = defineEmits(['updateInfo'])
   const payMethodsRef = ref(null)
+  const robotDetailRef = ref(null)
   
+  function openDetailDialog(item){
+    console.log(item,'iiii')
+    curRobotInfo.data = item
+    robotDetailRef.value.open()
+  }
   function openMethods(item){
     // if (item.prod_status === 0) {
     curRobotInfo.data = item
@@ -214,84 +251,108 @@
           border-radius: 12rpx;
         }
       }
-      .info {
-        padding: 40rpx 16rpx 0;
+      
+    }
+  }
+  .info {
+    padding: 40rpx 16rpx 0;
+    font-size: 24rpx;
+    .title {
+      color: #000000;
+      font-weight: 500;
+      line-height: 24rpx;
+    }
+    .placeholder-box {
+      height: 32rpx;
+    }
+    
+    .text {
+      font-weight: 400;
+      color: rgba(0,0,0,0.4);
+      line-height: 32rpx;
+    }
+    .text2 {
+      margin-top: 8rpx;
+    }
+    .text1 {
+      margin-top: 16rpx;
+      font-weight: 400;
+      color: rgba(0,0,0,0.6);
+      line-height: 32rpx;
+    }
+    .date-box {
+      margin: 8rpx 0;
+      display: inline-block;
+      padding: 0 12rpx;
+      height: 100%;
+      line-height: 32rpx;
+      border-radius: 16rpx;
+      // font-family: 'MiSans';
+      font-weight: 500;
+      font-size: 20rpx;
+      &.date-box-1 {
+        background: #D4F1FF;
+        color: #4599FF;
+      }
+      &.date-box-2 {
+        background: #FFF1CF;
+        color: #FF6F31;
+      }
+    }
+    .btn-list {
+      margin-top: 16rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .left {
+        font-weight: 500;
+        color: #000000;
+        line-height: 24rpx;
+      }
+      .btn {
+        width: 112rpx;
+        height: 48rpx;
+        border-radius: 46rpx;
+        text-align: center;
+        line-height: 48rpx;
+        font-weight: 400;
         font-size: 24rpx;
-        .title {
-          color: #000000;
-          font-weight: 500;
-          line-height: 24rpx;
+        background: #F0F3F8;
+        color: rgba(0,0,0,0.2);
+        &.btn-1 {
+          background: #F0F3F8;
+          color: rgba(0,0,0,0.2);
         }
-        .placeholder-box {
-          height: 32rpx;
-        }
-        .date-box {
-          margin: 8rpx 0;
-          display: inline-block;
-          padding: 0 12rpx;
-          height: 100%;
-          line-height: 32rpx;
-          border-radius: 16rpx;
-          // font-family: 'MiSans';
-          font-weight: 500;
-          font-size: 20rpx;
-          &.date-box-1 {
-            background: #D4F1FF;
-            color: #4599FF;
-          }
-          &.date-box-2 {
-            background: #FFF1CF;
-            color: #FF6F31;
-          }
-        }
-        .text {
-          font-weight: 400;
-          color: rgba(0,0,0,0.4);
-          line-height: 32rpx;
-        }
-        .text2 {
-          margin-top: 8rpx;
-        }
-        .text1 {
-          margin-top: 16rpx;
-          font-weight: 400;
-          color: rgba(0,0,0,0.6);
-          line-height: 32rpx;
-        }
-        .btn-list {
-          margin-top: 16rpx;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          .left {
-            font-weight: 500;
-            color: #000000;
-            line-height: 24rpx;
-          }
-          .btn {
-            width: 112rpx;
-            height: 48rpx;
-            border-radius: 46rpx;
-            text-align: center;
-            line-height: 48rpx;
-            font-weight: 400;
-            font-size: 24rpx;
-            background: #F0F3F8;
-            color: rgba(0,0,0,0.2);
-            &.btn-1 {
-              background: #F0F3F8;
-              color: rgba(0,0,0,0.2);
-            }
-            &.btn-0 {
-              background: #22C0FF;
-              color: #ffffff;
-            }
-          }
+        &.btn-0 {
+          background: #22C0FF;
+          color: #ffffff;
         }
       }
     }
-    
+    &.info-detail {
+      padding: 0;
+      font-size: 28rpx;
+      .date-box-detail {
+        margin: 16rpx 0;
+        padding: 0 16rpx;
+        height: 48rpx;
+        line-height: 48rpx;
+        font-size: 24rpx;
+      }
+      .btn-list {
+        margin-top: 40rpx;
+        .btn {
+          width: 560rpx;
+          height: 80rpx;
+          border-radius: 16rpx;
+          line-height: 80rpx;
+          font-weight: 400;
+          font-size: 32rpx;
+        }
+      }
+    }
   }
+  
   .wrapper-header {
     position: relative;
     width: 100%;
@@ -307,9 +368,30 @@
       top: 24rpx;
       right: 24rpx;
     }
+    &.wrapper-header-1 {
+      border: none;
+      height: auto;
+      line-height: 48rpx;
+      text-align: left;
+      position: relative;
+      font-weight: 500;
+      font-size: 32rpx;
+      color: #000000;
+      line-height: 48rpx;
+      .close {
+        top: 0;
+        right: 0;
+      }
+    }
   }
   .common-popup {
     height: 400rpx;
+    &.common-popup-1 {
+      width: 640rpx;
+      height: auto;
+      padding: 40rpx;
+      border-radius: 32rpx;
+    }
   }
   .methods {
     margin-top: 20rpx;

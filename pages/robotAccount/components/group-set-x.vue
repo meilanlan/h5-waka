@@ -179,13 +179,13 @@
           }
         }
         configInfo.data = JSON.parse(JSON.stringify(newInfo))
-        console.log(configInfo.data[11], 'ooo')
+        // console.log(configInfo.data[11], 'ooo')
         if (!configInfo.data[11]) { // 设置默认词库
           configInfo.data[11] = {
             data_type: 11,
             list: [{id: '',title: '',content: ''}]
           }
-          console.log(configInfo.data[11],'after')
+          // console.log(configInfo.data[11],'after')
         }
         if (!configInfo.data[23].title_list) {
           configInfo.data[23].title_list = []

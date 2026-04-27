@@ -1598,8 +1598,10 @@
           title: '密码设置成功',
           duration: 1000,
           success: () => {
+            paw.value = '' 
+            againPaw.value = ''
             setTimeout(() => {
-              this.$emit('updateAdminToken')
+              emit('updateAdminToken')
             }, 1200)
           }
         })

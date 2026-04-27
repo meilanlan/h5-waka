@@ -85,13 +85,13 @@
           <!-- 机器人 -->
           <robot-x v-else-if="groupInfo.tabId === 4" @updateGroupInfo="updateGroupInfo"></robot-x>
           <!-- 群收益 -->
-          <group-profit-x v-else-if="groupInfo.tabId === 5"></group-profit-x>
+          <group-profit-x v-else-if="groupInfo.tabId === 5" :robotInfo="robotInfo.data"></group-profit-x>
           <!-- 数据同步 -->
           <data-sync-x v-else-if="groupInfo.tabId === 6 && robotInfo.data.group_id" :robotInfo="robotInfo.data"></data-sync-x>
           <!-- 群设置 -->
           <template v-else-if="groupInfo.tabId === 7">
-            <group-set-x v-if="(robotInfo.data.user_role===1||(robotInfo.data.user_role===2&&authCode))&&robotInfo.data.group_id" :authCode="authCode" :groupSetId="groupInfo.groupSetId*1" :robotInfo="robotInfo.data" @clearAuthCode="clearAuthCode"></group-set-x>
-            <set-login-x v-if="robotInfo.data.user_role===2&&!authCode" @tologin="tologin"></set-login-x>
+            <group-set-x v-if="(robotInfo.data.user_role===1||((robotInfo.data.user_role===2||robotInfo.data.user_role===7)&&authCode))&&robotInfo.data.group_id" :authCode="authCode" :groupSetId="groupInfo.groupSetId*1" :robotInfo="robotInfo.data" @clearAuthCode="clearAuthCode"></group-set-x>
+            <set-login-x v-if="(robotInfo.data.user_role===2||robotInfo.data.user_role===7)&&!authCode" @tologin="tologin"></set-login-x>
           </template>
          
       </template>
@@ -224,7 +224,7 @@
   async function getGroupInfo() { //获取群主页的信息
     await groupInfoApi({group_id: groupInfo.group_id}, res => {
       if (~~res.code === 0) {
-        // user_role: 1:群主  2:超管  3:管理 其他：群员
+        // user_role: 1:群主  2:超管  3:管理 7:主理人 其他：群员
         robotInfo.data = res.data
         robotInfo.data.user_role = res.data.user_role||3
         if(robotInfo.data.user_role===2&&(groupInfo.tabId===5||groupInfo.tabId===6)){

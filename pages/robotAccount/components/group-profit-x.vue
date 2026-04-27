@@ -7,7 +7,7 @@
       </view>
     </my-custom-navbar> -->
     <view class="wrapper">
-      <incomeBox source="group" :group_id="parentInfo.group_id*1">
+      <incomeBox source="group" :group_id="parentInfo.group_id*1" :robotInfo="props.robotInfo">
         <template v-slot:profitDetailSlot>
           <profitDetailBox :gropuId="parentInfo.group_id"></profitDetailBox>
           <!-- <profitDetailList :boxstyle="{backgroundColor: '#F0F3F8'}" :list="curProfitDetailList"></profitDetailList>
@@ -39,6 +39,12 @@
   // import {profitIncomeDetailApi} from '@/service/income/index.js'
   // import {getRecentMonthRange} from '@/unit/common.js'
   
+  const props = defineProps({
+    robotInfo: {
+      type: Object,
+      default: () => {}
+    },
+  })
   const agreementPopup = ref(null)
   // const curProfitDetailList = ref([])
   // const monthRange = getRecentMonthRange()

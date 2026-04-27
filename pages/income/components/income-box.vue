@@ -39,7 +39,13 @@
         <slot name="profitDetailSlot"></slot>
       </template>
       <!-- 提现记录 -->
-      <tradeDetail :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :type='1' :rangeObject="rangeObject" v-else></tradeDetail>
+      <template v-else>
+        <view class="no-data" v-if="props.robotInfo&&props.robotInfo.user_role===7">
+          <image src="@/static/image/no-data.png"></image>
+          <view>您没有权限访问提现记录</view>
+        </view>
+        <tradeDetail v-else :boxstyle="props.source==='group'?{backgroundColor: '#F0F3F8'}:{}" :type='1' :rangeObject="rangeObject"x></tradeDetail>
+      </template>
     </view>
   </view>
 </template>
@@ -64,6 +70,10 @@
     group_id: {
       type: Number,
       dafaut: 0
+    },
+    robotInfo: {
+      type: Object,
+      default: () => {}
     }
   })
   
@@ -102,18 +112,33 @@
   }
   
   function toExchange(){
+    if(props.robotInfo&&props.robotInfo.user_role===7){
+      uni.showToast({
+        title: '您没有权限访问',
+        icon: 'none'
+      });
+      return false
+    }
     //去结算：兑换嗨豆
     uni.navigateTo({
      url: '/pages/income/settlement?show_title=0&hiIcon='+profitData.hi_coin.num
     });
   }
   function toWithdrawal(){
+    if(props.robotInfo&&props.robotInfo.user_role===7){
+      uni.showToast({
+        title: '您没有权限访问',
+        icon: 'none'
+      });
+      return false
+    }
     //去提现
     uni.navigateTo({
      url: `/pages/income/wathdrawal?show_title=0&group_id=${props.group_id||0}`
     });
   }
   onShow(()=>{
+    // console.log(props.robotInfo,'income box')
     getMyProfit()
   })
 </script>
@@ -258,5 +283,8 @@
   }
   .wrapper-list {
     margin-top: 12rpx;
+  }
+  .no-data {
+    margin-top: 0;
   }
 </style>

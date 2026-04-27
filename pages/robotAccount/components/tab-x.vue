@@ -49,6 +49,15 @@
       {id: 4, value: '机器人', distance: '71.5%'},
       {id: 7, value: '群设置', distance: '93%'},
     ]
+  }else if(props.userRole===7){ //主理人
+    tabArr.value = [
+      {id: 1, value: '群空间', distance: '4%'},
+      {id: 2, value: '群指令', distance: '25%'},
+      {id: 3, value: '我的主页', distance: '49%'},
+      {id: 4, value: '机器人', distance: '71.5%'},
+      {id: 5, value: '群收益', distance: '93%'},
+      {id: 7, value: '群设置', distance: '116%'},
+    ]
   } else {//普通管理、群成员
     tabArr.value = [
       {id: 1, value: '群空间', distance: '4%'},

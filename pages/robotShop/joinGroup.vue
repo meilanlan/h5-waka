@@ -1,25 +1,32 @@
 <template>
     <view class="wrapper">
       <myCustomNavbar :navStyle="{background:'#ffffff',color:'#000000'}" title="选择入驻社群" @backPage="backPage"></myCustomNavbar>
-      <view class="box choose-box" v-for="(item,index) in listInfo" :key="'box-'+index">
-        <view class="left">
-          <image class="headimg" :src="item.group_cover"></image>
-          <view class="info">
-            <view class="name">
-              <text class="tit">{{item.group_name}}</text><text>({{item.group_user_count}})</text>
-              <!-- <image class="icon" src="/static/image/icon_vip.png" mode="heightFix"></image> -->
-              <image v-for="(ic,icIdx) in item.ic_list" :key="'ic'+icIdx" :src="ic" mode="heightFix"></image>
-            </view>
-            <view class="people">
-              <text class="id">{{item.g_level.progress}}/{{item.g_level.total}} 能量值</text>
-              <view class="process">
-                <view class="process-box" :style="{width: item.g_level.progress/item.g_level.total*100+'%'}"></view>
+      <view class="scroll-box">
+        <scroll-view scroll-y="true" class="scroll" @scrolltolower="onReachBottom">
+          <view class="box choose-box" v-for="(item,index) in listInfo" :key="'box-'+index">
+            <view class="left">
+              <image class="headimg" :src="item.group_cover"></image>
+              <view class="info">
+                <view class="name">
+                  <text class="tit">{{item.group_name}}</text><text>({{item.group_user_count}})</text>
+                  <!-- <image class="icon" src="/static/image/icon_vip.png" mode="heightFix"></image> -->
+                  <image v-for="(ic,icIdx) in item.ic_list" :key="'ic'+icIdx" :src="getImage(ic)" mode="heightFix"></image>
+                </view>
+                <view class="people">
+                  <text class="id">{{item.energy.current}}/{{item.energy.total}} 能量值</text>
+                  <view class="process">
+                    <view class="process-box" :style="{width: item.energy.progress+'%'}"></view>
+                    <!-- <view class="process-box" :style="{width: item.energy.progress/item.energy.total*100+'%'}"></view> -->
+                  </view>
+                </view>
               </view>
             </view>
+            <!-- <view :class="['btn','btn-'+item.g_status]" @click="toSettleIn(item,index)">{{item.g_status===0?'入驻':'使用中'}}</view> -->
+            <view class="btn btn-0" @click="toSettleIn(item,index)">入驻</view>
           </view>
-        </view>
-        <view :class="['btn','btn-'+item.g_status]" @click="toSettleIn(item,index)">{{item.g_status===0?'入驻':'使用中'}}</view>
+        </scroll-view>
       </view>
+      
     </view>
 </template>
 
@@ -32,8 +39,24 @@
   const robotId = ref()
   const listInfo = ref([])
   
+  const searchInfo = reactive({
+    page_id: 1,
+    page_size: 20,
+    total: 0
+  })
+  
+  function onReachBottom(){
+    if(listInfo.value.length<searchInfo.total) {
+      getownerSuperGroups()
+    }
+  }
+  
+  function getImage(level){
+    return new URL(`/static/image/group-level/${level.split('_')[2]}.png`, import.meta.url).href
+  }
+  
   function toSettleIn(item,index){
-    if(item.g_status==0) {
+    // if(item.g_status==0) {
       //入驻
       uni.showLoading()
       robotBindGroupApi({robot_id: robotId.value,group_id: item.group_id},res=>{
@@ -52,16 +75,22 @@
             uni.hideLoading()
         }
       })
-    }
+    // }
   }
   
   function backPage() {
     uni.navigateBack();
   }
   function getownerSuperGroups(){
-    ownerSuperGroupsApi({}, res => {
+    ownerSuperGroupsApi({page_id:searchInfo.page_id,page_size:searchInfo.page_size}, res => {
       if (res.code === 0) {
-        listInfo.value = res.data || []
+        if(searchInfo.page_id === 1) {
+          listInfo.value = res.data.list||[]
+          searchInfo.total = res.data.total
+        } else {
+          listInfo.value = [...listInfo.value,...res.data.list]
+        }
+        searchInfo.page_id++
         uni.hideLoading()
       } else {
           uni.showToast({
@@ -87,6 +116,12 @@
 <style scoped lang="scss">
   .wrapper {
     padding: 112rpx 20rpx 24rpx;
+  }
+  .scroll-box {
+    height: calc(100vh - 112rpx - 44px);
+    .scroll {
+      height: 100%;
+    }
   }
   .box {
     margin-bottom: 24rpx;
@@ -118,6 +153,9 @@
         overflow: hidden; /* 隐藏溢出的内容 */
         white-space: nowrap; /* 禁止文本换行 */
         text-overflow: ellipsis; /* 显示省略号 */
+      }
+      image {
+        height: 32rpx;
       }
     }
     .icon {

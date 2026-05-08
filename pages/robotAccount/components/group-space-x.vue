@@ -222,9 +222,8 @@
   
   function groupUserInfo(type){
     if((menuIndex.value===0&&type===1) || type!==1) {
-        console.log(1123123)
         loading.value = true
-        console.log(menuIndex.value, 'menuIndex.value is')
+        // console.log(menuIndex.value, 'menuIndex.value is')
         groupUserData({group_id: parentInfo.group_id,type: type}, res => {
           if (res.code === 0) {
             if (res.data&&res.data.length > 0) {

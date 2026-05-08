@@ -19,6 +19,7 @@
 
 <script setup>
   import {ref,reactive, inject} from 'vue'
+  import {onShow} from '@dcloudio/uni-app'
   import robotAssistantX from './robot-assistant-x.vue';
   import myOrder from './my-order.vue';
   import {spaceRobotApi} from '@/service/robotAccount/index.js'
@@ -34,7 +35,9 @@
     order_list: [],
     user_robot_list: []
   }}))
-  
+  onShow(()=>{
+    getSpaceRobot()
+  })
   function switchTab(item){
     curTab.value = item
   }
@@ -42,7 +45,6 @@
     getSpaceRobot()
     emit('updateGroupInfo')
   }
-  getSpaceRobot()
   function getSpaceRobot(){
     uni.showLoading()
     

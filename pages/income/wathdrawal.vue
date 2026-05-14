@@ -122,11 +122,10 @@
   }
   
   function calculateTax(amount, taxRate) {
-      // 方法1：转换为整数计算
       const precision = 1000;
       const result = (amount * precision * taxRate) / precision;
-      // 方法2：四舍五入显示
-      return Number(result.toFixed(2));
+      return Math.ceil(result * 100) / 100;;
+      // return Number(result.toFixed(2));
   }
   
   

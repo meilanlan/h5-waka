@@ -132,6 +132,16 @@
             }
         },
         {
+            "path": "pages/agreements/fraudPrevention",
+            "style": {
+                "navigationBarTitleText": "全民反诈，你我同行",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        
+        {
             "path": "pages/shareh5/wakaGroup",
             "style": {
                 "navigationBarTitleText": "咓咔社群",

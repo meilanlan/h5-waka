@@ -140,7 +140,15 @@
                 }
             }
         },
-        
+        {
+            "path": "pages/agreements/dayOfLove",
+            "style": {
+                "navigationBarTitleText": "Whack520结婚大作战",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
         {
             "path": "pages/shareh5/wakaGroup",
             "style": {

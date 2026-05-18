@@ -1,11 +1,10 @@
 <template>
   <view class="wrapper">
-    <myCustomNavbar title="" @backPage="backPage"></myCustomNavbar>
+    <myCustomNavbar backIcon="../../static/image/btn_back_white.png" title="" @backPage="backPage"></myCustomNavbar>
     <view class="wrapper-box">
-        <image src="/static/image/fraudPrevention/01.jpg" mode="widthFix"></image>
-        <image src="/static/image/fraudPrevention/02.jpg" mode="widthFix"></image>
-        <image src="/static/image/fraudPrevention/03.jpg" mode="widthFix"></image>
-        <image src="/static/image/fraudPrevention/04.jpg" mode="widthFix"></image>
+        <image src="/static/image/dayOfLove/01.jpg" mode="widthFix"></image>
+        <image src="/static/image/dayOfLove/02.jpg" mode="widthFix"></image>
+        <image src="/static/image/dayOfLove/03.jpg" mode="widthFix"></image>
     </view>
     
   </view>

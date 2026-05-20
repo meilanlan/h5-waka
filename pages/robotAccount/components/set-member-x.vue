@@ -78,7 +78,7 @@
                     </template>
                     <template v-else-if="curType===6">
                       <uni-td :width="tableWidth" align="center">{{item.nick_name}}</uni-td>
-                      <uni-td :width="tableWidth" align="right">{{item.title}}</uni-td>
+                      <uni-td :width="tableWidth" align="right">{{item.title_name}}</uni-td>
                     </template>
                     <template v-else-if="curType===7">
                       <uni-td :width="tableWidth2" align="center">{{item.nick_name}}</uni-td>

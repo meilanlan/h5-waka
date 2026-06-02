@@ -203,6 +203,15 @@
                 }
             }
         },
+        {
+            "path": "pages/shareh5/upgrade",
+            "style": {
+                "navigationBarTitleText": "Whack升级",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
         
         {
             "path": "pages/admin/leaderSync",

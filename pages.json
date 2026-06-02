@@ -186,6 +186,25 @@
             }
         },
         {
+            "path": "pages/shareh5/whackKings",
+            "style": {
+                "navigationBarTitleText": "Whack王者杯",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        {
+            "path": "pages/shareh5/kingsRegistration",
+            "style": {
+                "navigationBarTitleText": "Whack王者杯报名",
+                "h5": {
+                    "titleNView": false
+                }
+            }
+        },
+        
+        {
             "path": "pages/admin/leaderSync",
             "style": {
                 "navigationBarTitleText": "数据同步",

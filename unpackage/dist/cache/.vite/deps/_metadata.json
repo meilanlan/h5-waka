@@ -1,15 +1,25 @@
 {
-  "hash": "e0558bcc",
+  "hash": "f8da34b3",
   "configHash": "ad9e871e",
-  "lockfileHash": "ef45c329",
-  "browserHash": "21919f28",
+  "lockfileHash": "fd46744c",
+  "browserHash": "485d4408",
   "optimized": {
     "qs": {
       "src": "../../../../../node_modules/qs/lib/index.js",
       "file": "qs.js",
-      "fileHash": "bd79a8d9",
+      "fileHash": "ce882063",
+      "needsInterop": true
+    },
+    "weixin-js-sdk": {
+      "src": "../../../../../node_modules/weixin-js-sdk/index.js",
+      "file": "weixin-js-sdk.js",
+      "fileHash": "19c07187",
       "needsInterop": true
     }
   },
-  "chunks": {}
+  "chunks": {
+    "chunk-Y2F7D3TJ": {
+      "file": "chunk-Y2F7D3TJ.js"
+    }
+  }
 }

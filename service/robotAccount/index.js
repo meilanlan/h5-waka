@@ -827,6 +827,17 @@ const operationLogApi = (data, success, fail) => {
     fail: fail
   })
 }
+const wechatShareApi = (data, success, fail) => {
+  ajax({
+    noAuth: true,
+    adminSet: true,
+    url: '/h5/wechat/share',
+    data: data,
+    success: success,
+    fail: fail
+  })
+}
+
 
 export {
   robotDetailData,
@@ -894,5 +905,5 @@ export {
   glxGroupSyncApi,
   glxGroupQueryApi,
   operationLogApi,
-  
+  wechatShareApi
 }
